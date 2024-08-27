@@ -3,6 +3,7 @@ import { IconButton } from '@mui/material';
 import BookmarkBorder from '@mui/icons-material/BookmarkBorder';
 import Bookmark from '@mui/icons-material/Bookmark';
 import axios from 'axios';
+import ProductUrl from './productUrl';
 
 interface ProductBookmarkProps {
   productName: string;
@@ -11,6 +12,7 @@ interface ProductBookmarkProps {
 const ProductBookmark: React.FC<ProductBookmarkProps> = ({ productName }) => {
   const [bookmarked, setBookmarked] = useState<boolean>(false);
   const serverUri = import.meta.env.VITE_SERVER_URI;
+  const encodedPN = encodeURIComponent(productName);
 
   useEffect(() => {
     const authenticateAndCheckBookmark = async () => {
@@ -29,11 +31,12 @@ const ProductBookmark: React.FC<ProductBookmarkProps> = ({ productName }) => {
       try {
         // 북마크 상태 확인
         const bookmarkResponse = await axios.get(
-          `${serverUri}/kakao/${encodeURIComponent(kakao_Id)}/bookmarks/${productName}`,
+          `${serverUri}/api/v1/users/kakao/${encodeURIComponent(kakao_Id)}/bookmarks/search`,
           {
             headers: {
               Authorization: `Bearer ${jwtToken}`
-            }
+            },
+            params: { productName: productName}
           }
         );
 
@@ -42,7 +45,7 @@ const ProductBookmark: React.FC<ProductBookmarkProps> = ({ productName }) => {
         } else {
           setBookmarked(false);
         }
-      } catch (error: any) { // error를 any 타입으로 명시적으로 선언
+      } catch (error: any) {
         if (error.response && error.response.status === 404) {
           setBookmarked(false); // 북마크가 없으면 false로 설정
         } else {
@@ -67,7 +70,7 @@ const ProductBookmark: React.FC<ProductBookmarkProps> = ({ productName }) => {
 
       const parsedToken = JSON.parse(jsonPayload);
       return parsedToken.kakao_Id || null;
-    } catch (error: any) { // error를 any 타입으로 명시적으로 선언
+    } catch (error: any) {
       console.error('JWT token parsing error:', error.message || error);
       return null;
     }
@@ -89,11 +92,12 @@ const ProductBookmark: React.FC<ProductBookmarkProps> = ({ productName }) => {
     try {
       if (bookmarked) {
         await axios.delete(
-          `${serverUri}/api/v1/users/kakao/${encodeURIComponent(kakao_Id)}/bookmarks/${productName}`,
+          `${serverUri}/api/v1/users/kakao/${encodeURIComponent(kakao_Id)}/bookmarks`,
           {
             headers: {
               Authorization: `Bearer ${jwtToken}`
-            }
+            },
+            params: { productName: productName}
           }
         );
         setBookmarked(false);
@@ -113,7 +117,7 @@ const ProductBookmark: React.FC<ProductBookmarkProps> = ({ productName }) => {
         setBookmarked(true);
         alert('북마크가 추가되었습니다.');
       }
-    } catch (error: any) { // error를 any 타입으로 명시적으로 선언
+    } catch (error: any) {
       console.error('Error handling bookmark:', error.message || error);
       alert('오류가 발생했습니다.');
     }

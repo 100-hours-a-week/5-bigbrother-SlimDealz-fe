@@ -66,11 +66,12 @@ const CategoryList = ({
       if (bookmarked) {
         // 북마크 삭제
         await axios.delete(
-          `${serverUri}/api/v1/users/kakao/${encodeURIComponent(kakao_Id)}/bookmarks/${name}`,
+          `${serverUri}/api/v1/users/kakao/${encodeURIComponent(kakao_Id)}/bookmarks`,
           {
             headers: {
-              Authorization: `Bearer ${jwtToken}`
-            }
+              Authorization: `Bearer ${jwtToken}`,
+            },
+            params: { productName: name}
           }
         );
         setBookmarked(false);
@@ -79,11 +80,11 @@ const CategoryList = ({
         // 북마크 추가
         await axios.post(
           `${serverUri}/api/v1/users/kakao/${encodeURIComponent(kakao_Id)}/bookmarks`,
-          { productName: name },
           {
             headers: {
               Authorization: `Bearer ${jwtToken}`
-            }
+            },
+            params: { productName: name}
           }
         );
         setBookmarked(true);

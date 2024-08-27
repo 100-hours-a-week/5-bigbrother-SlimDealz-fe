@@ -7,9 +7,34 @@ import { useNavigate } from 'react-router-dom';
 import { Typography } from '@mui/material';
 import { LoadingProduct } from '@/components/loading';
 
+// Define TypeScript interfaces for the data structure
+interface Price {
+  id: number;
+  setPrice: number;
+  promotion: string | null;
+  productId: number;
+  vendor: {
+    id: number;
+    vendorName: string;
+    vendorUrl: string | null;
+  };
+}
+
+interface Bookmark {
+  bookmarkId: number;
+  productId: number;
+  productName: string;
+  image: string | null;
+  shippingFee: string;
+  prices: Price[];
+  originalPrice: number | null;
+  salePrice: number | null;
+  discountRate: number | null;
+}
+
 const UserBookmarkPage: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [bookmarks, setBookmarks] = useState([]);
+  const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
   const serverUri = import.meta.env.VITE_SERVER_URI;
@@ -112,14 +137,15 @@ const UserBookmarkPage: React.FC = () => {
   return (
     <Container>
       <PageNameTag pageName={`전체 ${bookmarks.length}개`} />
-      {bookmarks.map((bookmark: any, index: number) => (
+      {bookmarks.map((bookmark) => (
         <CategoryList
-          key={index}
+          key={bookmark.bookmarkId}
           id={bookmark.productId}
-          image={bookmark.imageUrl}
-          name={bookmark.name}
+          image={bookmark.image || 'default_image_url_here'} // Provide a default image if null
+          name={bookmark.productName}
           shipping={bookmark.shippingFee}
           price={bookmark.prices[0]?.setPrice}
+          vendorName={bookmark.prices[0]?.vendor.vendorName} // Added vendor name
         />
       ))}
     </Container>
