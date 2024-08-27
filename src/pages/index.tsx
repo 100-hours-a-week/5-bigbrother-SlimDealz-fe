@@ -1,21 +1,9 @@
 import React from 'react';
-import styled from 'styled-components';
 import Footer from '../components/layoutWrapper/footer';
 import Header from '../components/layoutWrapper/header';
 import { Outlet, useLocation } from 'react-router-dom';
 import { useHeaderHeight } from '@/components/utils/context/headerHeightContext';
-
-const Container = styled.div<{ $paddingTop: number }>`
-  width: 390px;
-  height: auto;
-  min-height: 100dvh;
-  margin: 0 auto;
-  padding-top: ${({ $paddingTop }) => `${$paddingTop}px`};
-  padding-bottom: 50px;
-  box-sizing: border-box;
-  overflow-x: hidden;
-  background-color: var(--background-color);
-`;
+import { styles } from './styles';
 
 const OutLetContainer = () => {
   const location = useLocation();
@@ -36,9 +24,9 @@ const OutLetContainer = () => {
   return (
     <>
       <Header pageTitle={pageTitle} />
-      <Container $paddingTop={height}>
+      <styles.Container $paddingTop={height}>
         <Outlet />
-      </Container>
+      </styles.Container>
       <Footer />
     </>
   );

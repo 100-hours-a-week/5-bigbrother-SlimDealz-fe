@@ -7,11 +7,17 @@ import GlobalStyles from './styles/globalStyles';
 import * as Sentry from '@sentry/react';
 
 Sentry.init({
-  dsn: import.meta.env.SENTRY_AUTH_TOKEN,
+  dsn: import.meta.env.VITE_SENTRY_AUTH_TOKEN,
   integrations: [
     Sentry.browserTracingIntegration(),
     Sentry.browserProfilingIntegration(),
-    Sentry.replayIntegration()
+    Sentry.replayIntegration(),
+    Sentry.feedbackIntegration({
+      // Additional SDK configuration goes in here, for example:
+      colorScheme: 'system',
+      isNameRequired: true,
+      isEmailRequired: true
+    })
   ],
   // Tracing
   tracesSampleRate: 1.0, //  Capture 100% of the transactions

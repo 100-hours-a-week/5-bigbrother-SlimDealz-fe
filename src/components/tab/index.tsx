@@ -3,16 +3,11 @@ import { Tabs, Tab } from '@mui/material';
 import MallList from '../list/mallList';
 import ChartView from '../chart';
 
-interface ProductData {
-  name: string;
-  prices?: { setPrice: number }[];
-}
+type Props = {
+  productName: string;
+};
 
-interface TabsComponentProps {
-  productData: ProductData;
-}
-
-const TabsComponent: React.FC<TabsComponentProps> = ({ productData }) => {
+const TabsComponent = ({ productName }: Props) => {
   const [value, setValue] = useState(0);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -25,7 +20,8 @@ const TabsComponent: React.FC<TabsComponentProps> = ({ productData }) => {
         <Tab label="최저가 비교" />
         {/* <Tab label="상품 시세 차트" /> */}
       </Tabs>
-      {value === 0 && <MallList productData={productData} />}
+      {value === 0 && <MallList productName={productName} />}
+      {/* Pass the name to MallList */}
       {/* {value === 1 && <ChartView />} */}
     </div>
   );

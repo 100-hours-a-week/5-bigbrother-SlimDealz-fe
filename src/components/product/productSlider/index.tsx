@@ -11,11 +11,12 @@ import {
 } from './styles';
 import { LeftArrow, RightArrow } from '../../../components/utils/arrow';
 import Skeleton from '@mui/material/Skeleton';
+import { LoadingSearch } from '@/components/loading';
 
 type Product = {
   id: number;
   name: string;
-  image: string;
+  imageUrl: string;
   originalPrice: number;
   salePrice: number;
   discountRate: number;
@@ -59,30 +60,30 @@ const ProductSlider = ({ title, products = [] }: Props) => {
   return (
     <Container>
       <Title onClick={handleTitleClick}>{title}</Title>
-      <ProductSliderContainer>
-        <LeftArrow onClick={scrollLeft} />
-        <ProductsWrapper ref={scrollRef}>
-          {products.length > 0 ? (
-            products.map((product) => (
+      {products.length > 0 ? (
+        <ProductSliderContainer>
+          <LeftArrow onClick={scrollLeft} />
+          <ProductsWrapper ref={scrollRef}>
+            {products.map((product) => (
               <ProductItem
                 key={product.id}
                 onClick={() => handleProductClick(product.name)}
               >
                 <ImageWithSkeleton
-                  src={product.image}
+                  src={product.imageUrl}
                   alt={`Product ${product.name}`}
                 />
                 <PriceInfo>
                   <div>판매가: {product.originalPrice.toLocaleString()}원</div>
                 </PriceInfo>
               </ProductItem>
-            ))
-          ) : (
-            <div>상품 정보를 불러오는 중입니다...</div>
-          )}
-        </ProductsWrapper>
-        <RightArrow onClick={scrollRight} />
-      </ProductSliderContainer>
+            ))}
+            <RightArrow onClick={scrollRight} />
+          </ProductsWrapper>
+        </ProductSliderContainer>
+      ) : (
+        <LoadingSearch />
+      )}
     </Container>
   );
 };
@@ -105,6 +106,7 @@ const ImageWithSkeleton = ({ src, alt }: { src: string; alt: string }) => {
         alt={alt}
         style={{ display: loaded ? 'block' : 'none' }}
         onLoad={() => setLoaded(true)}
+        onError={() => setLoaded(true)} // 에러 발생 시에도 스켈레톤을 숨김
         width={150}
         height={150}
       />

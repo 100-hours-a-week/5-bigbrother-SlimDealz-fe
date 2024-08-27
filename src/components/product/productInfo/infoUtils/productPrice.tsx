@@ -1,3 +1,4 @@
+import { getNumberWithComma } from '@/components/utils/conversion';
 import React from 'react';
 
 interface ProductPriceProps {
@@ -9,7 +10,7 @@ const ProductPrice: React.FC<ProductPriceProps> = ({ originalPrice }) => {
     <div>
       <p>
         <span style={{ fontSize: '20px', fontWeight: 'bold', padding: '10px' }}>
-          {originalPrice}
+          {getNumberWithComma(originalPrice)}
           {'  '}원
         </span>
       </p>

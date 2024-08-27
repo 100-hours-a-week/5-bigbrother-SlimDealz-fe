@@ -16,15 +16,14 @@ import {
 import { Title } from '../productSlider/styles';
 import { useNavigate } from 'react-router-dom';
 import { getNumberWithComma } from '@/components/utils/conversion';
+import { LoadingSearch } from '@/components/loading';
 
 interface ThirdSliderProps {
   items: {
     id: number;
     name: string;
-    image: string;
+    imageUrl: string;
     originalPrice: number;
-    salePrice: number;
-    discountRate: number;
   }[];
   title: string;
 }
@@ -56,38 +55,42 @@ const ThirdSlider: React.FC<ThirdSliderProps> = ({ items, title }) => {
       }}
     >
       <Title onClick={handleTitleClick}>{title}</Title>
-      <StyledSwiperContainer>
-        <Swiper
-          effect={'cards'}
-          grabCursor={true}
-          modules={[EffectCards]}
-          style={{
-            width: '280px',
-            height: '350px'
-          }}
-        >
-          {items.map((item) => (
-            <SwiperSlide
-              key={item.id}
-              onClick={() => handleProductClick(item.name)}
-            >
-              <SwiperSlideStyled>
-                <ItemImage src={item.image} alt={item.name} />
-                <ItemDetails>
-                  <ItemName>{item.name}</ItemName>
-                  <OriginalPrice>
+      {items.length > 0 ? (
+        <StyledSwiperContainer>
+          <Swiper
+            effect={'cards'}
+            grabCursor={true}
+            modules={[EffectCards]}
+            style={{
+              width: '280px',
+              height: '350px'
+            }}
+          >
+            {items.map((item) => (
+              <SwiperSlide
+                key={item.id}
+                onClick={() => handleProductClick(item.name)}
+              >
+                <SwiperSlideStyled>
+                  <ItemImage src={item.imageUrl} alt={item.name} />
+                  <ItemDetails>
+                    <ItemName>{item.name}</ItemName>
+                    {/* <OriginalPrice>
                     원가: {getNumberWithComma(item.originalPrice)}원
                   </OriginalPrice>
-                  <DiscountRate>할인율: {item.discountRate}%</DiscountRate>
-                  <SalePrice>
-                    판매가: {getNumberWithComma(item.salePrice)}원
-                  </SalePrice>
-                </ItemDetails>
-              </SwiperSlideStyled>
-            </SwiperSlide>
-          ))}
-        </Swiper>
-      </StyledSwiperContainer>
+                  <DiscountRate>할인율: {item.discountRate}%</DiscountRate> */}
+                    <SalePrice>
+                      판매가: {getNumberWithComma(item.originalPrice)}원
+                    </SalePrice>
+                  </ItemDetails>
+                </SwiperSlideStyled>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </StyledSwiperContainer>
+      ) : (
+        <LoadingSearch />
+      )}
     </div>
   );
 };

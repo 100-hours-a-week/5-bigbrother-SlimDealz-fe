@@ -9,6 +9,7 @@ import MyMainPage from './pages/user/myMain';
 import SignInPage from './pages/signIn';
 import UserBookmarkPage from './pages/user/bookmark';
 import ComingSoon from './components/utils/comingSoon';
+import { LoadingSpinner } from './components/loading';
 
 // 동적 import()를 사용한 페이지 컴포넌트 로드
 const CategoryPage = React.lazy(() => import('./pages/category'));
@@ -22,25 +23,13 @@ const UserRecentlyViewPage = React.lazy(
 );
 // const UserInformationPage = React.lazy(() => import('./pages/user/information'));
 
-const Loading = () => (
-  <div className="loading-container">
-    <video
-      src="/assets/loadingmain.webm"
-      autoPlay
-      loop
-      muted
-      className="loading-video"
-    />
-  </div>
-);
-
 const Router = () => {
   return (
     <SearchProvider>
       <HeaderHeightProvider>
         <BrowserRouter>
           <ScrollToTop />
-          <Suspense fallback={<Loading />}>
+          <Suspense fallback={<LoadingSpinner />}>
             <Routes>
               <Route path="/" element={<OutLetContainer />}>
                 <Route path="/" element={<MainPage />} />

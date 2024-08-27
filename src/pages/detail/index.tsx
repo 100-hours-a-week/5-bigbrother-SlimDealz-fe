@@ -8,7 +8,7 @@ import ReviewList from '../../components/list/reviewList';
 import ImageView from '../../components/image/productImage';
 import ProductInfo from '../../components/product/productInfo';
 import { InfoContainer } from '../../components/list/categoryList/styles';
-import LoadingSpinner from '@/components/utils/loadingSpinner';
+import { LoadingProduct } from '@/components/loading';
 
 const DetailPage = () => {
   const { productName } = useParams<{ productName: string }>();
@@ -38,15 +38,15 @@ const DetailPage = () => {
   }, [productName]);
 
   if (!productData) {
-    return <LoadingSpinner />;
+    return <LoadingProduct />;
   }
 
-  const { image, name, prices } = productData;
+  const { imageUrl, name, prices } = productData;
   const { setPrice } = prices[0];
 
   return (
     <Container>
-      <ImageView src={image} alt={name} />
+      <ImageView src={imageUrl} alt={name} />
       <InfoContainer>
         <div style={{ fontSize: '20px', fontWeight: 'bold', width: '300px' }}>
           {name}
@@ -54,7 +54,7 @@ const DetailPage = () => {
       </InfoContainer>
       <ProductInfo originalPrice={setPrice} productName={name} />
       {/* <PriceAlertSetting /> */}
-      <TabsComponent productData={productData} />
+      <TabsComponent productName={name} />
       {/* <Title>리뷰</Title>
       <ReviewList /> */}
     </Container>

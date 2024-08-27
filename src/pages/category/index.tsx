@@ -6,12 +6,12 @@ import { ChickenChestWrapper } from '../main/styles';
 import IconCategory from '../../components/icon/iconCategory';
 import PageNameTag from '../../components/tag/pageNameTag';
 import { Link } from 'react-router-dom';
-import LoadingSpinner from '@/components/utils/loadingSpinner';
+import { LoadingProduct } from '@/components/loading';
 
 type Product = {
   id: number;
   name: string;
-  image: string;
+  imageUrl: string;
   shippingFee: string;
   prices: { setPrice: number }[];
 };
@@ -75,7 +75,7 @@ const CategoryPage = () => {
       </ChickenChestWrapper>
       <PageNameTag pageName="추천 페이지" />
       {loading && page === 1 ? (
-        <LoadingSpinner />
+        <LoadingProduct />
       ) : (
         <>
           {products.map((product: any, index: number) => (
@@ -85,14 +85,14 @@ const CategoryPage = () => {
             >
               <CategoryList
                 id={product.id}
-                //image={product.image}
+                image={product.imageUrl}
                 name={product.name}
                 shipping={product.shippingFee}
                 price={product.prices?.[0]?.setPrice || '가격 없음'}
               />
             </Link>
           ))}
-          {loading && <LoadingSpinner />} {/* 추가 로딩 시 로딩 스피너 표시 */}
+          {loading && <LoadingProduct />}
         </>
       )}
     </Container>

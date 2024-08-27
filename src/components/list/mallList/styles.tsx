@@ -8,37 +8,43 @@ export const Container = styled.div`
 
 export const MallItem = styled.div`
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  padding: 10px;
+  padding: 15px;
   background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-`;
+  border-radius: 10px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease; /* 호버 효과 전환 */
 
-export const MallLogo = styled.img`
-  width: 80px;
-  height: 50px;
-  object-fit: contain;
-  margin-right: 10px;
+  &:hover {
+    box-shadow: 0 0.6em 0.5em -0.4em #fdddff;
+    transform: translateY(-0.25em);
+    background: #fdddff;
+  }
 `;
 
 export const MallInfo = styled.div`
-  flex-grow: 1;
   display: flex;
-  flex-direction: column;
-  font-size: 14px;
+  align-items: center;
+  max-width: 100px;
 `;
 
-export const MallPrice = styled.div`
+export const MallLogo = styled.img`
+  margin-right: 10px;
+`;
+
+export const PriceContainer = styled.div`
+  display: flex;
+  align-items: center;
+  color: #1565c0;
   font-size: 18px;
   font-weight: bold;
-  color: #000;
 `;
 
-export const Coupon = styled.div`
-  font-size: 12px;
-  color: #ffffff;
-  background-color: #ff6b6b;
-  padding: 5px 10px;
-  border-radius: 4px;
+export const ShippingFeeContainer = styled.div`
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: #666;
+  margin-left: 10px;
 `;

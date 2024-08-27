@@ -4,16 +4,14 @@ import { Container, CustomBox, CustomButton } from './styles';
 import PageNameTag from '../../../components/tag/pageNameTag';
 import CategoryList from '../../../components/list/categoryList';
 import { useNavigate } from 'react-router-dom';
-import LoadingSpinner from '@/components/utils/loadingSpinner';
 import { Typography } from '@mui/material';
+import { LoadingProduct } from '@/components/loading';
 
 const UserBookmarkPage: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [bookmarks, setBookmarks] = useState([]);
-  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
-
   const serverUri = import.meta.env.VITE_SERVER_URI;
 
   useEffect(() => {
@@ -21,7 +19,7 @@ const UserBookmarkPage: React.FC = () => {
       const jwtToken = localStorage.getItem('jwtToken');
       if (!jwtToken) {
         setIsAuthenticated(false);
-        setError('JWT 토큰이 없습니다.');
+        console.log('JWT 토큰이 없습니다.');
         setLoading(false);
         return;
       }
@@ -29,52 +27,38 @@ const UserBookmarkPage: React.FC = () => {
       const kakao_Id = extractKakaoIdFromToken(jwtToken);
       if (!kakao_Id) {
         setIsAuthenticated(false);
-        setError('Kakao_ID를 찾을 수 없습니다.');
+        console.log('Kakao_ID를 찾을 수 없습니다.');
         setLoading(false);
         return;
       }
 
       try {
-        // 서버 URI로 요청을 보냅니다.
-        const userIdResponse = await axios.get(
-          `${serverUri}/api/v1/users/kakao/${encodeURIComponent(kakao_Id)}/id`,
+        const bookmarksResponse = await axios.get(
+          `${serverUri}/api/v1/users/kakao/${encodeURIComponent(kakao_Id)}/bookmarks`,
           {
             headers: {
-              Authorization: `Bearer ${jwtToken}`
-            }
+              Authorization: `Bearer ${jwtToken}`,
+            },
           }
         );
 
-        if (userIdResponse.status === 200) {
+        if (bookmarksResponse.status === 200) {
           setIsAuthenticated(true);
-          const userId = userIdResponse.data;
-
-          const bookmarksResponse = await axios.get(
-            `${serverUri}/api/v1/users/${userId}/bookmarks`,
-            {
-              headers: {
-                Authorization: `Bearer ${jwtToken}`
-              }
-            }
-          );
-
-          if (bookmarksResponse.status === 200) {
-            setBookmarks(bookmarksResponse.data);
-          }
+          setBookmarks(bookmarksResponse.data);
         } else {
-          throw new Error('User ID를 가져오는 데 실패했습니다.');
+          throw new Error('북마크 데이터를 가져오는 데 실패했습니다.');
         }
       } catch (err: any) {
         if (err.response) {
           if (err.response.status === 400) {
-            setError('Invalid data.');
+            console.log('잘못된 데이터 요청입니다.');
           } else if (err.response.status === 401) {
-            setError('Unauthorized access.');
+            console.log('권한이 없습니다.');
           } else if (err.response.status === 500) {
-            setError('Server error occurred.');
+            console.log('서버 오류가 발생했습니다.');
           }
         } else {
-          setError('Network error.');
+          console.log('네트워크 오류가 발생했습니다.');
         }
       } finally {
         setLoading(false);
@@ -82,7 +66,7 @@ const UserBookmarkPage: React.FC = () => {
     };
 
     authenticateAndFetchBookmarks();
-  }, []);
+  }, [serverUri]);
 
   const extractKakaoIdFromToken = (token: string): string | null => {
     try {
@@ -98,13 +82,13 @@ const UserBookmarkPage: React.FC = () => {
       const parsedToken = JSON.parse(jsonPayload);
       return parsedToken.kakao_Id || null;
     } catch (error) {
-      console.error('JWT token parsing error:', error);
+      console.error('JWT 토큰 파싱 오류:', error);
       return null;
     }
   };
 
   if (loading) {
-    return <LoadingSpinner />;
+    return <LoadingProduct />;
   }
 
   if (!isAuthenticated) {
@@ -132,6 +116,7 @@ const UserBookmarkPage: React.FC = () => {
         <CategoryList
           key={index}
           id={bookmark.productId}
+          image={bookmark.imageUrl}
           name={bookmark.name}
           shipping={bookmark.shippingFee}
           price={bookmark.prices[0]?.setPrice}

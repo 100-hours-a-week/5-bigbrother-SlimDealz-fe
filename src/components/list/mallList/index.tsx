@@ -1,37 +1,51 @@
 import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import {
   Container,
   MallItem,
-  MallLogo,
   MallInfo,
-  MallPrice,
-  Coupon
+  PriceContainer,
+  ShippingFeeContainer
 } from './styles';
 import { getNumberWithComma } from '@/components/utils/conversion';
-import axios from 'axios';
+import { LoadingSpinner } from '@/components/loading';
 
-interface ProductData {
+interface Vendor {
+  vendorName: string;
+  vendorUrl: string;
+}
+
+interface Price {
+  setPrice: number;
+  vendor: Vendor;
+}
+
+interface MallData {
+  id: number;
   name: string;
-  prices?: { setPrice: number }[];
+  category: string;
+  shippingFee: number;
+  vendorUrl: string;
+  prices: Price[];
 }
 
 interface TabsComponentProps {
-  productData: ProductData;
+  productName: string;
 }
-const MallList: React.FC<TabsComponentProps> = ({ productData }) => {
-  const { name: productName, prices } = productData; // productData에서 필요한 정보 추출
-  const [mallData, setMallData] = useState([]);
+
+const MallList: React.FC<TabsComponentProps> = ({ productName }) => {
+  const [mallData, setMallData] = useState<MallData[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchMallData = async () => {
       try {
-        const response = await axios.get(`/api/v1/vendor-list`, {
-          params: { productName } // 쿼리 파라미터로 상품명 전달
+        const response = await axios.get('/api/v1/vendor-list', {
+          params: { productName }
         });
         setMallData(response.data);
       } catch (err) {
-        console.log('데이터를 불러오는 중 오류가 발생했습니다.');
+        console.error('데이터를 불러오는 중 오류가 발생했습니다.', err);
       } finally {
         setLoading(false);
       }
@@ -40,24 +54,32 @@ const MallList: React.FC<TabsComponentProps> = ({ productData }) => {
     fetchMallData();
   }, [productName]);
 
-  if (loading) return <div>로딩 중...</div>;
+  if (loading) return <LoadingSpinner />;
 
   return (
     <Container>
-      {mallData.map((item) => (
-        <MallItem key={productName}>
-          {/* <MallLogo src={item.logo} alt={item.name} /> */}
-          <MallInfo>
-            <div>{productName}</div>
-            <MallPrice>
-              {prices && prices.length > 0
-                ? `${getNumberWithComma(prices[0].setPrice)}원`
-                : '가격 없음'}
-            </MallPrice>
-          </MallInfo>
-          {/* {item.coupon && <Coupon>{item.coupon}</Coupon>} */}
-        </MallItem>
-      ))}
+      {mallData.map((item, index) =>
+        item.prices.map((price, idx) => (
+          <MallItem
+            key={`${index}-${idx}`}
+            onClick={() => {
+              if (price.vendor.vendorUrl) {
+                window.open(price.vendor.vendorUrl, '_blank');
+              }
+            }}
+          >
+            <MallInfo>{price.vendor.vendorName}</MallInfo>
+            <PriceContainer>
+              {`최저가 ${getNumberWithComma(price.setPrice)}원`}
+              <ShippingFeeContainer>
+                {item.shippingFee
+                  ? `배송비: ${getNumberWithComma(item.shippingFee)}원`
+                  : '무료배송'}
+              </ShippingFeeContainer>
+            </PriceContainer>
+          </MallItem>
+        ))
+      )}
     </Container>
   );
 };

@@ -11,21 +11,3 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
-
-.loading-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(255, 255, 255, 0.8); /* 필요에 따라 배경색 추가 */
-  z-index: 9999; /* 필요한 경우 z-index를 조정하여 최상위에 표시되도록 */
-}
-
-.loading-video {
-  max-width: 80%; /* 비디오의 최대 너비를 설정 */
-  max-height: 80%; /* 비디오의 최대 높이를 설정 */
-}

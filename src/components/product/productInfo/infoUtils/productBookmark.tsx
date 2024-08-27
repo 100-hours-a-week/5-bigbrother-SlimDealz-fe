@@ -10,13 +10,10 @@ interface ProductBookmarkProps {
 
 const ProductBookmark: React.FC<ProductBookmarkProps> = ({ productName }) => {
   const [bookmarked, setBookmarked] = useState<boolean>(false);
-  const [userId, setUserId] = useState<string | null>(null);
   const serverUri = import.meta.env.VITE_SERVER_URI;
-  const encodedProductName = encodeURIComponent(productName);  // 인코딩
-
 
   useEffect(() => {
-    const authenticateAndFetchUserId = async () => {
+    const authenticateAndCheckBookmark = async () => {
       const jwtToken = localStorage.getItem('jwtToken');
       if (!jwtToken) {
         alert('JWT 토큰이 없습니다.');
@@ -30,9 +27,9 @@ const ProductBookmark: React.FC<ProductBookmarkProps> = ({ productName }) => {
       }
 
       try {
-        // `kakao_Id`로 `userId` 가져오기
-        const userIdResponse = await axios.get(
-          `${serverUri}/api/v1/users/kakao/${kakao_Id}/id`,
+        // 북마크 상태 확인
+        const bookmarkResponse = await axios.get(
+          `${serverUri}/kakao/${encodeURIComponent(kakao_Id)}/bookmarks/${productName}`,
           {
             headers: {
               Authorization: `Bearer ${jwtToken}`
@@ -40,33 +37,22 @@ const ProductBookmark: React.FC<ProductBookmarkProps> = ({ productName }) => {
           }
         );
 
-        if (userIdResponse.status === 200) {
-          const fetchedUserId = userIdResponse.data;
-          setUserId(fetchedUserId);
-          localStorage.setItem('userId', fetchedUserId);
-
-          const bookmarkResponse = await axios.get(
-            `${serverUri}/api/v1/users/${fetchedUserId}/bookmarks`,
-            {
-              headers: {
-                Authorization: `Bearer ${jwtToken}`
-              }
-            }
-          );
-
-          if (bookmarkResponse.status === 200) {
-            setBookmarked(bookmarkResponse.data.bookmarked);
-          }
+        if (bookmarkResponse.status === 200) {
+          setBookmarked(true);
         } else {
-          throw new Error('User ID를 가져오는 데 실패했습니다.');
+          setBookmarked(false);
         }
-      } catch (error) {
-        console.error('Error fetching user ID or bookmark status:', error);
+      } catch (error: any) { // error를 any 타입으로 명시적으로 선언
+        if (error.response && error.response.status === 404) {
+          setBookmarked(false); // 북마크가 없으면 false로 설정
+        } else {
+          console.error('Error checking bookmark status:', error.message || error);
+        }
       }
     };
 
-    authenticateAndFetchUserId();
-  }, [encodedProductName, serverUri]);
+    authenticateAndCheckBookmark();
+  }, [productName, serverUri]);
 
   const extractKakaoIdFromToken = (token: string): string | null => {
     try {
@@ -81,25 +67,32 @@ const ProductBookmark: React.FC<ProductBookmarkProps> = ({ productName }) => {
 
       const parsedToken = JSON.parse(jsonPayload);
       return parsedToken.kakao_Id || null;
-    } catch (error) {
-      console.error('JWT token parsing error:', error);
+    } catch (error: any) { // error를 any 타입으로 명시적으로 선언
+      console.error('JWT token parsing error:', error.message || error);
       return null;
     }
   };
 
   const handleBookmarkClick = async () => {
-    try {
-      if (!userId) {
-        alert('로그인이 필요합니다.');
-        return;
-      }
+    const jwtToken = localStorage.getItem('jwtToken');
+    if (!jwtToken) {
+      alert('로그인이 필요합니다.');
+      return;
+    }
 
+    const kakao_Id = extractKakaoIdFromToken(jwtToken);
+    if (!kakao_Id) {
+      alert('Kakao_ID를 찾을 수 없습니다.');
+      return;
+    }
+
+    try {
       if (bookmarked) {
         await axios.delete(
-          `${serverUri}/api/v1/users/${userId}/bookmarks/${encodedProductName}`,
+          `${serverUri}/api/v1/users/kakao/${encodeURIComponent(kakao_Id)}/bookmarks/${productName}`,
           {
             headers: {
-              Authorization: `Bearer ${localStorage.getItem('jwtToken')}`
+              Authorization: `Bearer ${jwtToken}`
             }
           }
         );
@@ -107,21 +100,21 @@ const ProductBookmark: React.FC<ProductBookmarkProps> = ({ productName }) => {
         alert('북마크가 삭제되었습니다.');
       } else {
         await axios.post(
-          `${serverUri}/api/v1/users/${userId}/bookmarks/${encodedProductName}`,
+          `${serverUri}/api/v1/users/kakao/${encodeURIComponent(kakao_Id)}/bookmarks`,
           {
             productName
           },
           {
             headers: {
-              Authorization: `Bearer ${localStorage.getItem('jwtToken')}`
+              Authorization: `Bearer ${jwtToken}`
             }
           }
         );
         setBookmarked(true);
         alert('북마크가 추가되었습니다.');
       }
-    } catch (error) {
-      console.error('Error handling bookmark:', error);
+    } catch (error: any) { // error를 any 타입으로 명시적으로 선언
+      console.error('Error handling bookmark:', error.message || error);
       alert('오류가 발생했습니다.');
     }
   };
