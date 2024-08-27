@@ -8,8 +8,10 @@ import ThirdSlider from '@/components/product/slider/thirdSlider';
 
 const MainPage = () => {
   const [jwtToken, setJwtToken] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
   const [lowestProducts, setLowestProducts] = useState([]);
   const [bookmarkProducts, setBookmarkProducts] = useState([]);
+  const serverUri = import.meta.env.VITE_SERVER_URI;
 
   useEffect(() => {
     // URL에서 jwtToken과 refreshToken 추출
@@ -36,6 +38,41 @@ const MainPage = () => {
   }, []);
 
   useEffect(() => {
+    const authenticateAndFetchUserId = async () => {
+      if (!jwtToken) return;
+
+      const kakao_Id = extractKakaoIdFromToken(jwtToken);
+      if (!kakao_Id) {
+        console.error('Kakao_ID를 찾을 수 없습니다.');
+        return;
+      }
+
+      try {
+        // `kakao_Id`로 `userId` 가져오기
+        const userIdResponse = await axios.get(
+          `${serverUri}/api/v1/users/kakao/${encodeURIComponent(kakao_Id)}/id`,
+          {
+            headers: {
+              Authorization: `Bearer ${jwtToken}`
+            }
+          }
+        );
+
+        if (userIdResponse.status === 200) {
+          const fetchedUserId = userIdResponse.data;
+          setUserId(fetchedUserId);
+          localStorage.setItem('userId', fetchedUserId);
+
+          // 북마크된 제품 불러오기
+          fetchBookmarkProducts(fetchedUserId);
+        } else {
+          throw new Error('User ID를 가져오는 데 실패했습니다.');
+        }
+      } catch (error) {
+        console.error('Error fetching user ID or bookmark products:', error);
+      }
+    };
+
     const fetchLowestProducts = async () => {
       try {
         const response = await axios.get('/api/v1/today-lowest-products');
@@ -69,16 +106,18 @@ const MainPage = () => {
       }
     };
 
-    const fetchBookmarkProducts = async () => {
+    const fetchBookmarkProducts = async (userId: string) => {
       try {
-        const jwtToken = localStorage.getItem('jwtToken');
         if (!jwtToken) return;
 
-        const response = await axios.get('/api/v1/users/bookmarks', {
-          headers: {
-            Authorization: `Bearer ${jwtToken}`
+        const response = await axios.get(
+          `${serverUri}/api/v1/users/${userId}/bookmarks`,
+          {
+            headers: {
+              Authorization: `Bearer ${jwtToken}`
+            }
           }
-        });
+        );
         const bookmarkData = response.data.map((product: any) => ({
           id: product.productId,
           name: product.name,
@@ -93,9 +132,28 @@ const MainPage = () => {
       }
     };
 
+    authenticateAndFetchUserId();
     fetchLowestProducts();
-    fetchBookmarkProducts();
-  }, []);
+  }, [jwtToken, serverUri]);
+
+  const extractKakaoIdFromToken = (token: string): string | null => {
+    try {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(
+        atob(base64)
+          .split('')
+          .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+          .join('')
+      );
+
+      const parsedToken = JSON.parse(jsonPayload);
+      return parsedToken.kakao_Id || null;
+    } catch (error) {
+      console.error('JWT token parsing error:', error);
+      return null;
+    }
+  };
 
   const recommendedItems = [
     {
