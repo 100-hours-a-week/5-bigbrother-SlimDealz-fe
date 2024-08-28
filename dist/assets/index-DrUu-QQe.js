@@ -1,8 +1,4 @@
-<<<<<<< HEAD:dist/assets/index-C8KMJq0e.js
-import{d as n,j as e,i as b,h as S,D as v}from"./mui-BKwklMrZ.js";import{r as i}from"./react-mdsbzbFi.js";import{r as w,S as y,u as C}from"./index-B0180FzU.js";import"./vendor-DsPaXkF5.js";const W=n.div`
-=======
-import{d as n,j as e,i as b,h as S,D as v}from"./mui-C_CkU0iZ.js";import{r as i}from"./react-mdsbzbFi.js";import{r as w,S as y,u as C}from"./index-B0ggh6J5.js";import"./vendor-DsPaXkF5.js";const W=n.div`
->>>>>>> 462775395ad35402ec0fa1851e46c3b4b90787d0:dist/assets/index-D2GeNppa.js
+import{d as n,j as e,i as b,h as S,D as v}from"./mui-C_CkU0iZ.js";import{r as i}from"./react-mdsbzbFi.js";import{r as w,S as y,u as C}from"./index-kNtBx-lW.js";import"./vendor-DsPaXkF5.js";const W=n.div`
   width: 390px;
   height: 100px;
   padding: 10px 5px 20px 5px;

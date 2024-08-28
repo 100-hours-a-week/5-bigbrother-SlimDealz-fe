@@ -145,7 +145,7 @@ const UserBookmarkPage: React.FC = () => {
           name={bookmark.productName}
           shipping={bookmark.shippingFee}
           price={bookmark.prices[0]?.setPrice}
-          vendorName={bookmark.prices[0]?.vendor.vendorName} // Added vendor name
+          // vendorName={bookmark.prices[0]?.vendor.vendorName} // Added vendor name
         />
       ))}
     </Container>
