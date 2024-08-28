@@ -18,7 +18,7 @@ const ProductBookmark: React.FC<ProductBookmarkProps> = ({ productName }) => {
     const authenticateAndCheckBookmark = async () => {
       const jwtToken = localStorage.getItem('jwtToken');
       if (!jwtToken) {
-        alert('JWT 토큰이 없습니다.');
+        // alert('JWT 토큰이 없습니다.');
         return;
       }
       const kakao_Id = extractKakaoIdFromToken(jwtToken);
