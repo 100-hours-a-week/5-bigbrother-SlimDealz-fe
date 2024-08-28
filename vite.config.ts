@@ -5,7 +5,7 @@ import path from 'path';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command, mode }) => {
-  const isProduction = mode === 'production';
+  const isProduction = process.env.BUILD_APP_TYPE === 'production';
 
   return {
     resolve: {
