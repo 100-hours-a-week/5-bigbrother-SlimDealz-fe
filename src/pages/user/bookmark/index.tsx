@@ -7,13 +7,36 @@ import { useNavigate } from 'react-router-dom';
 import { Typography } from '@mui/material';
 import { LoadingProduct } from '@/components/loading';
 
+// Define TypeScript interfaces for the data structure
+interface Price {
+  id: number;
+  setPrice: number;
+  promotion: string | null;
+  productId: number;
+  vendor: {
+    id: number;
+    vendorName: string;
+    vendorUrl: string | null;
+  };
+}
+
+interface Bookmark {
+  bookmarkId: number;
+  productId: number;
+  productName: string;
+  image: string | null;
+  shippingFee: string;
+  prices: Price[];
+  originalPrice: number | null;
+  salePrice: number | null;
+  discountRate: number | null;
+}
+
 const UserBookmarkPage: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [bookmarks, setBookmarks] = useState([]);
-  const [error, setError] = useState<string | null>(null);
+  const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
-
   const serverUri = import.meta.env.VITE_SERVER_URI;
 
   useEffect(() => {
@@ -35,46 +58,32 @@ const UserBookmarkPage: React.FC = () => {
       }
 
       try {
-        // 서버 URI로 요청을 보냅니다.
-        const userIdResponse = await axios.get(
-          `${serverUri}/api/v1/users/kakao/${encodeURIComponent(kakao_Id)}/id`,
+        const bookmarksResponse = await axios.get(
+          `${serverUri}/api/v1/users/kakao/${encodeURIComponent(kakao_Id)}/bookmarks`,
           {
             headers: {
-              Authorization: `Bearer ${jwtToken}`
-            }
+              Authorization: `Bearer ${jwtToken}`,
+            },
           }
         );
 
-        if (userIdResponse.status === 200) {
+        if (bookmarksResponse.status === 200) {
           setIsAuthenticated(true);
-          const userId = userIdResponse.data;
-
-          const bookmarksResponse = await axios.get(
-            `${serverUri}/api/v1/users/${userId}/bookmarks`,
-            {
-              headers: {
-                Authorization: `Bearer ${jwtToken}`
-              }
-            }
-          );
-
-          if (bookmarksResponse.status === 200) {
-            setBookmarks(bookmarksResponse.data);
-          }
+          setBookmarks(bookmarksResponse.data);
         } else {
-          throw new Error('User ID를 가져오는 데 실패했습니다.');
+          throw new Error('북마크 데이터를 가져오는 데 실패했습니다.');
         }
       } catch (err: any) {
         if (err.response) {
           if (err.response.status === 400) {
-            console.log('Invalid data.');
+            console.log('잘못된 데이터 요청입니다.');
           } else if (err.response.status === 401) {
-            console.log('Unauthorized access.');
+            console.log('권한이 없습니다.');
           } else if (err.response.status === 500) {
-            console.log('Server error occurred.');
+            console.log('서버 오류가 발생했습니다.');
           }
         } else {
-          console.log('Network error.');
+          console.log('네트워크 오류가 발생했습니다.');
         }
       } finally {
         setLoading(false);
@@ -82,7 +91,7 @@ const UserBookmarkPage: React.FC = () => {
     };
 
     authenticateAndFetchBookmarks();
-  }, []);
+  }, [serverUri]);
 
   const extractKakaoIdFromToken = (token: string): string | null => {
     try {
@@ -98,7 +107,7 @@ const UserBookmarkPage: React.FC = () => {
       const parsedToken = JSON.parse(jsonPayload);
       return parsedToken.kakao_Id || null;
     } catch (error) {
-      console.error('JWT token parsing error:', error);
+      console.error('JWT 토큰 파싱 오류:', error);
       return null;
     }
   };
@@ -128,14 +137,15 @@ const UserBookmarkPage: React.FC = () => {
   return (
     <Container>
       <PageNameTag pageName={`전체 ${bookmarks.length}개`} />
-      {bookmarks.map((bookmark: any, index: number) => (
+      {bookmarks.map((bookmark) => (
         <CategoryList
-          key={index}
+          key={bookmark.bookmarkId}
           id={bookmark.productId}
-          image={bookmark.imageUrl}
-          name={bookmark.name}
+          image={bookmark.image || 'default_image_url_here'} // Provide a default image if null
+          name={bookmark.productName}
           shipping={bookmark.shippingFee}
           price={bookmark.prices[0]?.setPrice}
+          // vendorName={bookmark.prices[0]?.vendor.vendorName} // Added vendor name
         />
       ))}
     </Container>

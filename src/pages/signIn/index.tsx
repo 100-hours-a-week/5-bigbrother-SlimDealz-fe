@@ -6,12 +6,12 @@ const SignInPage: React.FC = () => {
   const navigate = useNavigate();
 
   // 카카오 로그인 URL을 생성합니다.
-  const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${import.meta.env.VITE_KAKAO_API_KEY}&redirect_uri=${encodeURIComponent(import.meta.env.VITE_REDIRECT_URI)}/auth/kakao/callback&response_type=code`;
+  const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${import.meta.env.VITE_KAKAO_API_KEY}&redirect_uri=${encodeURIComponent(import.meta.env.VITE_SERVER_URI)}/auth/kakao/callback&response_type=code`;
 
   // 환경 변수가 설정되지 않은 경우 처리
   if (
     !import.meta.env.VITE_KAKAO_API_KEY ||
-    !import.meta.env.VITE_REDIRECT_URI
+    !import.meta.env.VITE_SERVER_URI
   ) {
     console.error('Kakao API Key or Redirect URI is missing.');
     return (
