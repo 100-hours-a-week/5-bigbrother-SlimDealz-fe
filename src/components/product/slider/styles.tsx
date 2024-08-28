@@ -36,6 +36,7 @@ export const ItemName = styled.div`
   font-weight: bold;
   font-size: 18px;
   margin-bottom: 10px;
+  height: 55px;
 `;
 
 export const OriginalPrice = styled.div`
@@ -53,7 +54,6 @@ export const SalePrice = styled.div`
   color: green;
   font-weight: bold;
   font-size: 18px;
-  padding-top: 20px;
 `;
 
 export const Title = styled.h2`
