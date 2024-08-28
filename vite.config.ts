@@ -5,7 +5,7 @@ import path from 'path';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command, mode }) => {
-  const isProduction = process.env.BUILD_APP_TYPE === 'production';
+  const isProduction = mode === 'production';
 
   return {
     resolve: {
@@ -45,7 +45,9 @@ export default defineConfig(({ command, mode }) => {
       port: 3000,
       proxy: {
         '/api': {
-          target: 'http://localhost:8080',
+          target: isProduction
+            ? 'http://api.slimdealz.store'
+            : 'http://localhost:8080',
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api/, '') // 필요에 따라 경로를 재작성
         }
