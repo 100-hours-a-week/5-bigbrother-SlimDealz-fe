@@ -21,13 +21,12 @@ const ProductBookmark: React.FC<ProductBookmarkProps> = ({ productName }) => {
         alert('JWT 토큰이 없습니다.');
         return;
       }
-
       const kakao_Id = extractKakaoIdFromToken(jwtToken);
+
       if (!kakao_Id) {
         alert('Kakao_ID를 찾을 수 없습니다.');
         return;
       }
-
       try {
         // 북마크 상태 확인
         const bookmarkResponse = await axios.get(
@@ -36,10 +35,9 @@ const ProductBookmark: React.FC<ProductBookmarkProps> = ({ productName }) => {
             headers: {
               Authorization: `Bearer ${jwtToken}`
             },
-            params: { productName: productName}
+            params: { productName: productName }
           }
         );
-
         if (bookmarkResponse.status === 200) {
           setBookmarked(true);
         } else {
@@ -49,11 +47,13 @@ const ProductBookmark: React.FC<ProductBookmarkProps> = ({ productName }) => {
         if (error.response && error.response.status === 404) {
           setBookmarked(false); // 북마크가 없으면 false로 설정
         } else {
-          console.error('Error checking bookmark status:', error.message || error);
+          console.error(
+            'Error checking bookmark status:',
+            error.message || error
+          );
         }
       }
     };
-
     authenticateAndCheckBookmark();
   }, [productName, serverUri]);
 
@@ -67,8 +67,8 @@ const ProductBookmark: React.FC<ProductBookmarkProps> = ({ productName }) => {
           .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
           .join('')
       );
-
       const parsedToken = JSON.parse(jsonPayload);
+
       return parsedToken.kakao_Id || null;
     } catch (error: any) {
       console.error('JWT token parsing error:', error.message || error);
@@ -82,13 +82,12 @@ const ProductBookmark: React.FC<ProductBookmarkProps> = ({ productName }) => {
       alert('로그인이 필요합니다.');
       return;
     }
-
     const kakao_Id = extractKakaoIdFromToken(jwtToken);
+
     if (!kakao_Id) {
       alert('Kakao_ID를 찾을 수 없습니다.');
       return;
     }
-
     try {
       if (bookmarked) {
         await axios.delete(
@@ -97,7 +96,7 @@ const ProductBookmark: React.FC<ProductBookmarkProps> = ({ productName }) => {
             headers: {
               Authorization: `Bearer ${jwtToken}`
             },
-            params: { productName: productName}
+            params: { productName: productName }
           }
         );
         setBookmarked(false);

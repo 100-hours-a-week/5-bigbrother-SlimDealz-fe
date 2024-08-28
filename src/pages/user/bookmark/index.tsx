@@ -7,7 +7,6 @@ import { useNavigate } from 'react-router-dom';
 import { Typography } from '@mui/material';
 import { LoadingProduct } from '@/components/loading';
 
-// Define TypeScript interfaces for the data structure
 interface Price {
   id: number;
   setPrice: number;

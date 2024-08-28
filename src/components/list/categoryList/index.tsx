@@ -62,6 +62,10 @@ const CategoryList = ({
   };
 
   const handleBookmarkClick = async () => {
+    // setBookmarkCount((prevCount) =>
+    //   bookmarked ? prevCount - 1 : prevCount + 1
+    // );
+
     const jwtToken = localStorage.getItem('jwtToken');
     if (!jwtToken) {
       alert('로그인이 필요합니다.');
@@ -81,9 +85,9 @@ const CategoryList = ({
           `${serverUri}/api/v1/users/kakao/${encodeURIComponent(kakao_Id)}/bookmarks`,
           {
             headers: {
-              Authorization: `Bearer ${jwtToken}`,
+              Authorization: `Bearer ${jwtToken}`
             },
-            params: { productName: name}
+            params: { productName: name }
           }
         );
         setBookmarked(false);
@@ -96,7 +100,7 @@ const CategoryList = ({
             headers: {
               Authorization: `Bearer ${jwtToken}`
             },
-            params: { productName: name}
+            params: { productName: name }
           }
         );
         setBookmarked(true);
