@@ -1,28 +1,51 @@
+import React, { useState, useEffect } from 'react';
 import ProductBookmark from './infoUtils/productBookmark';
 import ProductPrice from './infoUtils/productPrice';
-import ProductRating from './infoUtils/productRating';
 import ProductUrl from './infoUtils/productUrl';
-import ReviewCount from './infoUtils/reviewCount';
 import {
   ProductInfoContainer,
-  RateInfoContainer,
   PriceInfoContainer,
   ProductInfoOptionContainer,
   ProductBookmarkContainer,
   ProductUrlContainer
 } from './styles';
+import { useNavigate } from 'react-router-dom';
+import LoginRequiredModal from '@/components/modal/logInModal';
 
 interface ProductInfoProps {
-  discountRate: number;
-  discountedPrice: number;
   originalPrice: number;
+  productName: number;
 }
 
 const ProductInfo: React.FC<ProductInfoProps> = ({
-  discountRate,
-  discountedPrice,
-  originalPrice
+  originalPrice,
+  productName
 }) => {
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const jwtToken = localStorage.getItem('jwtToken');
+    if (jwtToken) {
+      setIsAuthenticated(true);
+    }
+  }, []);
+
+  const handleBookmarkClick = () => {
+    if (!isAuthenticated) {
+      setIsModalOpen(true);
+    }
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const goToLogin = () => {
+    navigate('/signIn');
+  };
+
   return (
     <ProductInfoContainer>
       {/* <RateInfoContainer>
@@ -30,20 +53,21 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
         <ReviewCount count={1000} />
       </RateInfoContainer> */}
       <PriceInfoContainer>
-        <ProductPrice
-          discountRate={discountRate}
-          discountedPrice={discountedPrice}
-          originalPrice={originalPrice}
-        />
+        <ProductPrice originalPrice={originalPrice} />
         <ProductInfoOptionContainer>
-          <ProductBookmarkContainer>
-            <ProductBookmark />
+          <ProductBookmarkContainer onClick={handleBookmarkClick}>
+            <ProductBookmark productName={productName} />
           </ProductBookmarkContainer>
           <ProductUrlContainer>
             <ProductUrl />
           </ProductUrlContainer>
         </ProductInfoOptionContainer>
       </PriceInfoContainer>
+      <LoginRequiredModal
+        open={isModalOpen}
+        onClose={closeModal}
+        onLogin={goToLogin}
+      />
     </ProductInfoContainer>
   );
 };

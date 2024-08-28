@@ -22,7 +22,7 @@ export const PriceInfoContainer = styled.div`
   margin-top: 10px;
   background-color: #f2f2f7;
   border-radius: 8px;
-  height: 30px;
+  height: 50px;
   padding: 0 10px;
 `;
 

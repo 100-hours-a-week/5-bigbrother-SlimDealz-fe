@@ -1,48 +1,30 @@
 import React, { useEffect, useState, useContext } from 'react';
 import Paper from '@mui/material/Paper';
-import InputBase from '@mui/material/InputBase';
 import IconButton from '@mui/material/IconButton';
 import SearchIcon from '@mui/icons-material/Search';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { AutoCompleteItem, AutoCompleteList, CustomInput } from './styles';
-import { SearchContext } from '../../utils/context/searchContext';
+import { SearchContext } from '../../utils/context/searchContext';
 
 const words = ['example', 'search', 'terms', 'list', 'of', 'words']; // 검색어를 필터링하기 위한 단어 목록
 
 const SearchBar: React.FC = () => {
   const { searchQuery, setSearchQuery } = useContext(SearchContext);
-  const [previousSearchValue, setPreviousSearchValue] = useState('');
   const [filteredWords, setFilteredWords] = useState<string[]>([]);
-  const [prevPathname, setPrevPathname] = useState('');
-
-  const navigate = useNavigate();
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    setPreviousSearchValue('');
-    setPrevPathname(location.pathname);
-
-    if (!location.pathname.startsWith('/searchResults')) {
-      setSearchQuery('');
+    if (location.state?.searchQuery) {
+      setSearchQuery(location.state.searchQuery);
     }
-  }, [location.pathname, setSearchQuery]);
-
-  useEffect(() => {
-    if (location.pathname.startsWith('/searchResults')) {
-      const searchTermFromURL = decodeURIComponent(
-        location.pathname.split('/searchResults/')[1] || ''
-      );
-      if (searchTermFromURL && searchTermFromURL !== searchQuery) {
-        setSearchQuery(searchTermFromURL);
-      }
-    }
-  }, [location.pathname, searchQuery, setSearchQuery]);
+  }, [location.state, setSearchQuery]);
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     setSearchQuery(value);
 
-    if (value && value !== previousSearchValue) {
+    if (value) {
       const filtered = words.filter((word) =>
         word.toLowerCase().includes(value.toLowerCase())
       );
@@ -53,15 +35,14 @@ const SearchBar: React.FC = () => {
   };
 
   const handleSearch = (value: string) => {
-    if (previousSearchValue === value && location.pathname === prevPathname)
-      return;
-
-    setPreviousSearchValue(value);
     setFilteredWords([]);
 
     if (value.trim() !== '') {
+      const inputElement = document.getElementById('search-input');
+      inputElement?.blur();
+
       navigate(`/searchResults/${encodeURIComponent(value)}`, {
-        replace: true
+        state: { searchQuery: value }
       });
     }
   };
@@ -78,7 +59,7 @@ const SearchBar: React.FC = () => {
   };
 
   const handleInputClick = () => {
-    navigate('/searchInitial');
+    setSearchQuery('');
   };
 
   return (
@@ -92,7 +73,9 @@ const SearchBar: React.FC = () => {
           height: 35,
           border: '0.1px solid #ccc',
           boxShadow: 'none',
-          paddingLeft: '10px'
+          paddingLeft: '10px',
+          borderRadius: '20px', // Rounded corners
+          backgroundColor: '#f5f5f5' // Light background color
         }}
         onSubmit={(event) => {
           event.preventDefault();
@@ -100,6 +83,8 @@ const SearchBar: React.FC = () => {
         }}
       >
         <CustomInput
+          id="search-input"
+          placeholder="검색어를 입력하세요"
           value={searchQuery}
           onChange={handleSearchChange}
           onKeyPress={handleKeyPress}
@@ -111,7 +96,7 @@ const SearchBar: React.FC = () => {
           aria-label="search"
           onClick={handleSearchClick}
         >
-          <SearchIcon />
+          <SearchIcon sx={{ color: '#999' }} /> {/* Adjust icon color */}
         </IconButton>
       </Paper>
       {filteredWords.length > 0 && (

@@ -10,19 +10,20 @@ import {
   ItemName,
   OriginalPrice,
   DiscountRate,
-  SalePrice
+  SalePrice,
+  StyledSwiperContainer
 } from './styles';
 import { Title } from '../productSlider/styles';
 import { useNavigate } from 'react-router-dom';
+import { getNumberWithComma } from '@/components/utils/conversion';
+import { LoadingSearch } from '@/components/loading';
 
 interface ThirdSliderProps {
   items: {
     id: number;
     name: string;
-    image: string;
+    imageUrl: string;
     originalPrice: number;
-    salePrice: number;
-    discountRate: number;
   }[];
   title: string;
 }
@@ -40,8 +41,8 @@ const ThirdSlider: React.FC<ThirdSliderProps> = ({ items, title }) => {
     }
   };
 
-  const handleProductClick = (productId: number) => {
-    navigate(`/product/${productId}`);
+  const handleProductClick = (productName: string) => {
+    navigate(`/product/${productName}`);
   };
 
   return (
@@ -54,34 +55,42 @@ const ThirdSlider: React.FC<ThirdSliderProps> = ({ items, title }) => {
       }}
     >
       <Title onClick={handleTitleClick}>{title}</Title>
-      <Swiper
-        effect={'cards'}
-        grabCursor={true}
-        modules={[EffectCards]}
-        className="mySwiper"
-        style={{ width: '300px', height: '360px', overflow: 'hidden' }} // Updated to hide overflow
-      >
-        {items.map((item) => (
-          <SwiperSlide
-            key={item.id}
-            style={{ display: 'flex', justifyContent: 'center' }}
+      {items.length > 0 ? (
+        <StyledSwiperContainer>
+          <Swiper
+            effect={'cards'}
+            grabCursor={true}
+            modules={[EffectCards]}
+            style={{
+              width: '280px',
+              height: '350px'
+            }}
           >
-            <SwiperSlideStyled>
-              <ItemImage src={item.image} alt={item.name} />
-              <ItemDetails>
-                <ItemName>{item.name}</ItemName>
-                <OriginalPrice>
-                  원가: {item.originalPrice.toLocaleString()}원
-                </OriginalPrice>
-                <DiscountRate>할인율: {item.discountRate}%</DiscountRate>
-                <SalePrice>
-                  판매가: {item.salePrice.toLocaleString()}원
-                </SalePrice>
-              </ItemDetails>
-            </SwiperSlideStyled>
-          </SwiperSlide>
-        ))}
-      </Swiper>
+            {items.map((item) => (
+              <SwiperSlide
+                key={item.id}
+                onClick={() => handleProductClick(item.name)}
+              >
+                <SwiperSlideStyled>
+                  <ItemImage src={item.imageUrl} alt={item.name} />
+                  <ItemDetails>
+                    <ItemName>{item.name}</ItemName>
+                    {/* <OriginalPrice>
+                    원가: {getNumberWithComma(item.originalPrice)}원
+                  </OriginalPrice>
+                  <DiscountRate>할인율: {item.discountRate}%</DiscountRate> */}
+                    <SalePrice>
+                      판매가: {getNumberWithComma(item.originalPrice)}원
+                    </SalePrice>
+                  </ItemDetails>
+                </SwiperSlideStyled>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </StyledSwiperContainer>
+      ) : (
+        <LoadingSearch />
+      )}
     </div>
   );
 };

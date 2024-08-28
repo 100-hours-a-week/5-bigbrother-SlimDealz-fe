@@ -9,7 +9,8 @@ import {
   PageTitle
 } from './styles';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useHeaderHeight } from '@/components/utils/\bcontext/headerHeightContext';
+import { useHeaderHeight } from '@/components/utils/context/headerHeightContext';
+import { SearchContext } from '@/components/utils/context/searchContext';
 
 const logo = '/assets/logo.png';
 
@@ -20,6 +21,7 @@ type HeaderProps = {
 
 const Header = forwardRef<HTMLDivElement, HeaderProps>(({ pageTitle }, ref) => {
   const { setHeight } = useHeaderHeight();
+  const { setSearchQuery } = React.useContext(SearchContext);
   const navigate = useNavigate();
   const location = useLocation();
   const headerRef = useRef<HTMLDivElement>(null);
@@ -68,14 +70,24 @@ const Header = forwardRef<HTMLDivElement, HeaderProps>(({ pageTitle }, ref) => {
       const headerHeight = headerRef.current.offsetHeight;
       setHeight(headerHeight);
     }
-  }, [location.pathname, setHeight]);
+
+    // Clear search query if on the main page
+    if (isMainPage) {
+      setSearchQuery('');
+    }
+  }, [location.pathname, setHeight, setSearchQuery, isMainPage]);
 
   const handleLogoClick = () => {
     navigate('/');
   };
 
   const handleBackClick = () => {
-    navigate(-1);
+    if (window.history.length > 2) {
+      // 뒤로 갈 히스토리가 있는 경우
+      window.history.back();
+    } else {
+      navigate('/', { replace: true }); // 히스토리가 없으면 메인 페이지로 이동하고, 이동된 히스토리를 삭제
+    }
   };
 
   return (

@@ -1,40 +1,45 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Container, Header, Section, Description, KakaoButton } from './styles';
-import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const SignInPage: React.FC = () => {
-  const [kakaoAuthUrl, setKakaoAuthUrl] = useState('');
+  const navigate = useNavigate();
 
-  const logo = '/assets/logo.png';
+  // 카카오 로그인 URL을 생성합니다.
+  const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${import.meta.env.VITE_KAKAO_API_KEY}&redirect_uri=${encodeURIComponent(import.meta.env.VITE_REDIRECT_URI)}/auth/kakao/callback&response_type=code`;
 
-  useEffect(() => {
-    axios
-      .get('/api/v1/login/kakao-url')
-      .then((response) => {
-        console.log(response.data); // 서버 응답을 콘솔에 출력하여 확인
-        if (typeof response.data === 'string') {
-          setKakaoAuthUrl(response.data); // 문자열인 경우 그대로 사용
-        } else if (response.data && response.data.url) {
-          setKakaoAuthUrl(response.data.url); // JSON 객체라면 'url' 속성을 사용
-        }
-      })
-      .catch((error) => {
-        console.error('Failed to fetch Kakao auth URL', error);
-      });
-  }, []);
+  // 환경 변수가 설정되지 않은 경우 처리
+  if (
+    !import.meta.env.VITE_KAKAO_API_KEY ||
+    !import.meta.env.VITE_REDIRECT_URI
+  ) {
+    console.error('Kakao API Key or Redirect URI is missing.');
+    return (
+      <Container>
+        <Header>
+          <img src="/assets/logo.png" alt="Slimdealz logo" />
+        </Header>
+
+        <Section>
+          <Description>
+            카카오 로그인 설정이
+            <br /> 올바르지 않습니다. <br />
+            환경 변수를 확인해 주세요!
+          </Description>
+        </Section>
+      </Container>
+    );
+  }
 
   const handleLogin = () => {
-    if (kakaoAuthUrl) {
-      window.location.href = kakaoAuthUrl;
-    } else {
-      console.error('Kakao Auth URL is not available');
-    }
+    window.location.href = KAKAO_AUTH_URL;
+    // navigate('/signUp');
   };
 
   return (
     <Container>
       <Header>
-        <img src={logo} alt="Slimdealz logo" />
+        <img src="/assets/logo.png" alt="Slimdealz logo" />
       </Header>
 
       <Section>
@@ -43,7 +48,10 @@ const SignInPage: React.FC = () => {
           다양한 서비스를 이용해보세요.
         </Description>
         <KakaoButton className="kakao-login" onClick={handleLogin}>
-          <span>🗨️</span> 카카오 로그인
+          <span role="img" aria-label="kakao-logo">
+            🗨️
+          </span>{' '}
+          카카오 로그인
         </KakaoButton>
       </Section>
     </Container>

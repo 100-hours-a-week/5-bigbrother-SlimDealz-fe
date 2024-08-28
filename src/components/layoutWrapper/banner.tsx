@@ -32,52 +32,19 @@ const CarouselIndicators = styled.ol`
   }
 `;
 
-const CarouselInner = styled.div<{ activeIndex: number }>`
+const CarouselInner = styled.div<{ $activeIndex: number }>`
   display: flex;
-  transform: translateX(${(props) => -props.activeIndex * 100}%);
+  transform: translateX(${(props) => -props.$activeIndex * 100}%);
   transition: transform 0.5s ease-in-out;
 `;
 
-const CarouselItem = styled.div<{ backgroundImage: string }>`
+const CarouselItem = styled.div<{ $backgroundImage: string }>`
   width: 100%;
   height: 30vh;
   background-size: cover;
   background-position: center;
   flex-shrink: 0;
-  background-image: url(${(props) => props.backgroundImage});
-`;
-
-const CarouselControlPrev = styled.a`
-  position: absolute;
-  top: 50%;
-  left: 10px;
-  transform: translateY(-50%);
-  width: 50px;
-  height: 50px;
-  cursor: pointer;
-  z-index: 2;
-`;
-
-const CarouselControlNext = styled.a`
-  position: absolute;
-  top: 50%;
-  right: 10px;
-  transform: translateY(-50%);
-  width: 50px;
-  height: 50px;
-  cursor: pointer;
-  z-index: 2;
-`;
-
-const ControlIcon = styled.span<{ isPrev?: boolean }>`
-  display: inline-block;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  mask: ${(props) =>
-    props.isPrev
-      ? 'url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 16%27 fill=%27%23fff%27%3e%3cpath fill-rule=%27evenodd%27 d=%27M11.854 1.646a.5.5 0 0 0-.708 0l-6.5 6.5a.5.5 0 0 0 0 .708l6.5 6.5a.5.5 0 0 0 .708-.708L5.707 8l6.147-6.146a.5.5 0 0 0 0-.708z%27/%3e%3c/svg%3e")'
-      : 'url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 16%27 fill=%27%23fff%27%3e%3cpath fill-rule=%27evenodd%27 d=%27M4.146 14.354a.5.5 0 0 1 0-.708L10.293 8 4.146 1.854a.5.5 0 1 1 .708-.708l6.5 6.5a.5.5 0 0 1 0 .708l-6.5 6.5a.5.5 0 0 1-.708 0z%27/%3e%3c/svg%3e")'};
+  background-image: url(${(props) => props.$backgroundImage});
 `;
 
 const images = [
@@ -101,16 +68,6 @@ const Banner: React.FC = () => {
     setActiveIndex(index);
   };
 
-  const goToPrevSlide = () => {
-    setActiveIndex((prevIndex) =>
-      prevIndex === 0 ? images.length - 1 : prevIndex - 1
-    );
-  };
-
-  const goToNextSlide = () => {
-    setActiveIndex((prevIndex) => (prevIndex + 1) % images.length);
-  };
-
   return (
     <CarouselContainer>
       <CarouselIndicators>
@@ -123,18 +80,11 @@ const Banner: React.FC = () => {
         ))}
       </CarouselIndicators>
 
-      <CarouselInner activeIndex={activeIndex}>
+      <CarouselInner $activeIndex={activeIndex}>
         {images.map((image, index) => (
-          <CarouselItem key={index} backgroundImage={image} />
+          <CarouselItem key={index} $backgroundImage={image} />
         ))}
       </CarouselInner>
-
-      <CarouselControlPrev onClick={goToPrevSlide}>
-        <ControlIcon isPrev />
-      </CarouselControlPrev>
-      <CarouselControlNext onClick={goToNextSlide}>
-        <ControlIcon />
-      </CarouselControlNext>
     </CarouselContainer>
   );
 };

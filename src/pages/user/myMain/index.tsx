@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Container,
@@ -9,31 +9,37 @@ import {
   LogoutButton
 } from './styles';
 import PagePreparationModal from '@/components/modal/pagePreparationModal';
+import LogoutModal from '@/components/modal/logOutModal';
 
 const MyMainPage = () => {
   const navigate = useNavigate();
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isPreModalOpen, setIsPreModalOpen] = useState(false);
+  const [isLogModalOpen, setIsLogModalOpen] = useState(false);
 
-  const closeModal = () => {
-    setIsModalOpen(true);
+  useEffect(() => {
+    const token = localStorage.getItem('jwtToken');
+    if (!token) {
+      navigate('/signIn');
+    }
+  }, [navigate]);
+
+  const closePreModal = () => {
+    setIsPreModalOpen(false);
+  };
+
+  const closeLogModal = () => {
+    setIsLogModalOpen(false);
   };
 
   const handleLogout = () => {
-    // 로그아웃 로직 (예: 토큰 삭제, 상태 초기화 등)
-    console.log('Logged out');
-    setIsModalOpen(false);
     localStorage.removeItem('jwtToken');
     localStorage.removeItem('refreshToken');
+    navigate('/signIn');
   };
 
   return (
     <Container>
-      <Section
-        onClick={
-          closeModal
-          // () => navigate('/information')
-        }
-      >
+      <Section onClick={() => navigate('/information')}>
         <SectionTitle>나의 회원정보 수정</SectionTitle>
         <ArrowIcon>›</ArrowIcon>
       </Section>
@@ -43,21 +49,21 @@ const MyMainPage = () => {
         <ArrowIcon>›</ArrowIcon>
       </Section>
 
-      <Section
-        onClick={
-          closeModal
-          // () => navigate('/alarm')
-        }
-      >
+      <Section onClick={() => setIsPreModalOpen(true)}>
         <SectionTitle>나의 알람</SectionTitle>
         <ArrowIcon>›</ArrowIcon>
       </Section>
 
       <LogoutButtonContainer>
-        <LogoutButton onClick={closeModal}>로그아웃</LogoutButton>
+        <LogoutButton onClick={() => setIsLogModalOpen(true)}>
+          로그아웃
+        </LogoutButton>
       </LogoutButtonContainer>
 
-      {isModalOpen && <PagePreparationModal onClose={handleLogout} />}
+      {isPreModalOpen && <PagePreparationModal onClose={closePreModal} />}
+      {isLogModalOpen && (
+        <LogoutModal onClose={closeLogModal} onLogout={handleLogout} />
+      )}
     </Container>
   );
 };

@@ -5,7 +5,7 @@ import RecentSearches from '../../../components/searches/recentSearches';
 import RecommendSearch from '../../../components/searches/recommendSearches';
 import Divider from '@mui/material/Divider';
 import Box from '../../../components/box/styles';
-import { SearchContext } from '../../../components/utils/context/searchContext'; // SearchContext import
+import { SearchContext } from '../../../components/utils/context/searchContext'; // SearchContext import
 
 const SearchInitialPage: React.FC = () => {
   const { searchQuery } = useContext(SearchContext); // searchQuery 전역 상태로 사용
@@ -24,14 +24,6 @@ const SearchInitialPage: React.FC = () => {
       {searchQuery ? (
         <Box>
           <RecommendSearch onSearch={handleSearch} />
-          <Divider
-            sx={{
-              my: 2,
-              borderColor: 'rgba(0, 0, 0, 0.1)', // 색상 연하게 설정
-              width: '80%', // 길이 80%로 설정
-              mx: 'auto' // 가운데 정렬
-            }}
-          />
         </Box>
       ) : (
         <Box>
@@ -40,7 +32,7 @@ const SearchInitialPage: React.FC = () => {
             sx={{
               my: 2,
               borderColor: 'rgba(0, 0, 0, 0.1)', // 색상 연하게 설정
-              width: '95%', // 길이 95%로 설정
+              width: '90%', // 길이 95%로 설정
               mx: 'auto' // 가운데 정렬
             }}
           />

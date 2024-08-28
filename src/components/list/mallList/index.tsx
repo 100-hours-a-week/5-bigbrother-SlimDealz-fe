@@ -1,50 +1,85 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import {
   Container,
   MallItem,
-  MallLogo,
   MallInfo,
-  MallPrice,
-  Coupon
+  PriceContainer,
+  ShippingFeeContainer
 } from './styles';
+import { getNumberWithComma } from '@/components/utils/conversion';
+import { LoadingSpinner } from '@/components/loading';
 
-const mockData = [
-  {
-    id: 1,
-    logo: '/path/to/logo1.png',
-    name: '쇼핑몰 1',
-    price: 999999,
-    coupon: '쿠폰 정보 1'
-  },
-  {
-    id: 2,
-    logo: '/path/to/logo2.png',
-    name: '쇼핑몰 2',
-    price: 899999,
-    coupon: ''
-  },
-  {
-    id: 3,
-    logo: '/path/to/logo3.png',
-    name: '쇼핑몰 3',
-    price: 799999,
-    coupon: '쿠폰 정보 3'
-  }
-];
+interface Vendor {
+  vendorName: string;
+  vendorUrl: string;
+}
 
-const MallList = () => {
+interface Price {
+  setPrice: number;
+  vendor: Vendor;
+}
+
+interface MallData {
+  id: number;
+  name: string;
+  category: string;
+  shippingFee: number;
+  vendorUrl: string;
+  prices: Price[];
+}
+
+interface TabsComponentProps {
+  productName: string;
+}
+
+const MallList: React.FC<TabsComponentProps> = ({ productName }) => {
+  const [mallData, setMallData] = useState<MallData[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchMallData = async () => {
+      try {
+        const response = await axios.get('/api/v1/vendor-list', {
+          params: { productName }
+        });
+        setMallData(response.data);
+      } catch (err) {
+        console.error('데이터를 불러오는 중 오류가 발생했습니다.', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMallData();
+  }, [productName]);
+
+  if (loading) return <LoadingSpinner />;
+
   return (
     <Container>
-      {mockData.map((item) => (
-        <MallItem key={item.id}>
-          <MallLogo src={item.logo} alt={item.name} />
-          <MallInfo>
-            <div>{item.name}</div>
-            <MallPrice>{item.price.toLocaleString()}원</MallPrice>
-          </MallInfo>
-          {item.coupon && <Coupon>{item.coupon}</Coupon>}
-        </MallItem>
-      ))}
+      {mallData.map((item, index) =>
+        item.prices.map((price, idx) => (
+          <MallItem
+            key={`${index}-${idx}`}
+            onClick={() => {
+              if (price.vendor.vendorUrl) {
+                window.open(price.vendor.vendorUrl, '_blank');
+              }
+            }}
+          >
+            <MallInfo>{price.vendor.vendorName}</MallInfo>
+            <PriceContainer>
+              {`최저가 ${getNumberWithComma(price.setPrice)}원`}
+              <ShippingFeeContainer>
+                {item.shippingFee
+                  ? `배송비: ${getNumberWithComma(item.shippingFee)}원`
+                  : '무료배송'}
+              </ShippingFeeContainer>
+            </PriceContainer>
+          </MallItem>
+        ))
+      )}
     </Container>
   );
 };

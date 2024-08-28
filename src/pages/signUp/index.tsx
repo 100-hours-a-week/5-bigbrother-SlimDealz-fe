@@ -71,7 +71,7 @@ const SignUpPage: React.FC = () => {
     try {
       const jwtToken = localStorage.getItem('jwtToken'); // JWT 토큰을 로컬 스토리지에서 가져옴
       const response = await axios.post(
-        '/api/v1/users/kakaologin',
+        import.meta.env.VITE_SERVER_URI+'/api/v1/users/kakaologin',
         memberData,
         {
           headers: {
@@ -80,7 +80,7 @@ const SignUpPage: React.FC = () => {
         }
       );
       console.log('회원 정보 저장 성공:', response.data);
-      navigate('/main'); // 저장 후 리다이렉트할 경로
+      navigate('/'); // 저장 후 리다이렉트할 경로
     } catch (error) {
       console.error('회원 정보 저장 실패:', error);
     }

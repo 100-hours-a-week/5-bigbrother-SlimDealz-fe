@@ -129,8 +129,9 @@ export const ProductImage = styled.img`
 
 export const PriceInfo = styled.div`
   text-align: center;
-  font-size: 14px;
-  margin-top: 10px;
+  font-size: 18px;
+  margin-top: 20px;
+  font-weight: bold;
 `;
 
 export const SkeletonWrapper = styled(Skeleton)`

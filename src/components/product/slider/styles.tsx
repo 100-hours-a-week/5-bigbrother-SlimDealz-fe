@@ -1,17 +1,21 @@
 import styled from 'styled-components';
 
 export const SwiperSlideStyled = styled.div`
+  background-color: #ffffff;
+  padding: 20px;
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+  background-color: #fcf6ff;
   border-radius: 18px;
-  background-color: #fff;
-  padding: 20px;
-  width: 240px;
-  height: 350px; /* Match the Swiper size */
-  border: 1px solid #e1e1e1; /* 1px border */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 5px solid #fdf9ff;
+`;
+
+export const StyledSwiperContainer = styled.div`
+  .swiper-slide-shadow {
+    border-radius: 18px;
+  }
 `;
 
 export const ItemImage = styled.img`
@@ -49,6 +53,7 @@ export const SalePrice = styled.div`
   color: green;
   font-weight: bold;
   font-size: 18px;
+  padding-top: 20px;
 `;
 
 export const Title = styled.h2`
@@ -65,7 +70,6 @@ export const Title = styled.h2`
   background-color: rgba(255, 255, 255, 0.8);
   padding: 10px;
   border-radius: 5px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   margin: 20px auto;
   display: flex;
   justify-content: center;

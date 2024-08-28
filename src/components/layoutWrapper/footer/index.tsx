@@ -8,6 +8,8 @@ import BookmarkRoundedIcon from '@mui/icons-material/BookmarkRounded';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import { FooterContainer } from './styles';
 import { useLocation, useNavigate } from 'react-router-dom';
+import Fab from '@mui/material/Fab';
+import NavigationIcon from '@mui/icons-material/Navigation';
 
 const Footer = () => {
   const [value, setValue] = React.useState(0);
@@ -70,6 +72,16 @@ const Footer = () => {
     }
   };
 
+  const shouldShowNavigationIcon = () => {
+    return ['/category', '/searchResults', '/bookmark'].some((path) =>
+      location.pathname.startsWith(path)
+    );
+  };
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <FooterContainer>
       <div
@@ -111,6 +123,24 @@ const Footer = () => {
           />
         </BottomNavigation>
       </div>
+      {shouldShowNavigationIcon() && (
+        <Fab
+          color="primary"
+          aria-label="scroll back to top"
+          onClick={scrollToTop}
+          sx={{
+            position: 'fixed',
+            bottom: 80,
+            right: 16,
+            backgroundColor: '#FFC0CB',
+            '&:hover': {
+              backgroundColor: '#FFB6C1'
+            }
+          }}
+        >
+          <NavigationIcon />
+        </Fab>
+      )}
     </FooterContainer>
   );
 };

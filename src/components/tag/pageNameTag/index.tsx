@@ -1,3 +1,4 @@
+import React from 'react';
 import { PageNameContainer } from './styles';
 
 type Props = {

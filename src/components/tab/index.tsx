@@ -3,7 +3,11 @@ import { Tabs, Tab } from '@mui/material';
 import MallList from '../list/mallList';
 import ChartView from '../chart';
 
-const TabsComponent = () => {
+type Props = {
+  productName: string;
+};
+
+const TabsComponent = ({ productName }: Props) => {
   const [value, setValue] = useState(0);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -16,7 +20,8 @@ const TabsComponent = () => {
         <Tab label="최저가 비교" />
         {/* <Tab label="상품 시세 차트" /> */}
       </Tabs>
-      {value === 0 && <MallList />}
+      {value === 0 && <MallList productName={productName} />}
+      {/* Pass the name to MallList */}
       {/* {value === 1 && <ChartView />} */}
     </div>
   );

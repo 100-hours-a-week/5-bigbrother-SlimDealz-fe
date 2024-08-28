@@ -1,8 +1,6 @@
 import { createGlobalStyle } from 'styled-components';
 
 const GlobalStyles = createGlobalStyle`
-  @import url(//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css);
-  
   :root {
     --background-color: white;
   }
