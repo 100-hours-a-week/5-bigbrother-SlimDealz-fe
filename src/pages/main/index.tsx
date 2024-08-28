@@ -77,14 +77,11 @@ const MainPage = () => {
       localStorage.setItem('refreshToken', refreshToken);
       setJwtToken(token);
 
-      // 토큰이 URL에 있을 경우, URL을 정리 (토큰이 없는 상태로 URL을 유지)
-      const newUrl = window.location.origin + window.location.pathname;
-      window.history.replaceState(null, '', newUrl);
-    } else {
-      // 만약 localStorage에 토큰이 있으면 설정
-      const storedToken = localStorage.getItem('jwtToken');
-      if (storedToken) {
-        setJwtToken(storedToken);
+        const parsedToken = JSON.parse(jsonPayload);
+        return parsedToken.kakao_Id || null;
+      } catch (error) {
+        console.error('JWT token parsing error:', error);
+        return null;
       }
     }
 
@@ -97,7 +94,6 @@ const MainPage = () => {
     }
   }, [jwtToken]);
 
-  useEffect(() => {
     const fetchLowestProducts = async () => {
       try {
         if (!isLowestProductsLoaded) {
@@ -145,6 +141,36 @@ const MainPage = () => {
         console.error('Error fetching random products:', error);
       }
     };
+
+    // URL에서 jwtToken과 refreshToken 추출
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('jwtToken');
+    const refreshToken = urlParams.get('refreshToken');
+
+    if (token && refreshToken) {
+      // 토큰을 localStorage에 저장
+      localStorage.setItem('jwtToken', token);
+      localStorage.setItem('refreshToken', refreshToken);
+      setJwtToken(token);
+
+      // 토큰이 URL에 있을 경우, URL을 정리 (토큰이 없는 상태로 URL을 유지)
+      const newUrl = window.location.origin + window.location.pathname;
+      window.history.replaceState(null, '', newUrl);
+    } else {
+      // 만약 localStorage에 토큰이 있으면 설정
+      const storedToken = localStorage.getItem('jwtToken');
+      if (storedToken) {
+        setJwtToken(storedToken);
+      }
+    }
+
+    if (jwtToken) {
+      const kakaoId = extractKakaoIdFromToken(jwtToken);
+      if (kakaoId) {
+        setKakaoId(kakaoId);
+        fetchBookmarkProducts(kakaoId);
+      }
+    }
 
     fetchLowestProducts();
     fetchRandomProducts();

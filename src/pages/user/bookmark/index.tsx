@@ -36,7 +36,6 @@ const UserBookmarkPage: React.FC = () => {
   const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
-
   const serverUri = import.meta.env.VITE_SERVER_URI;
 
   useEffect(() => {
@@ -62,8 +61,8 @@ const UserBookmarkPage: React.FC = () => {
           `${serverUri}/api/v1/users/kakao/${encodeURIComponent(kakao_Id)}/bookmarks`,
           {
             headers: {
-              Authorization: `Bearer ${jwtToken}`
-            }
+              Authorization: `Bearer ${jwtToken}`,
+            },
           }
         );
 
@@ -83,7 +82,7 @@ const UserBookmarkPage: React.FC = () => {
             console.log('서버 오류가 발생했습니다.');
           }
         } else {
-          console.log('Network error.');
+          console.log('네트워크 오류가 발생했습니다.');
         }
       } finally {
         setLoading(false);
@@ -107,7 +106,7 @@ const UserBookmarkPage: React.FC = () => {
       const parsedToken = JSON.parse(jsonPayload);
       return parsedToken.kakao_Id || null;
     } catch (error) {
-      console.error('JWT token parsing error:', error);
+      console.error('JWT 토큰 파싱 오류:', error);
       return null;
     }
   };
