@@ -105,7 +105,6 @@ export const ProductsWrapper = styled.div`
 export const ProductItem = styled.div`
   flex: none;
   width: 200px;
-  margin-right: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -124,7 +123,6 @@ export const ProductItem = styled.div`
 export const ProductImage = styled.img`
   width: 100%;
   height: auto;
-  margin-bottom: 10px;
 `;
 
 export const PriceInfo = styled.div`
