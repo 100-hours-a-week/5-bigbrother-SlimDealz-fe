@@ -22,13 +22,13 @@ const OutLetContainer = () => {
   }
 
   return (
-    <>
+    <div style={{ backgroundColor: '#f9f9f9' }}>
       <Header pageTitle={pageTitle} />
       <styles.Container $paddingTop={height}>
         <Outlet />
       </styles.Container>
       <Footer />
-    </>
+    </div>
   );
 };
 

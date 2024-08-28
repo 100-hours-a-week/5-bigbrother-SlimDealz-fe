@@ -14,7 +14,6 @@ const SearchBar: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // 첫 로드 시 location.state에서 검색어를 설정
   useEffect(() => {
     if (location.state?.searchQuery) {
       setSearchQuery(location.state.searchQuery);
@@ -39,12 +38,11 @@ const SearchBar: React.FC = () => {
     setFilteredWords([]);
 
     if (value.trim() !== '') {
-      // Blur the input to remove the cursor after searching
       const inputElement = document.getElementById('search-input');
       inputElement?.blur();
 
       navigate(`/searchResults/${encodeURIComponent(value)}`, {
-        state: { searchQuery: value } // 검색어를 location.state에 저장
+        state: { searchQuery: value }
       });
     }
   };
@@ -75,7 +73,9 @@ const SearchBar: React.FC = () => {
           height: 35,
           border: '0.1px solid #ccc',
           boxShadow: 'none',
-          paddingLeft: '10px'
+          paddingLeft: '10px',
+          borderRadius: '20px', // Rounded corners
+          backgroundColor: '#f5f5f5' // Light background color
         }}
         onSubmit={(event) => {
           event.preventDefault();
@@ -84,6 +84,7 @@ const SearchBar: React.FC = () => {
       >
         <CustomInput
           id="search-input"
+          placeholder="검색어를 입력하세요"
           value={searchQuery}
           onChange={handleSearchChange}
           onKeyPress={handleKeyPress}
@@ -95,7 +96,7 @@ const SearchBar: React.FC = () => {
           aria-label="search"
           onClick={handleSearchClick}
         >
-          <SearchIcon />
+          <SearchIcon sx={{ color: '#999' }} /> {/* Adjust icon color */}
         </IconButton>
       </Paper>
       {filteredWords.length > 0 && (

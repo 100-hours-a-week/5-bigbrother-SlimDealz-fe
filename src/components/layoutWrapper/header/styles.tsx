@@ -3,7 +3,9 @@ import InputBase from '@mui/material/InputBase';
 
 export const CustomInput = styled(InputBase)(({ theme }) => ({
   '& .MuiInputBase-input': {
-    width: '250px'
+    width: '215px',
+    padding: '10px 15px',
+    fontSize: '14px'
   }
 }));
 
@@ -17,18 +19,19 @@ export const AutoCompleteList = styled.ul`
   max-height: 200px;
   overflow-y: auto;
   z-index: 1;
-  background-color: #f9f9f9;
-  border: 1px solid #f8ebeb;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  border: 1px solid #eee;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 `;
 
 export const AutoCompleteItem = styled.li`
   padding: 10px;
   border-radius: 4px;
-  background-color: #f2f2f7;
+  background-color: #f9f9f9;
   margin-bottom: 5px;
   font-size: 14px;
   cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
 
   &:hover {
     background-color: #e0e0e0;
@@ -38,6 +41,7 @@ export const AutoCompleteItem = styled.li`
     margin-bottom: 0;
   }
 `;
+
 export const HeaderContainer = styled.div<{
   $hasLogo: boolean;
 }>`
