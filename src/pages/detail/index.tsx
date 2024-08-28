@@ -8,7 +8,7 @@ import ReviewList from '../../components/list/reviewList';
 import ImageView from '../../components/image/productImage';
 import ProductInfo from '../../components/product/productInfo';
 import { InfoContainer } from '../../components/list/categoryList/styles';
-import { LoadingProduct } from '@/components/loading';
+import { LoadingSpinner } from '@/components/loading';
 
 const DetailPage = () => {
   const { productName } = useParams<{ productName: string }>();
@@ -38,7 +38,7 @@ const DetailPage = () => {
   }, [productName]);
 
   if (!productData) {
-    return <LoadingProduct />;
+    return <LoadingSpinner />;
   }
 
   const { imageUrl, name, prices } = productData;
