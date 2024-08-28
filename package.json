@@ -37,7 +37,8 @@
     "styled-components": "^6.1.12",
     "swiper": "^11.1.9",
     "typescript": "^5.5.4",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "zustand": "^4.5.5"
   },
   "scripts": {
     "dev": "vite --open",
