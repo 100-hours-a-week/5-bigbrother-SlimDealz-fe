@@ -5,9 +5,11 @@ import {
   Container,
   ImageContainer,
   InfoContainer,
+  // BookmarkContainer,
   PriceContainer,
   PriceText,
   SmallText,
+  // BookmarkCount,
   BookmarkCountWrapper
 } from './styles';
 import { getNumberWithComma } from '@/components/utils/conversion';
@@ -16,19 +18,29 @@ import BookmarkBorder from '@mui/icons-material/BookmarkBorder';
 
 type Props = {
   id: number;
+  image: string;
   name: string;
   price: number;
+  // per100gPrice: string;
   shipping: string;
+  // rating: number; // 주석 처리: 하드코딩된 값이므로 주석 처리
+  // bookmarkCount: number; // 주석 처리: 하드코딩된 값이므로 주석 처리
 };
 
 const CategoryList = ({
   id,
+  image,
   name,
   price,
+  // per100gPrice,
   shipping
+  // rating,
+  // bookmarkCount
 }: Props) => {
   const [bookmarked, setBookmarked] = useState(false);
+  // const [bookmarkCount, setBookmarkCount] = useState<number>(0);
   const serverUri = import.meta.env.VITE_SERVER_URI;
+  const userId = localStorage.getItem('userId'); // 사용자 ID를 가져옴 (필요시 구현)
 
   const extractKakaoIdFromToken = (token: string): string | null => {
     try {
@@ -109,6 +121,7 @@ const CategoryList = ({
     <Container>
       <ImageContainer>
         <img
+          src={image}
           alt={name}
           style={{ width: '100%', height: '100%', borderRadius: '10px' }}
         />
@@ -118,6 +131,7 @@ const CategoryList = ({
         <PriceContainer>
           <PriceText>{getNumberWithComma(price)}원</PriceText>
         </PriceContainer>
+        {/* <SmallText>[100g 당 {per100gPrice}원]</SmallText> */}
         <SmallText>{'배송비 : ' + shipping}</SmallText>
 
         <BookmarkCountWrapper>
@@ -130,7 +144,11 @@ const CategoryList = ({
           >
             {bookmarked ? <Bookmark /> : <BookmarkBorder />}
           </IconButton>
+          {/* <BookmarkCount>{bookmarkCount}</BookmarkCount> */}
         </BookmarkCountWrapper>
+        {/* <BookmarkContainer onClick={(e) => e.stopPropagation()}>
+          <Rating value={rating} readOnly />
+        </BookmarkContainer> */}
       </InfoContainer>
     </Container>
   );
