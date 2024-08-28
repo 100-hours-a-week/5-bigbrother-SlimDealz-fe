@@ -34,6 +34,7 @@ const MyMainPage = () => {
   const handleLogout = () => {
     localStorage.removeItem('jwtToken');
     localStorage.removeItem('refreshToken');
+    localStorage.removeItem('userId');
     navigate('/signIn');
   };
 

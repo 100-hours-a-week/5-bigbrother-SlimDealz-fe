@@ -14,7 +14,7 @@ import LoginRequiredModal from '@/components/modal/logInModal';
 
 interface ProductInfoProps {
   originalPrice: number;
-  productName: number;
+  productName: string;
 }
 
 const ProductInfo: React.FC<ProductInfoProps> = ({
