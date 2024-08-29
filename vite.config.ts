@@ -50,10 +50,13 @@ export default defineConfig(({ command, mode }) => {
         }
       }
     },
-    proxy: {
-      '/v1': {
-        target: 'http://api.slimdealz.store',
-        changeOrigin: true
+    server: {
+      port: 3000,
+      proxy: {
+        '/v1': {
+          target: 'http://api.slimdealz.store',
+          changeOrigin: true
+        }
       }
     }
   };
