@@ -5,10 +5,11 @@ import {
   MallItem,
   MallInfo,
   PriceContainer,
-  ShippingFeeContainer
+  ShippingFeeContainer,
+  ShowMoreButton
 } from './styles';
 import { getNumberWithComma } from '@/components/utils/conversion';
-import { LoadingSpinner } from '@/components/loading';
+import { LoadingProduct } from '@/components/loading';
 
 interface Vendor {
   vendorName: string;
@@ -36,6 +37,7 @@ interface TabsComponentProps {
 const MallList: React.FC<TabsComponentProps> = ({ productName }) => {
   const [mallData, setMallData] = useState<MallData[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showMore, setShowMore] = useState(false);
 
   useEffect(() => {
     const fetchMallData = async () => {
@@ -54,11 +56,13 @@ const MallList: React.FC<TabsComponentProps> = ({ productName }) => {
     fetchMallData();
   }, [productName]);
 
-  if (loading) return <LoadingSpinner />;
+  if (loading) return <LoadingProduct />;
+
+  const visibleData = showMore ? mallData : mallData.slice(0, 5);
 
   return (
     <Container>
-      {mallData.map((item, index) =>
+      {visibleData.map((item, index) =>
         item.prices.map((price, idx) => (
           <MallItem
             key={`${index}-${idx}`}
@@ -79,6 +83,11 @@ const MallList: React.FC<TabsComponentProps> = ({ productName }) => {
             </PriceContainer>
           </MallItem>
         ))
+      )}
+      {mallData.length > 5 && (
+        <ShowMoreButton onClick={() => setShowMore(!showMore)}>
+          {showMore ? '접기' : '더보기'}
+        </ShowMoreButton>
       )}
     </Container>
   );

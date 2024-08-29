@@ -39,31 +39,68 @@ const CategoryList = ({
 }: Props) => {
   const [bookmarked, setBookmarked] = useState(false);
   // const [bookmarkCount, setBookmarkCount] = useState<number>(0);
+  const serverUri = import.meta.env.VITE_SERVER_URI;
   const userId = localStorage.getItem('userId'); // 사용자 ID를 가져옴 (필요시 구현)
+
+  const extractKakaoIdFromToken = (token: string): string | null => {
+    try {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(
+        atob(base64)
+          .split('')
+          .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+          .join('')
+      );
+
+      const parsedToken = JSON.parse(jsonPayload);
+      return parsedToken.kakao_Id || null;
+    } catch (error) {
+      console.error('JWT 토큰 파싱 오류:', error);
+      return null;
+    }
+  };
 
   const handleBookmarkClick = async () => {
     // setBookmarkCount((prevCount) =>
     //   bookmarked ? prevCount - 1 : prevCount + 1
     // );
+
+    const jwtToken = localStorage.getItem('jwtToken');
+    if (!jwtToken) {
+      alert('로그인이 필요합니다.');
+      return;
+    }
+
+    const kakao_Id = extractKakaoIdFromToken(jwtToken);
+    if (!kakao_Id) {
+      alert('Kakao ID를 찾을 수 없습니다.');
+      return;
+    }
+
     try {
       if (bookmarked) {
         // 북마크 삭제
-        await axios.delete(`/api/v1/users/${userId}/bookmarks/${id}`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('jwtToken')}`
+        await axios.delete(
+          `${serverUri}/api/v1/users/kakao/${encodeURIComponent(kakao_Id)}/bookmarks`,
+          {
+            headers: {
+              Authorization: `Bearer ${jwtToken}`
+            },
+            params: { productName: name }
           }
-        });
+        );
         setBookmarked(false);
         alert('북마크가 삭제되었습니다.');
       } else {
         // 북마크 추가
         await axios.post(
-          `/api/v1/users/${userId}/bookmarks`,
-          { userId, productName: name },
+          `${serverUri}/api/v1/users/kakao/${encodeURIComponent(kakao_Id)}/bookmarks`,
           {
             headers: {
-              Authorization: `Bearer ${localStorage.getItem('jwtToken')}`
-            }
+              Authorization: `Bearer ${jwtToken}`
+            },
+            params: { productName: name }
           }
         );
         setBookmarked(true);

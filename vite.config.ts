@@ -8,6 +8,10 @@ export default defineConfig(({ command, mode }) => {
   const isProduction = process.env.BUILD_APP_TYPE === 'production';
 
   return {
+    json: {
+      namedExports: true,
+      stringify: false
+    },
     resolve: {
       alias: {
         '@': path.resolve(__dirname, './src'),
@@ -36,7 +40,12 @@ export default defineConfig(({ command, mode }) => {
             // react와 react-dom을 별도의 청크로 분리
             react: ['react', 'react-dom'],
             vendor: ['axios'],
-            mui: ['@mui/material', '@mui/icons-material', '@mui/system']
+            mui: ['@mui/material', '@mui/icons-material', '@mui/system'],
+            lottie: ['lottie-react'],
+            lodash: ['lodash'],
+            router: ['react-router-dom'],
+            styledComponents: ['styled-components'],
+            swiper: ['swiper']
           }
         }
       }

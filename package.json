@@ -28,6 +28,7 @@
     "chart.js": "^4.4.3",
     "dotenv": "^16.4.5",
     "js-cookie": "^3.0.5",
+    "lottie-react": "^2.4.0",
     "react": "^18.3.1",
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.3.1",
@@ -36,7 +37,8 @@
     "styled-components": "^6.1.12",
     "swiper": "^11.1.9",
     "typescript": "^5.5.4",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "zustand": "^4.5.5"
   },
   "scripts": {
     "dev": "vite --open",

@@ -32,5 +32,29 @@ export const styles = {
   },
   searchVideo: {
     width: '100%'
+  },
+  noResultsContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'column' as 'column',
+    height: '70vh'
+  },
+  noResultsAnimation: {
+    width: '50%'
+  },
+  noResultsTextContainer: {
+    textAlign: 'center' as 'center',
+    marginTop: '20px'
+  },
+  noResultsTitle: {
+    fontWeight: 'bold',
+    fontSize: '18px',
+    margin: 0
+  },
+  noResultsSubtitle: {
+    color: '#666',
+    fontSize: '14px',
+    marginTop: '5px'
   }
 };

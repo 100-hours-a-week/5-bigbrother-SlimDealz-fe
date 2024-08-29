@@ -5,14 +5,69 @@ import ProductSlider from '../../components/product/productSlider';
 import { Container, ChickenChestWrapper } from './styles';
 import Banner from '../../components/layoutWrapper/banner';
 import ThirdSlider from '@/components/product/slider/thirdSlider';
+import { useProductStore } from '@/store/product';
 
 const MainPage = () => {
+  const {
+    lowestProducts,
+    randomProducts,
+    isLowestProductsLoaded,
+    isRandomProductsLoaded,
+    setLowestProducts,
+    setRandomProducts
+  } = useProductStore();
+
   const [jwtToken, setJwtToken] = useState<string | null>(null);
-  const [lowestProducts, setLowestProducts] = useState([]);
+  const [kakaoId, setKakaoId] = useState<string | null>(null);
   const [bookmarkProducts, setBookmarkProducts] = useState([]);
-  const [randomProducts, setRandomProducts] = useState([]);
+  const serverUri = import.meta.env.VITE_SERVER_URI;
 
   useEffect(() => {
+    const extractKakaoIdFromToken = (token: string): string | null => {
+      try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(
+          atob(base64)
+            .split('')
+            .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+            .join('')
+        );
+        const parsedToken = JSON.parse(jsonPayload);
+        return parsedToken.kakao_Id || null;
+      } catch (error) {
+        console.error('JWT token parsing error:', error);
+        return null;
+      }
+    };
+
+    const fetchBookmarkProducts = async (kakaoId: string) => {
+      try {
+        const jwtToken = localStorage.getItem('jwtToken');
+        if (!jwtToken) return;
+
+        const response = await axios.get(
+          `${serverUri}/api/v1/users/kakao/${encodeURIComponent(kakaoId)}/bookmarks`,
+          {
+            headers: {
+              Authorization: `Bearer ${jwtToken}`
+            }
+          }
+        );
+        const bookmarkData = response.data.map((product: any) => ({
+          id: product.productId,
+          name: product.name,
+          imageUrl: product.imageUrl,
+          originalPrice: product.prices[0]?.setPrice,
+          salePrice: product.prices[0]?.discountedPrice,
+          discountRate: product.discountRate
+        }));
+        setBookmarkProducts(bookmarkData);
+      } catch (error) {
+        console.error('Error fetching bookmarks:', error);
+      }
+    };
+
     // URL에서 jwtToken과 refreshToken 추출
     const urlParams = new URLSearchParams(window.location.search);
     const token = urlParams.get('jwtToken');
@@ -34,113 +89,82 @@ const MainPage = () => {
         setJwtToken(storedToken);
       }
     }
-  }, []);
+
+    if (jwtToken) {
+      const kakaoId = extractKakaoIdFromToken(jwtToken);
+      if (kakaoId) {
+        setKakaoId(kakaoId);
+        fetchBookmarkProducts(kakaoId);
+      }
+    }
+  }, [jwtToken, serverUri]);
 
   useEffect(() => {
     const fetchLowestProducts = async () => {
       try {
-        const response = await axios.get('/api/v1/today-lowest-products');
-        const productData = response.data.map((product: any) => ({
-          id: product.id,
-          name: product.name,
-          imageUrl: product.imageUrl,
-          originalPrice: product.prices[0].setPrice,
-          salePrice: product.prices[0].discountedPrice,
-          discountRate: Math.round(
-            ((product.prices[0].setPrice - product.prices[0].discountedPrice) /
-              product.prices[0].setPrice) *
-              100
-          )
-        }));
-        setLowestProducts(productData);
-      } catch (error: any) {
-        if (error.response) {
-          if (error.response.status === 404) {
-            console.error('Product not found', error.response.data.message);
-          } else if (error.response.status === 500) {
-            console.error('Server error', error.response.data.message);
-          } else {
-            console.error('An unexpected error occurred:', error.response.data);
-          }
-        } else if (error.request) {
-          console.error('No response received from server', error.request);
-        } else {
-          console.error('Error setting up the request:', error.message);
+        if (!isLowestProductsLoaded) {
+          const response = await axios.get('/api/v1/today-lowest-products');
+          const productData = response.data.map((product: any) => ({
+            id: product.id,
+            name: product.name,
+            imageUrl: product.imageUrl,
+            originalPrice: product.prices[0].setPrice,
+            salePrice: product.prices[0].discountedPrice,
+            discountRate: Math.round(
+              ((product.prices[0].setPrice -
+                product.prices[0].discountedPrice) /
+                product.prices[0].setPrice) *
+                100
+            )
+          }));
+          setLowestProducts(productData);
         }
-      }
-    };
-
-    const fetchBookmarkProducts = async () => {
-      try {
-        const jwtToken = localStorage.getItem('jwtToken');
-        if (!jwtToken) return;
-
-        const response = await axios.get('/api/v1/users/bookmarks', {
-          headers: {
-            Authorization: `Bearer ${jwtToken}`
-          }
-        });
-        const bookmarkData = response.data.map((product: any) => ({
-          id: product.productId,
-          name: product.name,
-          imageUrl: product.imageUrl,
-          originalPrice: product.prices[0]?.setPrice,
-          salePrice: product.prices[0]?.discountedPrice,
-          discountRate: product.discountRate
-        }));
-        setBookmarkProducts(bookmarkData);
       } catch (error) {
-        console.error('Error fetching bookmarks:', error);
+        console.error('Error fetching lowest products:', error);
       }
     };
 
     const fetchRandomProducts = async () => {
       try {
-        const response = await axios.get('/api/v1/random-products');
-        const productData = response.data.map((product: any) => ({
-          id: product.id,
-          name: product.name,
-          imageUrl: product.imageUrl,
-          originalPrice: product.prices[0].setPrice,
-          salePrice: product.prices[0].discountedPrice,
-          discountRate: Math.round(
-            ((product.prices[0].setPrice - product.prices[0].discountedPrice) /
-              product.prices[0].setPrice) *
-              100
-          )
-        }));
-        setRandomProducts(productData);
-      } catch (error: any) {
-        if (error.response) {
-          if (error.response.status === 404) {
-            console.error('Product not found', error.response.data.message);
-          } else if (error.response.status === 500) {
-            console.error('Server error', error.response.data.message);
-          } else {
-            console.error('An unexpected error occurred:', error.response.data);
-          }
-        } else if (error.request) {
-          console.error('No response received from server', error.request);
-        } else {
-          console.error('Error setting up the request:', error.message);
+        if (!isRandomProductsLoaded) {
+          const response = await axios.get('/api/v1/random-products');
+          const productData = response.data.map((product: any) => ({
+            id: product.id,
+            name: product.name,
+            imageUrl: product.imageUrl,
+            originalPrice: product.prices[0].setPrice,
+            salePrice: product.prices[0].discountedPrice,
+            discountRate: Math.round(
+              ((product.prices[0].setPrice -
+                product.prices[0].discountedPrice) /
+                product.prices[0].setPrice) *
+                100
+            )
+          }));
+          setRandomProducts(productData);
         }
+      } catch (error) {
+        console.error('Error fetching random products:', error);
       }
     };
 
     fetchLowestProducts();
-    fetchBookmarkProducts();
     fetchRandomProducts();
-  }, []);
+  }, [
+    isLowestProductsLoaded,
+    isRandomProductsLoaded,
+    setLowestProducts,
+    setRandomProducts
+  ]);
 
   return (
     <>
       <Banner />
       <Container>
         <ChickenChestWrapper>
-          {/* 나중에 map을 통해 IconCategory 컴포넌트를 4개로 늘릴 수 있음 */}
           <IconCategory />
         </ChickenChestWrapper>
-        {jwtToken && (
+        {kakaoId && (
           <ProductSlider title="MY BOOKMARKS" products={bookmarkProducts} />
         )}
         <ProductSlider title="오늘의 최저가" products={lowestProducts} />

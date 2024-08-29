@@ -5,8 +5,7 @@ import PageNameTag from '../../../components/tag/pageNameTag';
 import CategoryList from '../../../components/list/categoryList';
 import { SearchContext } from '../../../components/utils/context/searchContext';
 import { useParams, Link } from 'react-router-dom';
-import NoResultsSpinner from '@/components/utils/noResultsSpinner';
-import { LoadingProduct } from '@/components/loading';
+import { LoadingProduct, NoResultsSpinner } from '@/components/loading';
 
 const SearchResultsPage: React.FC = () => {
   const { keyword } = useParams<{ keyword: string }>();
@@ -17,7 +16,6 @@ const SearchResultsPage: React.FC = () => {
   useEffect(() => {
     if (keyword) {
       setSearchQuery(keyword);
-      // Reset data and loading state when a new search is initiated
       setData([]);
       setLoading(true);
     }
