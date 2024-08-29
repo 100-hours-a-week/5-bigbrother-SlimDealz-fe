@@ -54,9 +54,10 @@ export default defineConfig(({ command, mode }) => {
       port: 3000,
       proxy: {
         '/api': {
-          target: 'http://api.slimdealz.store',
-          changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api/, '') // 필요에 따라 경로를 재작성
+          target: isProduction
+            ? 'http://api.slimdealz.store'
+            : 'http://localhost:8080',
+          changeOrigin: true
         }
       }
     }
