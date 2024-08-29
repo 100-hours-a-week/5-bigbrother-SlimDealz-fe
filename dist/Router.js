@@ -1,0 +1,24 @@
+import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
+import React, { Suspense } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import OutLetContainer from './pages';
+import ScrollToTop from './components/utils/scrollToTop/scrollToTop';
+import { SearchProvider } from './components/utils/context/searchContext';
+import { HeaderHeightProvider } from './components/utils/context/headerHeightContext';
+import MainPage from './pages/main';
+import MyMainPage from './pages/user/myMain';
+import SignInPage from './pages/signIn';
+import UserBookmarkPage from './pages/user/bookmark';
+import ComingSoon from './components/utils/comingSoon';
+import { LoadingSpinner } from './components/loading';
+const CategoryPage = React.lazy(() => import('./pages/category'));
+const DetailPage = React.lazy(() => import('./pages/detail'));
+const SearchInitialPage = React.lazy(() => import('./pages/search/initial'));
+const SearchResultsPage = React.lazy(() => import('./pages/search/results'));
+const SignUpPage = React.lazy(() => import('./pages/signUp'));
+const UserAlarmPage = React.lazy(() => import('./pages/user/alarm'));
+const UserRecentlyViewPage = React.lazy(() => import('./pages/user/recentlyView'));
+const Router = () => {
+    return (_jsx(SearchProvider, { children: _jsx(HeaderHeightProvider, { children: _jsxs(BrowserRouter, { children: [_jsx(ScrollToTop, {}), _jsx(Suspense, { fallback: _jsx(LoadingSpinner, {}), children: _jsx(Routes, { children: _jsxs(Route, { path: "/", element: _jsx(OutLetContainer, {}), children: [_jsx(Route, { path: "/", element: _jsx(MainPage, {}) }), _jsx(Route, { path: "/category", element: _jsx(CategoryPage, {}) }), _jsx(Route, { path: "/product/:productName", element: _jsx(DetailPage, {}) }), _jsx(Route, { path: "/searchInitial", element: _jsx(SearchInitialPage, {}) }), _jsx(Route, { path: "/searchResults/:keyword", element: _jsx(SearchResultsPage, {}) }), _jsx(Route, { path: "/signIn", element: _jsx(SignInPage, {}) }), _jsx(Route, { path: "/signUp", element: _jsx(SignUpPage, {}) }), _jsx(Route, { path: "/myPage", element: _jsx(MyMainPage, {}) }), _jsx(Route, { path: "/alarm", element: _jsx(UserAlarmPage, {}) }), _jsx(Route, { path: "/bookmark", element: _jsx(UserBookmarkPage, {}) }), _jsx(Route, { path: "/recentlyView", element: _jsx(UserRecentlyViewPage, {}) }), _jsx(Route, { path: "/comingSoon", element: _jsx(ComingSoon, {}) })] }) }) })] }) }) }));
+};
+export default Router;
