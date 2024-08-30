@@ -40,7 +40,7 @@ const MyMainPage = () => {
 
   return (
     <Container>
-      <Section onClick={() => navigate('/information')}>
+      <Section onClick={() => setIsPreModalOpen(true)}>
         <SectionTitle>나의 회원정보 수정</SectionTitle>
         <ArrowIcon>›</ArrowIcon>
       </Section>
