@@ -61,8 +61,8 @@ const UserBookmarkPage: React.FC = () => {
           `${serverUri}/v1/users/kakao/${encodeURIComponent(kakao_Id)}/bookmarks`,
           {
             headers: {
-              Authorization: `Bearer ${jwtToken}`,
-            },
+              Authorization: `Bearer ${jwtToken}`
+            }
           }
         );
 
@@ -135,18 +135,37 @@ const UserBookmarkPage: React.FC = () => {
 
   return (
     <Container>
-      <PageNameTag pageName={`전체 ${bookmarks.length}개`} />
-      {bookmarks.map((bookmark) => (
-        <CategoryList
-          key={bookmark.bookmarkId}
-          id={bookmark.productId}
-          image={bookmark.image || 'default_image_url_here'} // Provide a default image if null
-          name={bookmark.productName}
-          shipping={bookmark.shippingFee}
-          price={bookmark.prices[0]?.setPrice}
-          // vendorName={bookmark.prices[0]?.vendor.vendorName} // Added vendor name
-        />
-      ))}
+      {bookmarks.length < 1 ? (
+        <>
+          <PageNameTag pageName="전체 0개" />
+          <CustomBox>
+            <Typography variant="h6" gutterBottom>
+              북마크한 상품이 없습니다
+            </Typography>
+            <Typography variant="body2" color="textSecondary">
+              지금 바로 북마크 목록을 생성해보세요.
+            </Typography>
+            <CustomButton onClick={() => navigate('/')}>
+              북마크 하러가기
+            </CustomButton>
+          </CustomBox>
+        </>
+      ) : (
+        <>
+          <PageNameTag pageName={`전체 ${bookmarks.length}개`} />
+          {bookmarks.map((bookmark) => (
+            <CategoryList
+              key={bookmark.bookmarkId}
+              id={bookmark.productId}
+              image={bookmark.image || 'default_image_url_here'} // Provide a default image if null
+              name={bookmark.productName}
+              shipping={bookmark.shippingFee}
+              price={bookmark.prices[0]?.setPrice}
+              // vendorName={bookmark.prices[0]?.vendor.vendorName} // Added vendor name
+            />
+          ))}
+        </>
+      )}
     </Container>
   );
 };
