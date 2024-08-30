@@ -99,7 +99,9 @@ const MainPage = () => {
     const fetchLowestProducts = async () => {
       try {
         if (!isLowestProductsLoaded) {
-          const response = await axios.get('/api/v1/today-lowest-products');
+          const response = await axios.get(
+            'https://api.slimdealz.store/v1/today-lowest-products'
+          );
           const productData = response.data.map((product: any) => ({
             id: product.id,
             name: product.name,
@@ -123,7 +125,9 @@ const MainPage = () => {
     const fetchRandomProducts = async () => {
       try {
         if (!isRandomProductsLoaded) {
-          const response = await axios.get('/api/v1/random-products');
+          const response = await axios.get(
+            'https://api.slimdealz.store/v1/random-products'
+          );
           const productData = response.data.map((product: any) => ({
             id: product.id,
             name: product.name,
