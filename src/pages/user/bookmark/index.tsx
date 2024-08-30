@@ -58,7 +58,7 @@ const UserBookmarkPage: React.FC = () => {
 
       try {
         const bookmarksResponse = await axios.get(
-          `${serverUri}/api/v1/users/kakao/${encodeURIComponent(kakao_Id)}/bookmarks`,
+          `${serverUri}/v1/users/kakao/${encodeURIComponent(kakao_Id)}/bookmarks`,
           {
             headers: {
               Authorization: `Bearer ${jwtToken}`,

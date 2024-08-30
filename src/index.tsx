@@ -10,7 +10,7 @@ Sentry.init({
   dsn: import.meta.env.VITE_SENTRY_AUTH_TOKEN,
   integrations: [
     Sentry.browserTracingIntegration(),
-    Sentry.browserProfilingIntegration(),
+    // Sentry.browserProfilingIntegration(),
     Sentry.replayIntegration(),
     Sentry.feedbackIntegration({
       // Additional SDK configuration goes in here, for example:

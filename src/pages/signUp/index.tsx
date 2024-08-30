@@ -71,7 +71,7 @@ const SignUpPage: React.FC = () => {
     try {
       const jwtToken = localStorage.getItem('jwtToken'); // JWT 토큰을 로컬 스토리지에서 가져옴
       const response = await axios.post(
-        import.meta.env.VITE_SERVER_URI+'/api/v1/users/kakaologin',
+        import.meta.env.VITE_SERVER_URI+'/v1/users/kakaologin',
         memberData,
         {
           headers: {

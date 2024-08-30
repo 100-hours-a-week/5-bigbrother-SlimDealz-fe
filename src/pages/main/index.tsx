@@ -47,7 +47,7 @@ const MainPage = () => {
         if (!jwtToken) return;
 
         const response = await axios.get(
-          `${serverUri}/api/v1/users/kakao/${encodeURIComponent(kakaoId)}/bookmarks`,
+          `${serverUri}/v1/users/kakao/${encodeURIComponent(kakaoId)}/bookmarks`,
           {
             headers: {
               Authorization: `Bearer ${jwtToken}`

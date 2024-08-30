@@ -30,7 +30,7 @@ const ProductBookmark: React.FC<ProductBookmarkProps> = ({ productName }) => {
       try {
         // 북마크 상태 확인
         const bookmarkResponse = await axios.get(
-          `${serverUri}/api/v1/users/kakao/${encodeURIComponent(kakao_Id)}/bookmarks/search`,
+          `${serverUri}/v1/users/kakao/${encodeURIComponent(kakao_Id)}/bookmarks/search`,
           {
             headers: {
               Authorization: `Bearer ${jwtToken}`
@@ -91,7 +91,7 @@ const ProductBookmark: React.FC<ProductBookmarkProps> = ({ productName }) => {
     try {
       if (bookmarked) {
         await axios.delete(
-          `${serverUri}/api/v1/users/kakao/${encodeURIComponent(kakao_Id)}/bookmarks`,
+          `${serverUri}/v1/users/kakao/${encodeURIComponent(kakao_Id)}/bookmarks`,
           {
             headers: {
               Authorization: `Bearer ${jwtToken}`
@@ -103,7 +103,7 @@ const ProductBookmark: React.FC<ProductBookmarkProps> = ({ productName }) => {
         alert('북마크가 삭제되었습니다.');
       } else {
         await axios.post(
-          `${serverUri}/api/v1/users/kakao/${encodeURIComponent(kakao_Id)}/bookmarks`,
+          `${serverUri}/v1/users/kakao/${encodeURIComponent(kakao_Id)}/bookmarks`,
           {
             productName
           },
