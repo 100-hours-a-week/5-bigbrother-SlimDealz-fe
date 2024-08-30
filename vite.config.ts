@@ -58,10 +58,9 @@ export default defineConfig(({ command, mode }) => {
             ? 'http://api.slimdealz.store/'
             : 'http://localhost:8080/',
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^/api/, '') // 필요에 따라 경로를 재작성
+          rewrite: (path) => path.replace(/^\/api/, '')
         }
       }
     }
-
   };
 });
