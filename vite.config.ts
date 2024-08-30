@@ -55,7 +55,7 @@ export default defineConfig(({ command, mode }) => {
       proxy: {
         '/api': {
           target: isProduction
-            ? 'http://api.slimdealz.store/'
+            ? 'https://api.slimdealz.store/'
             : 'http://localhost:8080/',
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api/, '')
