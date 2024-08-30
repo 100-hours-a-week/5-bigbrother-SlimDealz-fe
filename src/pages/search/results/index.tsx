@@ -1,11 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react';
-import axios from 'axios';
 import { Container } from './styles';
 import PageNameTag from '../../../components/tag/pageNameTag';
 import CategoryList from '../../../components/list/categoryList';
 import { SearchContext } from '../../../components/utils/context/searchContext';
 import { useParams, Link } from 'react-router-dom';
 import { LoadingProduct, NoResultsSpinner } from '@/components/loading';
+import api from '@/axiosInstance';
 
 const SearchResultsPage: React.FC = () => {
   const { keyword } = useParams<{ keyword: string }>();
@@ -26,7 +26,7 @@ const SearchResultsPage: React.FC = () => {
 
     const fetchData = async () => {
       try {
-        const response = await axios.get('/api/v1/search', {
+        const response = await api.get('/v1/search', {
           params: { keyword }
         });
 

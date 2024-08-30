@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import {
   Container,
   MallItem,
@@ -10,6 +9,7 @@ import {
 } from './styles';
 import { getNumberWithComma } from '@/components/utils/conversion';
 import { LoadingProduct } from '@/components/loading';
+import api from '@/axiosInstance';
 
 interface Vendor {
   vendorName: string;
@@ -42,7 +42,7 @@ const MallList: React.FC<TabsComponentProps> = ({ productName }) => {
   useEffect(() => {
     const fetchMallData = async () => {
       try {
-        const response = await axios.get('/api/v1/vendor-list', {
+        const response = await api.get('/v1/vendor-list', {
           params: { productName }
         });
         setMallData(response.data);

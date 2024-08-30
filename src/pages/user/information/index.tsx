@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { styles } from './styles';
+import api from '@/axiosInstance';
 
 const UserInformationPage: React.FC = () => {
   const navigate = useNavigate();
@@ -30,8 +31,8 @@ const UserInformationPage: React.FC = () => {
 
   const fetchUserProfile = async (kakao_Id: string, jwtToken: string) => {
     try {
-      const response = await axios.get(
-        `/api/v1/users/${encodeURIComponent(kakao_Id)}/profile`,
+      const response = await api.get(
+        `/v1/users/${encodeURIComponent(kakao_Id)}/profile`,
         {
           headers: {
             Authorization: `Bearer ${jwtToken}`

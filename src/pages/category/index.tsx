@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import axios from 'axios';
 import { Container } from './styles';
 import CategoryList from '../../components/list/categoryList';
 import { ChickenChestWrapper } from '../main/styles';
@@ -7,6 +6,7 @@ import IconCategory from '../../components/icon/iconCategory';
 import PageNameTag from '../../components/tag/pageNameTag';
 import { Link } from 'react-router-dom';
 import { LoadingProduct } from '@/components/loading';
+import api from '@/axiosInstance';
 
 type Product = {
   id: number;
@@ -24,7 +24,7 @@ const CategoryPage = () => {
 
   const fetchProducts = useCallback(async () => {
     try {
-      const response = await axios.get('/api/v1/products', {
+      const response = await api.get('/v1/products', {
         params: { category: '닭가슴살', page, limit: 10 }
       });
       const newProducts = response.data;

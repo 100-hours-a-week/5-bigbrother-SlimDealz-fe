@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { Container, Title } from './styles';
 import { useParams } from 'react-router-dom';
 import PriceAlertSetting from '../../components/priceAlertSetting';
@@ -9,6 +8,7 @@ import ImageView from '../../components/image/productImage';
 import ProductInfo from '../../components/product/productInfo';
 import { InfoContainer } from '../../components/list/categoryList/styles';
 import { LoadingSpinner } from '@/components/loading';
+import api from '@/axiosInstance';
 
 const DetailPage = () => {
   const { productName } = useParams<{ productName: string }>();
@@ -17,8 +17,8 @@ const DetailPage = () => {
   useEffect(() => {
     const fetchProductData = async () => {
       try {
-        const response = await axios.get(
-          `/api/v1/product-detail?productName=${encodeURIComponent(productName as string)}`
+        const response = await api.get(
+          `/v1/product-detail?productName=${encodeURIComponent(productName as string)}`
         );
         setProductData(response.data);
       } catch (err: any) {

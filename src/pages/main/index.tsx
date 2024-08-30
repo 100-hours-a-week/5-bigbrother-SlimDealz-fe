@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import IconCategory from '../../components/icon/iconCategory';
 import ProductSlider from '../../components/product/productSlider';
 import { Container, ChickenChestWrapper } from './styles';
 import Banner from '../../components/layoutWrapper/banner';
 import ThirdSlider from '@/components/product/slider/thirdSlider';
 import { useProductStore } from '@/store/product';
+import api from '@/axiosInstance';
+import axios from 'axios';
 
 const MainPage = () => {
   const {
@@ -98,25 +99,20 @@ const MainPage = () => {
   useEffect(() => {
     const fetchLowestProducts = async () => {
       try {
-        if (!isLowestProductsLoaded) {
-          const response = await axios.get(
-            'https://api.slimdealz.store/v1/today-lowest-products'
-          );
-          const productData = response.data.map((product: any) => ({
-            id: product.id,
-            name: product.name,
-            imageUrl: product.imageUrl,
-            originalPrice: product.prices[0].setPrice,
-            salePrice: product.prices[0].discountedPrice,
-            discountRate: Math.round(
-              ((product.prices[0].setPrice -
-                product.prices[0].discountedPrice) /
-                product.prices[0].setPrice) *
-                100
-            )
-          }));
-          setLowestProducts(productData);
-        }
+        const response = await api.get('/v1/today-lowest-products');
+        const productData = response.data.map((product: any) => ({
+          id: product.id,
+          name: product.name,
+          imageUrl: product.imageUrl,
+          originalPrice: product.prices[0].setPrice,
+          salePrice: product.prices[0].discountedPrice,
+          discountRate: Math.round(
+            ((product.prices[0].setPrice - product.prices[0].discountedPrice) /
+              product.prices[0].setPrice) *
+              100
+          )
+        }));
+        setLowestProducts(productData);
       } catch (error) {
         console.error('Error fetching lowest products:', error);
       }
@@ -125,9 +121,7 @@ const MainPage = () => {
     const fetchRandomProducts = async () => {
       try {
         if (!isRandomProductsLoaded) {
-          const response = await axios.get(
-            'https://api.slimdealz.store/v1/random-products'
-          );
+          const response = await api.get('/v1/random-products');
           const productData = response.data.map((product: any) => ({
             id: product.id,
             name: product.name,
