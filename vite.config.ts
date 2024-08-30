@@ -53,11 +53,15 @@ export default defineConfig(({ command, mode }) => {
     server: {
       port: 3000,
       proxy: {
-        '/v1': {
-          target: 'http://api.slimdealz.store',
-          changeOrigin: true
+        '/api': {
+          target: isProduction
+            ? 'http://api.slimdealz.store/'
+            : 'http://localhost:8080/',
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^/api/, '') // 필요에 따라 경로를 재작성
         }
       }
     }
+
   };
 });
