@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
@@ -12,6 +12,7 @@ import Fab from '@mui/material/Fab';
 import NavigationIcon from '@mui/icons-material/Navigation';
 
 const Footer = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [value, setValue] = React.useState(0);
   const navigate = useNavigate();
   const location = useLocation();
@@ -38,10 +39,12 @@ const Footer = () => {
     }
   }, [location.pathname]);
 
-  const isAuthenticated = () => {
-    const token = localStorage.getItem('jwtToken');
-    return token !== null;
-  };
+  useEffect(() => {
+    const jwtToken = localStorage.getItem('jwtToken');
+    if (jwtToken) {
+      setIsAuthenticated(true);
+    } else setIsAuthenticated(false);
+  }, []);
 
   const handleNavigation = (newValue: number) => {
     setValue(newValue);
@@ -61,7 +64,7 @@ const Footer = () => {
         navigate('/bookmark');
         break;
       case 4:
-        if (isAuthenticated()) {
+        if (isAuthenticated) {
           navigate('/myPage');
         } else {
           navigate('/signIn');
