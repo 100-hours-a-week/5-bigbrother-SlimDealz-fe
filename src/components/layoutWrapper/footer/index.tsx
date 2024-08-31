@@ -58,14 +58,16 @@ const Footer = () => {
         // navigate('/notifications');
         break;
       case 3:
-        navigate('/bookmark');
+        navigate('/comingSoon');
+        // navigate('/bookmark');
         break;
       case 4:
-        if (isAuthenticated()) {
-          navigate('/myPage');
-        } else {
-          navigate('/signIn');
-        }
+        navigate('/comingSoon');
+        // if (isAuthenticated()) {
+        //   navigate('/myPage');
+        // } else {
+        //   navigate('/signIn');
+        // }
         break;
       default:
         navigate('/');

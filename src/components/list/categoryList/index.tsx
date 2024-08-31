@@ -68,7 +68,7 @@ const CategoryList = ({
 
     const jwtToken = localStorage.getItem('jwtToken');
     if (!jwtToken) {
-      alert('로그인이 필요합니다.');
+      alert('아직 활성화되지 않은 기능입니다.');
       return;
     }
 
