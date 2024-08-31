@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Header, Section, Description, KakaoButton } from './styles';
+import { Container, Section, Description, KakaoButton } from './styles';
 
 const SignInPage = () => {
   // 카카오 로그인 URL을 생성합니다.

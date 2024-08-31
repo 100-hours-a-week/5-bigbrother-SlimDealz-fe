@@ -9,20 +9,6 @@ export const Container = styled.div`
   height: calc(100dvh - 120px);
 `;
 
-export const Header = styled.h2`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  margin-top: 100px;
-  padding-bottom: 10px;
-
-  img {
-    width: 200px;
-    height: auto;
-  }
-`;
-
 export const Section = styled.div`
   padding: 15px;
   width: 100%;
