@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { Container, CustomBox, CustomButton } from './styles';
 import PageNameTag from '../../../components/tag/pageNameTag';
 import CategoryList from '../../../components/list/categoryList';
 import { useNavigate } from 'react-router-dom';
 import { Typography } from '@mui/material';
 import { LoadingProduct } from '@/components/loading';
+import api from '@/axiosInstance';
 
 interface Price {
   id: number;
@@ -57,8 +57,8 @@ const UserBookmarkPage: React.FC = () => {
       }
 
       try {
-        const bookmarksResponse = await axios.get(
-          `${serverUri}/api/v1/users/kakao/${encodeURIComponent(kakao_Id)}/bookmarks`,
+        const bookmarksResponse = await api.get(
+          `/v1/users/kakao/${encodeURIComponent(kakao_Id)}/bookmarks`,
           {
             headers: {
               Authorization: `Bearer ${jwtToken}`

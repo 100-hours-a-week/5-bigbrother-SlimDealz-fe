@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { IconButton } from '@mui/material';
-import axios from 'axios';
 import {
   Container,
   ImageContainer,
@@ -15,6 +14,7 @@ import {
 import { getNumberWithComma } from '@/components/utils/conversion';
 import Bookmark from '@mui/icons-material/Bookmark';
 import BookmarkBorder from '@mui/icons-material/BookmarkBorder';
+import api from '@/axiosInstance';
 
 type Props = {
   id: number;
@@ -81,8 +81,8 @@ const CategoryList = ({
     try {
       if (bookmarked) {
         // 북마크 삭제
-        await axios.delete(
-          `${serverUri}/api/v1/users/kakao/${encodeURIComponent(kakao_Id)}/bookmarks`,
+        await api.delete(
+          `/v1/users/kakao/${encodeURIComponent(kakao_Id)}/bookmarks`,
           {
             headers: {
               Authorization: `Bearer ${jwtToken}`
@@ -94,8 +94,8 @@ const CategoryList = ({
         alert('북마크가 삭제되었습니다.');
       } else {
         // 북마크 추가
-        await axios.post(
-          `${serverUri}/api/v1/users/kakao/${encodeURIComponent(kakao_Id)}/bookmarks`,
+        await api.post(
+          `/v1/users/kakao/${encodeURIComponent(kakao_Id)}/bookmarks`,
           {
             headers: {
               Authorization: `Bearer ${jwtToken}`
