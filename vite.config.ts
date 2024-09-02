@@ -21,7 +21,7 @@ export default defineConfig(({ command, mode }) => {
     plugins: [
       react(),
       sentryVitePlugin({
-        org: 'slimdealz',
+        org: 'ktbbigbrother3',
         project: 'slimdealz',
         authToken: process.env.VITE_SENTRY_AUTH_TOKEN, // 여기서 변경
         sourcemaps: {
