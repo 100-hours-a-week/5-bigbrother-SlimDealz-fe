@@ -21,9 +21,9 @@ interface Price {
 
 interface Bookmark {
   bookmarkId: number;
-  productId: number;
-  productName: string;
-  image: string | null;
+  id: number;
+  name: string;
+  imageUrl: string | null;
   shippingFee: string;
   prices: Price[];
   originalPrice: number | null;
@@ -160,9 +160,9 @@ const UserBookmarkPage: React.FC = () => {
           {bookmarks.map((bookmark) => (
             <CategoryList
               key={bookmark.bookmarkId}
-              id={bookmark.productId}
-              image={bookmark.image || 'default_image_url_here'} // Provide a default image if null
-              name={bookmark.productName}
+              id={bookmark.id}
+              image={bookmark.imageUrl || 'default_image_url_here'} // Provide a default image if null
+              name={bookmark.name}
               shipping={bookmark.shippingFee}
               price={bookmark.prices[0]?.setPrice}
               // vendorName={bookmark.prices[0]?.vendor.vendorName} // Added vendor name
