@@ -142,7 +142,7 @@ export const MenuItemsContainer = styled.div`
 `;
 
 export const MenuItem = styled.div`
-  font-size: 16px;
+  font-size: 14px;
   font-weight: bold;
   display: flex;
   align-items: center;
