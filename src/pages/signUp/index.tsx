@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios'; // Axios를 이용해 API 호출
 import { styles } from './styles'; // styles.tsx 파일에서 스타일 가져오기
+import api from '@/axiosInstance';
 
 const SignUpPage: React.FC = () => {
   const navigate = useNavigate();
@@ -70,15 +70,11 @@ const SignUpPage: React.FC = () => {
 
     try {
       const jwtToken = localStorage.getItem('jwtToken'); // JWT 토큰을 로컬 스토리지에서 가져옴
-      const response = await axios.post(
-        import.meta.env.VITE_SERVER_URI+'/api/v1/users/kakaologin',
-        memberData,
-        {
-          headers: {
-            Authorization: `Bearer ${jwtToken}` // Authorization 헤더에 JWT 토큰 추가
-          }
+      const response = await api.post('/v1/users/kakaologin', memberData, {
+        headers: {
+          Authorization: `Bearer ${jwtToken}` // Authorization 헤더에 JWT 토큰 추가
         }
-      );
+      });
       console.log('회원 정보 저장 성공:', response.data);
       navigate('/'); // 저장 후 리다이렉트할 경로
     } catch (error) {

@@ -6,7 +6,6 @@ import Banner from '../../components/layoutWrapper/banner';
 import ThirdSlider from '@/components/product/slider/thirdSlider';
 import { useProductStore } from '@/store/product';
 import api from '@/axiosInstance';
-import axios from 'axios';
 
 const MainPage = () => {
   const {
@@ -47,8 +46,8 @@ const MainPage = () => {
         const jwtToken = localStorage.getItem('jwtToken');
         if (!jwtToken) return;
 
-        const response = await axios.get(
-          `${serverUri}/api/v1/users/kakao/${encodeURIComponent(kakaoId)}/bookmarks`,
+        const response = await api.get(
+          `/v1/users/kakao/${encodeURIComponent(kakaoId)}/bookmarks`,
           {
             headers: {
               Authorization: `Bearer ${jwtToken}`
