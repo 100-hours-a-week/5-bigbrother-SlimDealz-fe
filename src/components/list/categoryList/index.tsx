@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { IconButton } from '@mui/material';
 import {
   Container,
@@ -26,6 +27,7 @@ type Props = {
 const CategoryList = ({ id, image, name, price, shipping }: Props) => {
   const [bookmarked, setBookmarked] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const authenticateAndCheckBookmark = async () => {
@@ -141,8 +143,12 @@ const CategoryList = ({ id, image, name, price, shipping }: Props) => {
     }
   };
 
+  const handleProductClick = (productName: string) => {
+    navigate(`/product/${productName}`);
+  };
+
   return (
-    <Container>
+    <Container onClick={() => handleProductClick(name)}>
       <ImageContainer>
         <img
           src={image}
