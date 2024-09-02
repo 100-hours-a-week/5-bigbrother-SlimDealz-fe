@@ -4,7 +4,6 @@ import CategoryList from '../../components/list/categoryList';
 import { ChickenChestWrapper } from '../main/styles';
 import IconCategory from '../../components/icon/iconCategory';
 import PageNameTag from '../../components/tag/pageNameTag';
-import { Link } from 'react-router-dom';
 import { LoadingProduct } from '@/components/loading';
 import api from '@/axiosInstance';
 
@@ -79,10 +78,7 @@ const CategoryPage = () => {
       ) : (
         <>
           {products.map((product: any, index: number) => (
-            <Link
-              to={`/product/${encodeURIComponent(product.name)}`}
-              key={`${product.id}-${index}`}
-            >
+            <div key={`${product.id}-${index}`}>
               <CategoryList
                 id={product.id}
                 image={product.imageUrl}
@@ -90,7 +86,7 @@ const CategoryPage = () => {
                 shipping={product.shippingFee}
                 price={product.prices?.[0]?.setPrice || '가격 없음'}
               />
-            </Link>
+            </div>
           ))}
           {loading && <LoadingProduct />}
         </>

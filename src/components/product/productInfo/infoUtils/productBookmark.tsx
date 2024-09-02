@@ -10,7 +10,6 @@ interface ProductBookmarkProps {
 
 const ProductBookmark: React.FC<ProductBookmarkProps> = ({ productName }) => {
   const [bookmarked, setBookmarked] = useState<boolean>(false);
-  const encodedPN = encodeURIComponent(productName);
 
   useEffect(() => {
     const authenticateAndCheckBookmark = async () => {
@@ -77,7 +76,6 @@ const ProductBookmark: React.FC<ProductBookmarkProps> = ({ productName }) => {
   const handleBookmarkClick = async () => {
     const jwtToken = localStorage.getItem('jwtToken');
     if (!jwtToken) {
-      alert('로그인이 필요합니다.');
       return;
     }
     const kakao_Id = extractKakaoIdFromToken(jwtToken);

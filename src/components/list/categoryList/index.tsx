@@ -15,6 +15,7 @@ import { getNumberWithComma } from '@/components/utils/conversion';
 import Bookmark from '@mui/icons-material/Bookmark';
 import BookmarkBorder from '@mui/icons-material/BookmarkBorder';
 import api from '@/axiosInstance';
+import LoginRequiredModal from '@/components/modal/logInModal';
 
 type Props = {
   id: number;
@@ -38,9 +39,14 @@ const CategoryList = ({
   // bookmarkCount
 }: Props) => {
   const [bookmarked, setBookmarked] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   // const [bookmarkCount, setBookmarkCount] = useState<number>(0);
   const serverUri = import.meta.env.VITE_SERVER_URI;
   const userId = localStorage.getItem('userId'); // 사용자 ID를 가져옴 (필요시 구현)
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
 
   const extractKakaoIdFromToken = (token: string): string | null => {
     try {
@@ -61,14 +67,15 @@ const CategoryList = ({
     }
   };
 
-  const handleBookmarkClick = async () => {
+  const handleBookmarkClick = async (e: React.MouseEvent) => {
+    e.stopPropagation();
     // setBookmarkCount((prevCount) =>
     //   bookmarked ? prevCount - 1 : prevCount + 1
     // );
 
     const jwtToken = localStorage.getItem('jwtToken');
     if (!jwtToken) {
-      alert('로그인이 필요합니다.');
+      setIsModalOpen(true);
       return;
     }
 
@@ -140,10 +147,7 @@ const CategoryList = ({
 
         <BookmarkCountWrapper>
           <IconButton
-            onClick={(e) => {
-              e.stopPropagation(); // 클릭 이벤트가 부모로 전달되는 것을 방지
-              handleBookmarkClick();
-            }}
+            onClick={handleBookmarkClick}
             style={{ paddingLeft: '10px' }}
           >
             {bookmarked ? <Bookmark /> : <BookmarkBorder />}
@@ -154,6 +158,14 @@ const CategoryList = ({
           <Rating value={rating} readOnly />
         </BookmarkContainer> */}
       </InfoContainer>
+      <LoginRequiredModal
+        open={isModalOpen}
+        onClose={closeModal}
+        onLogin={() => {
+          closeModal();
+          window.location.href = '/signIn';
+        }}
+      />
     </Container>
   );
 };
