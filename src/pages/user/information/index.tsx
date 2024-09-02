@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { styles } from './styles';
 import api from '@/axiosInstance';
 
@@ -83,8 +82,8 @@ const UserInformationPage: React.FC = () => {
         notification_agree
       };
 
-      await axios.put(
-        `http://localhost:8080/api/v1/users/${encodeURIComponent(kakao_Id)}/profile`,
+      await api.put(
+        `/v1/users/${encodeURIComponent(kakao_Id)}/profile`,
         updateData,
         {
           headers: {

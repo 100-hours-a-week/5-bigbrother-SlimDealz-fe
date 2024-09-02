@@ -29,7 +29,7 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
     const jwtToken = localStorage.getItem('jwtToken');
     if (jwtToken) {
       setIsAuthenticated(true);
-    }
+    } else setIsAuthenticated(false);
   }, []);
 
   const handleBookmarkClick = () => {

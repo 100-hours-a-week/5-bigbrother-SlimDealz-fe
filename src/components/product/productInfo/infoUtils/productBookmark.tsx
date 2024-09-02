@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { IconButton } from '@mui/material';
 import BookmarkBorder from '@mui/icons-material/BookmarkBorder';
 import Bookmark from '@mui/icons-material/Bookmark';
-import axios from 'axios';
-import ProductUrl from './productUrl';
+import api from '@/axiosInstance';
 
 interface ProductBookmarkProps {
   productName: string;
@@ -11,8 +10,6 @@ interface ProductBookmarkProps {
 
 const ProductBookmark: React.FC<ProductBookmarkProps> = ({ productName }) => {
   const [bookmarked, setBookmarked] = useState<boolean>(false);
-  const serverUri = import.meta.env.VITE_SERVER_URI;
-  const encodedPN = encodeURIComponent(productName);
 
   useEffect(() => {
     const authenticateAndCheckBookmark = async () => {
@@ -29,8 +26,8 @@ const ProductBookmark: React.FC<ProductBookmarkProps> = ({ productName }) => {
       }
       try {
         // 북마크 상태 확인
-        const bookmarkResponse = await axios.get(
-          `${serverUri}/api/v1/users/kakao/${encodeURIComponent(kakao_Id)}/bookmarks/search`,
+        const bookmarkResponse = await api.get(
+          `/v1/users/kakao/${encodeURIComponent(kakao_Id)}/bookmarks/search`,
           {
             headers: {
               Authorization: `Bearer ${jwtToken}`
@@ -55,7 +52,7 @@ const ProductBookmark: React.FC<ProductBookmarkProps> = ({ productName }) => {
       }
     };
     authenticateAndCheckBookmark();
-  }, [productName, serverUri]);
+  }, [productName]);
 
   const extractKakaoIdFromToken = (token: string): string | null => {
     try {
@@ -79,7 +76,6 @@ const ProductBookmark: React.FC<ProductBookmarkProps> = ({ productName }) => {
   const handleBookmarkClick = async () => {
     const jwtToken = localStorage.getItem('jwtToken');
     if (!jwtToken) {
-      alert('로그인이 필요합니다.');
       return;
     }
     const kakao_Id = extractKakaoIdFromToken(jwtToken);
@@ -90,8 +86,8 @@ const ProductBookmark: React.FC<ProductBookmarkProps> = ({ productName }) => {
     }
     try {
       if (bookmarked) {
-        await axios.delete(
-          `${serverUri}/api/v1/users/kakao/${encodeURIComponent(kakao_Id)}/bookmarks`,
+        await api.delete(
+          `/v1/users/kakao/${encodeURIComponent(kakao_Id)}/bookmarks`,
           {
             headers: {
               Authorization: `Bearer ${jwtToken}`
@@ -102,8 +98,8 @@ const ProductBookmark: React.FC<ProductBookmarkProps> = ({ productName }) => {
         setBookmarked(false);
         alert('북마크가 삭제되었습니다.');
       } else {
-        await axios.post(
-          `${serverUri}/api/v1/users/kakao/${encodeURIComponent(kakao_Id)}/bookmarks`,
+        await api.post(
+          `/v1/users/kakao/${encodeURIComponent(kakao_Id)}/bookmarks`,
           {
             productName
           },
