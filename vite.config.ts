@@ -20,16 +20,16 @@ export default defineConfig(({ command, mode }) => {
     },
     plugins: [
       react(),
-      isProduction &&
-        sentryVitePlugin({
-          org: 'slimdealz',
-          project: 'slimdealz',
-          authToken: process.env.VITE_SENTRY_AUTH_TOKEN, // 여기서 변경
-          sourcemaps: {
-            assets: './dist/**',
-            filesToDeleteAfterUpload: '**/*.map'
-          }
-        })
+      sentryVitePlugin({
+        org: 'slimdealz',
+        project: 'slimdealz',
+        authToken:
+          'https://b3b8e23bcff46de2e1614e4af7a12b36@o4507841841594368.ingest.us.sentry.io/4507841894350848', // 여기서 변경
+        sourcemaps: {
+          assets: './dist/**',
+          filesToDeleteAfterUpload: '**/*.map'
+        }
+      })
     ].filter(Boolean), // 플러그인 리스트에서 false 값을 제거
     build: {
       outDir: 'dist',
