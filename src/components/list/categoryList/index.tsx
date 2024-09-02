@@ -1,14 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { IconButton } from '@mui/material';
 import {
   Container,
   ImageContainer,
   InfoContainer,
-  // BookmarkContainer,
   PriceContainer,
   PriceText,
   SmallText,
-  // BookmarkCount,
   BookmarkCountWrapper
 } from './styles';
 import { getNumberWithComma } from '@/components/utils/conversion';
@@ -22,27 +20,55 @@ type Props = {
   image: string;
   name: string;
   price: number;
-  // per100gPrice: string;
   shipping: string;
-  // rating: number; // 주석 처리: 하드코딩된 값이므로 주석 처리
-  // bookmarkCount: number; // 주석 처리: 하드코딩된 값이므로 주석 처리
 };
 
-const CategoryList = ({
-  id,
-  image,
-  name,
-  price,
-  // per100gPrice,
-  shipping
-  // rating,
-  // bookmarkCount
-}: Props) => {
+const CategoryList = ({ id, image, name, price, shipping }: Props) => {
   const [bookmarked, setBookmarked] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  // const [bookmarkCount, setBookmarkCount] = useState<number>(0);
-  const serverUri = import.meta.env.VITE_SERVER_URI;
-  const userId = localStorage.getItem('userId'); // 사용자 ID를 가져옴 (필요시 구현)
+
+  useEffect(() => {
+    const authenticateAndCheckBookmark = async () => {
+      const jwtToken = localStorage.getItem('jwtToken');
+      if (!jwtToken) {
+        return;
+      }
+
+      const kakao_Id = extractKakaoIdFromToken(jwtToken);
+      if (!kakao_Id) {
+        alert('Kakao_ID를 찾을 수 없습니다.');
+        return;
+      }
+
+      try {
+        const bookmarkResponse = await api.get(
+          `/v1/users/kakao/${encodeURIComponent(kakao_Id)}/bookmarks/search`,
+          {
+            headers: {
+              Authorization: `Bearer ${jwtToken}`
+            },
+            params: { productName: name }
+          }
+        );
+        if (bookmarkResponse.status === 200) {
+          setBookmarked(true);
+        } else {
+          setBookmarked(false);
+        }
+      } catch (error: any) {
+        if (error.response && error.response.status === 404) {
+          setBookmarked(false); // 북마크가 없으면 false로 설정
+        } else {
+          console.error(
+            'Error checking bookmark status:',
+            error.message || error
+          );
+        }
+      }
+    };
+
+    authenticateAndCheckBookmark();
+  }, [name]);
 
   const closeModal = () => {
     setIsModalOpen(false);
@@ -58,7 +84,6 @@ const CategoryList = ({
           .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
           .join('')
       );
-
       const parsedToken = JSON.parse(jsonPayload);
       return parsedToken.kakao_Id || null;
     } catch (error) {
@@ -69,9 +94,6 @@ const CategoryList = ({
 
   const handleBookmarkClick = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    // setBookmarkCount((prevCount) =>
-    //   bookmarked ? prevCount - 1 : prevCount + 1
-    // );
 
     const jwtToken = localStorage.getItem('jwtToken');
     if (!jwtToken) {
@@ -87,7 +109,6 @@ const CategoryList = ({
 
     try {
       if (bookmarked) {
-        // 북마크 삭제
         await api.delete(
           `/v1/users/kakao/${encodeURIComponent(kakao_Id)}/bookmarks`,
           {
@@ -100,31 +121,23 @@ const CategoryList = ({
         setBookmarked(false);
         alert('북마크가 삭제되었습니다.');
       } else {
-        // 북마크 추가
         await api.post(
           `/v1/users/kakao/${encodeURIComponent(kakao_Id)}/bookmarks`,
           {
+            productName: name
+          },
+          {
             headers: {
               Authorization: `Bearer ${jwtToken}`
-            },
-            params: { productName: name }
+            }
           }
         );
         setBookmarked(true);
         alert('북마크가 추가되었습니다.');
       }
     } catch (error: any) {
-      if (error.response) {
-        if (error.response.status === 400) {
-          alert('유효하지 않은 데이터입니다.');
-        } else if (error.response.status === 401) {
-          alert('로그인이 필요합니다.');
-        } else if (error.response.status === 500) {
-          alert('서버 오류가 발생했습니다.');
-        }
-      } else {
-        alert('네트워크 오류가 발생했습니다.');
-      }
+      console.error('Error handling bookmark:', error.message || error);
+      alert('오류가 발생했습니다.');
     }
   };
 
@@ -142,7 +155,6 @@ const CategoryList = ({
         <PriceContainer>
           <PriceText>{getNumberWithComma(price)}원</PriceText>
         </PriceContainer>
-        {/* <SmallText>[100g 당 {per100gPrice}원]</SmallText> */}
         <SmallText>{'배송비 : ' + shipping}</SmallText>
 
         <BookmarkCountWrapper>
@@ -152,11 +164,7 @@ const CategoryList = ({
           >
             {bookmarked ? <Bookmark /> : <BookmarkBorder />}
           </IconButton>
-          {/* <BookmarkCount>{bookmarkCount}</BookmarkCount> */}
         </BookmarkCountWrapper>
-        {/* <BookmarkContainer onClick={(e) => e.stopPropagation()}>
-          <Rating value={rating} readOnly />
-        </BookmarkContainer> */}
       </InfoContainer>
       <LoginRequiredModal
         open={isModalOpen}
