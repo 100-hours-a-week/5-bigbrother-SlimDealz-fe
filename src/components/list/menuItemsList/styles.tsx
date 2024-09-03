@@ -23,6 +23,8 @@ export const MenuItem = styled.div`
   font-size: 14px;
   display: flex;
   align-items: center;
+  font-weight: 700;
+  font-style: normal;
 
   img {
     width: 20px;

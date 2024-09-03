@@ -21,7 +21,6 @@ export const Description = styled.p`
   margin-bottom: 15px;
   line-height: 30px;
   padding-bottom: 100px;
-  font-family: 'Spoqa Han Sans Neo';
 `;
 
 export const KakaoButton = styled.button`
