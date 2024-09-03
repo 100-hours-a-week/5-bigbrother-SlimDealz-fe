@@ -42,9 +42,7 @@ export const AutoCompleteItem = styled.li`
   }
 `;
 
-export const HeaderContainer = styled.div<{
-  $hasLogo: boolean;
-}>`
+export const HeaderContainer = styled.div`
   position: relative;
   width: 100%;
   min-height: 3vh;
@@ -53,7 +51,6 @@ export const HeaderContainer = styled.div<{
   align-items: center;
   z-index: 1000;
   background-color: #ffffff;
-  padding-bottom: ${({ $hasLogo }) => ($hasLogo ? '10px' : '0')};
 `;
 
 export const IconContainer = styled.div<{
@@ -130,15 +127,22 @@ export const PageTitle = styled.div<{
 `;
 
 export const MenuItemsContainer = styled.div`
-  position: sticky;
-  top: 0;
   display: flex;
   justify-content: space-around;
   align-items: center;
   width: 100%;
+  max-width: 390px;
   background-color: #ffffff;
   z-index: 999;
-  margin-top: 15px;
+  padding: 15px;
+
+  &.fixed {
+    position: fixed;
+    top: 0;
+    left: 50%; /* 부모 요소의 중앙에 고정하기 위해 */
+    transform: translateX(-50%); /* 가운데 정렬 */
+    z-index: 1000;
+  }
 `;
 
 export const MenuItem = styled.div`

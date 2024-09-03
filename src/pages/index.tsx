@@ -2,12 +2,10 @@ import React from 'react';
 import Footer from '../components/layoutWrapper/footer';
 import Header from '../components/layoutWrapper/header';
 import { Outlet, useLocation } from 'react-router-dom';
-import { useHeaderHeight } from '@/components/utils/context/headerHeightContext';
 import { Background, Container } from './styles';
 
 const OutLetContainer = () => {
   const location = useLocation();
-  const { height } = useHeaderHeight();
 
   let pageTitle = '';
 

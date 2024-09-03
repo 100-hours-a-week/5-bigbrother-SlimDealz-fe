@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useRef } from 'react';
+import React, { forwardRef, useEffect, useRef, useState } from 'react';
 import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
 import SearchBar from './SearchBar';
 import {
@@ -25,6 +25,26 @@ const Header = forwardRef<HTMLDivElement, HeaderProps>(({ pageTitle }, ref) => {
   const navigate = useNavigate();
   const location = useLocation();
   const headerRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement | null>(null);
+  const [isSticky, setIsSticky] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (menuRef.current) {
+        const stickyPoint = menuRef.current.offsetTop; // 메뉴의 상단 위치
+        if (window.scrollY > stickyPoint) {
+          setIsSticky(true);
+        } else {
+          setIsSticky(false);
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
 
   useEffect(() => {
     const resizeObserver = new ResizeObserver(() => {
@@ -83,15 +103,14 @@ const Header = forwardRef<HTMLDivElement, HeaderProps>(({ pageTitle }, ref) => {
 
   const handleBackClick = () => {
     if (window.history.length > 2) {
-      // 뒤로 갈 히스토리가 있는 경우
       window.history.back();
     } else {
-      navigate('/', { replace: true }); // 히스토리가 없으면 메인 페이지로 이동하고, 이동된 히스토리를 삭제
+      navigate('/', { replace: true });
     }
   };
 
   return (
-    <HeaderContainer ref={headerRef} $hasLogo={hasLogo}>
+    <HeaderContainer ref={headerRef}>
       {(isSpecialPage || isSimplePage || !isMainPage) && (
         <IconContainer onClick={handleBackClick} $isHidden={isMainPage}>
           <ArrowBackRoundedIcon style={{ cursor: 'pointer' }} />
@@ -125,20 +144,22 @@ const Header = forwardRef<HTMLDivElement, HeaderProps>(({ pageTitle }, ref) => {
         </SearchContainer>
       )}
       {isMainPage && (
-        <MenuItemsContainer>
-          <MenuItem>
-            <img src="/assets/icons/chicken.png" alt="chicken" />
-            닭가슴살
-          </MenuItem>
-          <MenuItem>
-            <img src="/assets/icons/protein.png" alt="protein" />
-            프로틴
-          </MenuItem>
-          <MenuItem>
-            <img src="/assets/icons/salad.png" alt="salad" />
-            샐러드
-          </MenuItem>
-        </MenuItemsContainer>
+        <div ref={menuRef}>
+          <MenuItemsContainer className={isSticky ? 'fixed' : ''}>
+            <MenuItem>
+              <img src="/assets/icons/chicken.png" alt="chicken" />
+              닭가슴살
+            </MenuItem>
+            <MenuItem>
+              <img src="/assets/icons/protein.png" alt="protein" />
+              프로틴
+            </MenuItem>
+            <MenuItem>
+              <img src="/assets/icons/salad.png" alt="salad" />
+              샐러드
+            </MenuItem>
+          </MenuItemsContainer>
+        </div>
       )}
     </HeaderContainer>
   );
