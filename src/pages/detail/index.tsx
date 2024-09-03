@@ -21,6 +21,20 @@ const DetailPage = () => {
           `/v1/product-detail?productName=${encodeURIComponent(productName as string)}`
         );
         setProductData(response.data);
+
+        const recentProducts = JSON.parse(
+          localStorage.getItem('recentProducts') || '[]'
+        );
+        const updatedRecentProducts = [
+          response.data,
+          ...recentProducts.filter(
+            (product: any) => product.name !== response.data.name
+          )
+        ];
+        localStorage.setItem(
+          'recentProducts',
+          JSON.stringify(updatedRecentProducts.slice(0, 10))
+        );
       } catch (err: any) {
         if (err.response) {
           if (err.response.status === 404) {
