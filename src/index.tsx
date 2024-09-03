@@ -7,7 +7,7 @@ import GlobalStyles from './styles/globalStyles';
 import * as Sentry from '@sentry/react';
 
 Sentry.init({
-  dsn: import.meta.env.VITE_SENTRY_AUTH_TOKEN,
+  dsn: import.meta.env.VITE_SENTRY_DSN,
   integrations: [
     Sentry.browserTracingIntegration(),
     Sentry.browserProfilingIntegration(),
@@ -16,13 +16,33 @@ Sentry.init({
       // Additional SDK configuration goes in here, for example:
       colorScheme: 'system',
       isNameRequired: true,
-      isEmailRequired: true
+      isEmailRequired: true,
+      showBranding: false,
+      triggerLabel: '버그 신고하기',
+      triggerAriaLabel: '버그 신고하기',
+      formTitle: '버그 신고하기',
+      submitButtonLabel: '제출',
+      cancelButtonLabel: '취소',
+      addScreenshotButtonLabel: '사진 등록',
+      removeScreenshotButtonLabel: '사진 삭제',
+      nameLabel: '제보자',
+      namePlaceholder: '이름을 입력해주세요',
+      emailLabel: '이메일',
+      isRequiredLabel: '(필수)',
+      messageLabel: '버그 설명',
+      messagePlaceholder:
+        '상황을 자세하게 설명해주세요. \n감사히 읽고 수정 조치하겠습니다!',
+      successMessageText: '신고가 접수되었어요. 감사합니다!'
     })
   ],
   // Tracing
   tracesSampleRate: 1.0, //  Capture 100% of the transactions
   // Set 'tracePropagationTargets' to control for which URLs distributed tracing should be enabled
-  tracePropagationTargets: ['localhost', /^https:\/\/slimdealz.store\.io\/api/],
+  tracePropagationTargets: [
+    'localhost',
+    /^https:\/\/api\.slimdealz\.store/,
+    /^https:\/\/slimdealz\.store/
+  ],
   // Set profilesSampleRate to 1.0 to profile every transaction.
   // Since profilesSampleRate is relative to tracesSampleRate,
   // the final profiling rate can be computed as tracesSampleRate * profilesSampleRate

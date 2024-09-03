@@ -3,9 +3,9 @@ import InputBase from '@mui/material/InputBase';
 
 export const CustomInput = styled(InputBase)(({ theme }) => ({
   '& .MuiInputBase-input': {
-    width: '215px',
+    width: '255px',
     padding: '10px 15px',
-    fontSize: '14px'
+    fontSize: '18px'
   }
 }));
 
@@ -45,19 +45,14 @@ export const AutoCompleteItem = styled.li`
 export const HeaderContainer = styled.div<{
   $hasLogo: boolean;
 }>`
-  position: fixed;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
+  position: relative;
   width: 100%;
-  max-width: 390px;
-  min-height: 8vh;
+  min-height: 3vh;
   height: auto;
   flex-direction: column;
   align-items: center;
   z-index: 1000;
-  background-color: #f3e6e6;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
   padding-bottom: ${({ $hasLogo }) => ($hasLogo ? '10px' : '0')};
 `;
 
@@ -85,7 +80,7 @@ export const LogoContainer = styled.div<{
   justify-content: center;
   align-items: center;
   width: 100%;
-  margin-top: 20px;
+  margin-top: 5px;
 
   img {
     width: 200px;
@@ -101,9 +96,8 @@ export const SearchContainer = styled.div<{
   justify-content: center;
   align-items: center;
   width: 100%;
-  padding: 10px 20px 0px;
   box-sizing: border-box;
-  margin-top: 10px;
+  margin-top: 5px;
 
   ${({ $isSpecialPage }) =>
     $isSpecialPage &&
@@ -133,4 +127,28 @@ export const PageTitle = styled.div<{
       display: flex;
       justify-content: center;
     `}
+`;
+
+export const MenuItemsContainer = styled.div`
+  position: sticky;
+  top: 0;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+  background-color: #ffffff;
+  z-index: 999;
+  margin-top: 15px;
+`;
+
+export const MenuItem = styled.div`
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+
+  img {
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+  }
 `;

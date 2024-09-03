@@ -6,13 +6,13 @@ import {
   IconContainer,
   LogoContainer,
   SearchContainer,
-  PageTitle
+  PageTitle,
+  MenuItem,
+  MenuItemsContainer
 } from './styles';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useHeaderHeight } from '@/components/utils/context/headerHeightContext';
 import { SearchContext } from '@/components/utils/context/searchContext';
-
-const logo = '/assets/logo.png';
 
 type HeaderProps = {
   pageTitle?: string;
@@ -104,7 +104,7 @@ const Header = forwardRef<HTMLDivElement, HeaderProps>(({ pageTitle }, ref) => {
       >
         {hasLogo && (
           <img
-            src={logo}
+            src="/assets/logo.png"
             alt="Slimdealz logo"
             onClick={handleLogoClick}
             style={{ cursor: 'pointer' }}
@@ -123,6 +123,22 @@ const Header = forwardRef<HTMLDivElement, HeaderProps>(({ pageTitle }, ref) => {
         >
           <SearchBar />
         </SearchContainer>
+      )}
+      {isMainPage && (
+        <MenuItemsContainer>
+          <MenuItem>
+            <img src="/assets/icons/chicken.png" alt="chicken" />
+            닭가슴살
+          </MenuItem>
+          <MenuItem>
+            <img src="/assets/icons/protein.png" alt="protein" />
+            프로틴
+          </MenuItem>
+          <MenuItem>
+            <img src="/assets/icons/salad.png" alt="salad" />
+            샐러드
+          </MenuItem>
+        </MenuItemsContainer>
       )}
     </HeaderContainer>
   );
