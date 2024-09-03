@@ -56,8 +56,8 @@ const MainPage = () => {
         );
         const bookmarkData = response.data.map((product: any) => ({
           id: product.productId,
-          name: product.name,
-          imageUrl: product.imageUrl,
+          name: product.productName,
+          imageUrl: product.image,
           originalPrice: product.prices[0]?.setPrice,
           salePrice: product.prices[0]?.discountedPrice,
           discountRate: product.discountRate

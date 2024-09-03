@@ -28,6 +28,7 @@ const CategoryList = ({ id, image, name, price, shipping }: Props) => {
   const [bookmarked, setBookmarked] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
+  // const serverUri = import.meta.env.VITE_SERVER_URI;
 
   useEffect(() => {
     const authenticateAndCheckBookmark = async () => {

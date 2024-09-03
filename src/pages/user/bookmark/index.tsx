@@ -46,8 +46,6 @@ const UserBookmarkPage: React.FC = () => {
         console.log('JWT 토큰이 없습니다.');
         setLoading(false);
         return;
-      } else {
-        setIsAuthenticated(true);
       }
 
       const kakao_Id = extractKakaoIdFromToken(jwtToken);
@@ -56,8 +54,6 @@ const UserBookmarkPage: React.FC = () => {
         console.log('Kakao_ID를 찾을 수 없습니다.');
         setLoading(false);
         return;
-      } else {
-        setIsAuthenticated(true);
       }
 
       try {
