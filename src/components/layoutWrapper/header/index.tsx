@@ -6,13 +6,12 @@ import {
   IconContainer,
   LogoContainer,
   SearchContainer,
-  PageTitle,
-  MenuItem,
-  MenuItemsContainer
+  PageTitle
 } from './styles';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useHeaderHeight } from '@/components/utils/context/headerHeightContext';
 import { SearchContext } from '@/components/utils/context/searchContext';
+import MenuItemsContainer from '@/components/list/menuItemsList';
 
 type HeaderProps = {
   pageTitle?: string;
@@ -109,6 +108,12 @@ const Header = forwardRef<HTMLDivElement, HeaderProps>(({ pageTitle }, ref) => {
     }
   };
 
+  const menuItems = [
+    { src: '/assets/icons/chicken.png', alt: 'chicken', label: '닭가슴살' },
+    { src: '/assets/icons/protein.png', alt: 'protein', label: '프로틴' },
+    { src: '/assets/icons/salad.png', alt: 'salad', label: '샐러드' }
+  ];
+
   return (
     <HeaderContainer ref={headerRef}>
       {(isSpecialPage || isSimplePage || !isMainPage) && (
@@ -143,24 +148,7 @@ const Header = forwardRef<HTMLDivElement, HeaderProps>(({ pageTitle }, ref) => {
           <SearchBar />
         </SearchContainer>
       )}
-      {isMainPage && (
-        <div ref={menuRef}>
-          <MenuItemsContainer className={isSticky ? 'fixed' : ''}>
-            <MenuItem>
-              <img src="/assets/icons/chicken.png" alt="chicken" />
-              닭가슴살
-            </MenuItem>
-            <MenuItem>
-              <img src="/assets/icons/protein.png" alt="protein" />
-              프로틴
-            </MenuItem>
-            <MenuItem>
-              <img src="/assets/icons/salad.png" alt="salad" />
-              샐러드
-            </MenuItem>
-          </MenuItemsContainer>
-        </div>
-      )}
+      {isMainPage && <MenuItemsContainer menuItems={menuItems} />}
     </HeaderContainer>
   );
 });

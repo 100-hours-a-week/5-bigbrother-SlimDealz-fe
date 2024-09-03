@@ -125,34 +125,3 @@ export const PageTitle = styled.div<{
       justify-content: center;
     `}
 `;
-
-export const MenuItemsContainer = styled.div`
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  width: 100%;
-  max-width: 390px;
-  background-color: #ffffff;
-  z-index: 999;
-  padding: 15px;
-
-  &.fixed {
-    position: fixed;
-    top: 0;
-    left: 50%; /* 부모 요소의 중앙에 고정하기 위해 */
-    transform: translateX(-50%); /* 가운데 정렬 */
-    z-index: 1000;
-  }
-`;
-
-export const MenuItem = styled.div`
-  font-size: 14px;
-  display: flex;
-  align-items: center;
-
-  img {
-    width: 20px;
-    height: 20px;
-    margin-right: 5px;
-  }
-`;
