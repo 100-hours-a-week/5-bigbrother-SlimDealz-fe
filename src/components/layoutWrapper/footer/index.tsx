@@ -53,8 +53,7 @@ const Footer = () => {
         navigate('/');
         break;
       case 1:
-        navigate('/comingSoon');
-        // navigate('/recentlyView');
+        navigate('/recentlyView');
         break;
       case 2:
         navigate('/comingSoon');
