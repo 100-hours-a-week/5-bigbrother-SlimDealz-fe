@@ -69,9 +69,9 @@ const CategoryPage = () => {
 
   return (
     <Container>
-      <ChickenChestWrapper>
+      {/* <ChickenChestWrapper>
         <IconCategory />
-      </ChickenChestWrapper>
+      </ChickenChestWrapper> */}
       <PageNameTag pageName="추천 페이지" />
       {loading && page === 1 ? (
         <LoadingProduct />

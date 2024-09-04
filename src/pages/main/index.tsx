@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import IconCategory from '../../components/icon/iconCategory';
+import React, { useEffect, useState, useRef } from 'react';
 import ProductSlider from '../../components/product/productSlider';
-import { Container, ChickenChestWrapper } from './styles';
+import { Container } from './styles';
 import Banner from '../../components/layoutWrapper/banner';
 import ThirdSlider from '@/components/product/slider/thirdSlider';
 import { useProductStore } from '@/store/product';
@@ -11,15 +10,16 @@ const MainPage = () => {
   const {
     lowestProducts,
     randomProducts,
-    isLowestProductsLoaded,
-    isRandomProductsLoaded,
     setLowestProducts,
     setRandomProducts
   } = useProductStore();
 
-  const [jwtToken, setJwtToken] = useState<string | null>(null);
   const [kakaoId, setKakaoId] = useState<string | null>(null);
   const [bookmarkProducts, setBookmarkProducts] = useState([]);
+
+  const lowestProductsLoadedRef = useRef(false);
+  const randomProductsLoadedRef = useRef(false);
+
   const serverUri = import.meta.env.VITE_SERVER_URI;
 
   useEffect(() => {
@@ -75,43 +75,43 @@ const MainPage = () => {
     if (token && refreshToken) {
       localStorage.setItem('jwtToken', token);
       localStorage.setItem('refreshToken', refreshToken);
-      setJwtToken(token);
 
       const newUrl = window.location.origin + window.location.pathname;
       window.history.replaceState(null, '', newUrl);
-    } else {
-      const storedToken = localStorage.getItem('jwtToken');
-      if (storedToken) {
-        setJwtToken(storedToken);
-      }
     }
 
-    if (jwtToken) {
-      const kakaoId = extractKakaoIdFromToken(jwtToken);
+    const storedToken = localStorage.getItem('jwtToken');
+    if (storedToken) {
+      const kakaoId = extractKakaoIdFromToken(storedToken);
       if (kakaoId) {
         setKakaoId(kakaoId);
         fetchBookmarkProducts(kakaoId);
       }
     }
-  }, [jwtToken, serverUri]);
+  }, [serverUri]);
 
+  // 제품 정보를 불러오는 useEffect
   useEffect(() => {
     const fetchLowestProducts = async () => {
       try {
-        const response = await api.get('/v1/today-lowest-products');
-        const productData = response.data.map((product: any) => ({
-          id: product.id,
-          name: product.name,
-          imageUrl: product.imageUrl,
-          originalPrice: product.prices[0].setPrice,
-          salePrice: product.prices[0].discountedPrice,
-          discountRate: Math.round(
-            ((product.prices[0].setPrice - product.prices[0].discountedPrice) /
-              product.prices[0].setPrice) *
-              100
-          )
-        }));
-        setLowestProducts(productData);
+        if (!lowestProductsLoadedRef.current) {
+          const response = await api.get('/v1/today-lowest-products');
+          const productData = response.data.map((product: any) => ({
+            id: product.id,
+            name: product.name,
+            imageUrl: product.imageUrl,
+            originalPrice: product.prices[0].setPrice,
+            salePrice: product.prices[0].discountedPrice,
+            discountRate: Math.round(
+              ((product.prices[0].setPrice -
+                product.prices[0].discountedPrice) /
+                product.prices[0].setPrice) *
+                100
+            )
+          }));
+          setLowestProducts(productData);
+          lowestProductsLoadedRef.current = true;
+        }
       } catch (error) {
         console.error('Error fetching lowest products:', error);
       }
@@ -119,7 +119,7 @@ const MainPage = () => {
 
     const fetchRandomProducts = async () => {
       try {
-        if (!isRandomProductsLoaded) {
+        if (!randomProductsLoadedRef.current) {
           const response = await api.get('/v1/random-products');
           const productData = response.data.map((product: any) => ({
             id: product.id,
@@ -135,28 +135,26 @@ const MainPage = () => {
             )
           }));
           setRandomProducts(productData);
+          randomProductsLoadedRef.current = true;
         }
       } catch (error) {
         console.error('Error fetching random products:', error);
       }
     };
 
-    fetchLowestProducts();
-    fetchRandomProducts();
-  }, [
-    isLowestProductsLoaded,
-    isRandomProductsLoaded,
-    setLowestProducts,
-    setRandomProducts
-  ]);
+    if (!lowestProductsLoadedRef.current) {
+      fetchLowestProducts();
+    }
+
+    if (!randomProductsLoadedRef.current) {
+      fetchRandomProducts();
+    }
+  }, [setLowestProducts, setRandomProducts]);
 
   return (
     <>
       <Banner />
       <Container>
-        <ChickenChestWrapper>
-          <IconCategory />
-        </ChickenChestWrapper>
         {kakaoId && bookmarkProducts.length > 0 && (
           <ProductSlider title="MY BOOKMARKS" products={bookmarkProducts} />
         )}
