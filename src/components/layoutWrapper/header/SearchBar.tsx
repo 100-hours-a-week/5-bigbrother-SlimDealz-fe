@@ -73,7 +73,7 @@ const SearchBar: React.FC = () => {
           height: 50,
           boxShadow: 'none',
           borderRadius: '6px',
-          border: '1px solid #FFA000'
+          border: '1px solid #FFAF00'
         }}
         onSubmit={(event) => {
           event.preventDefault();
@@ -92,7 +92,7 @@ const SearchBar: React.FC = () => {
           type="button"
           sx={{
             p: '7px',
-            backgroundColor: '#FFA000', // Background color of the button
+            backgroundColor: '#FFAF00', // Background color of the button
             borderRadius: '6px', // Make sure it matches the border radius
             '&:hover': {
               backgroundColor: '#FFB000' // Slightly different on hover, optional

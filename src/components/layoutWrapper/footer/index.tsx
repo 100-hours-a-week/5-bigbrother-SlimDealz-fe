@@ -1,43 +1,38 @@
 import React, { useEffect, useState } from 'react';
-import BottomNavigation from '@mui/material/BottomNavigation';
-import BottomNavigationAction from '@mui/material/BottomNavigationAction';
-import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
-import ArchiveOutlinedIcon from '@mui/icons-material/ArchiveOutlined';
-import NotificationsRoundedIcon from '@mui/icons-material/NotificationsRounded';
-import BookmarkRoundedIcon from '@mui/icons-material/BookmarkRounded';
-import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
-import { FooterContainer } from './styles';
+import { AiOutlineHome } from 'react-icons/ai';
+import { FiBox } from 'react-icons/fi';
+import { IoMdNotificationsOutline } from 'react-icons/io';
+import { BsBookmark } from 'react-icons/bs';
+import { FaRegUserCircle } from 'react-icons/fa';
+import { FooterContainer, StyledNavAction, CenterIconWrapper } from './styles';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Fab from '@mui/material/Fab';
 import NavigationIcon from '@mui/icons-material/Navigation';
 
+interface NavActionProps {
+  icon: JSX.Element;
+  label: string;
+  active: boolean;
+  onClick: () => void;
+}
+
+const CustomBottomNavigationAction: React.FC<NavActionProps> = ({
+  icon,
+  label,
+  active,
+  onClick
+}) => (
+  <StyledNavAction active={active} onClick={onClick}>
+    {icon}
+    <span>{label}</span>
+  </StyledNavAction>
+);
+
 const Footer = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [value, setValue] = React.useState(0);
+  const [value, setValue] = useState(0);
   const navigate = useNavigate();
   const location = useLocation();
-
-  useEffect(() => {
-    switch (location.pathname) {
-      case '/':
-        setValue(0);
-        break;
-      case '/recentlyView':
-        setValue(1);
-        break;
-      case '/notifications':
-        setValue(2);
-        break;
-      case '/bookmark':
-        setValue(3);
-        break;
-      case '/myPage':
-        setValue(4);
-        break;
-      default:
-        setValue(0);
-    }
-  }, [location.pathname]);
 
   useEffect(() => {
     const jwtToken = localStorage.getItem('jwtToken');
@@ -45,6 +40,16 @@ const Footer = () => {
       setIsAuthenticated(true);
     } else setIsAuthenticated(false);
   }, []);
+
+  const shouldShowNavigationIcon = () => {
+    return ['/category', '/searchResults', '/bookmark'].some((path) =>
+      location.pathname.startsWith(path)
+    );
+  };
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const handleNavigation = (newValue: number) => {
     setValue(newValue);
@@ -75,56 +80,48 @@ const Footer = () => {
     }
   };
 
-  const shouldShowNavigationIcon = () => {
-    return ['/category', '/searchResults', '/bookmark'].some((path) =>
-      location.pathname.startsWith(path)
-    );
-  };
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
   return (
     <FooterContainer>
       <div
         style={{
-          width: 390
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'space-between'
         }}
       >
-        <BottomNavigation
-          showLabels
-          value={value}
-          onChange={(event, newValue) => {
-            handleNavigation(newValue);
-          }}
-          sx={{
-            '& .Mui-selected': {
-              color: '#112f08 !important' // 선택된 아이콘과 텍스트 색상 변경
-            },
-            '& .MuiBottomNavigationAction-root': {
-              color: '#5c5b5b' // 기본 아이콘 및 텍스트 색상 변경
-            }
-          }}
+        <CustomBottomNavigationAction
+          icon={<AiOutlineHome />}
+          label="홈"
+          active={value === 0}
+          onClick={() => handleNavigation(0)}
+        />
+        <CustomBottomNavigationAction
+          icon={<FiBox />}
+          label="최근본상품"
+          active={value === 1}
+          onClick={() => handleNavigation(1)}
+        />
+
+        {/* Center Icon with diamond background */}
+        <CenterIconWrapper
+          active={value === 2}
+          onClick={() => handleNavigation(2)}
         >
-          <BottomNavigationAction label="Home" icon={<HomeOutlinedIcon />} />
-          <BottomNavigationAction
-            label="Recents"
-            icon={<ArchiveOutlinedIcon />}
-          />
-          <BottomNavigationAction
-            label="Notifications"
-            icon={<NotificationsRoundedIcon />}
-          />
-          <BottomNavigationAction
-            label="Bookmarks"
-            icon={<BookmarkRoundedIcon />}
-          />
-          <BottomNavigationAction
-            label="My page"
-            icon={<AccountCircleOutlinedIcon />}
-          />
-        </BottomNavigation>
+          <IoMdNotificationsOutline />
+        </CenterIconWrapper>
+
+        <CustomBottomNavigationAction
+          icon={<BsBookmark />}
+          label="북마크 상품"
+          active={value === 3}
+          onClick={() => handleNavigation(3)}
+        />
+        <CustomBottomNavigationAction
+          icon={<FaRegUserCircle />}
+          label="마이페이지"
+          active={value === 4}
+          onClick={() => handleNavigation(4)}
+        />
       </div>
       {shouldShowNavigationIcon() && (
         <Fab
