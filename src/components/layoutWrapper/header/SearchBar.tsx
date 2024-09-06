@@ -22,15 +22,17 @@ const SearchBar: React.FC = () => {
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
-    setSearchQuery(value);
+    if (value.length <= 50) {
+      setSearchQuery(value);
 
-    if (value) {
-      const filtered = words.filter((word) =>
-        word.toLowerCase().includes(value.toLowerCase())
-      );
-      setFilteredWords(filtered);
-    } else {
-      setFilteredWords([]);
+      if (value) {
+        const filtered = words.filter((word) =>
+          word.toLowerCase().includes(value.toLowerCase())
+        );
+        setFilteredWords(filtered);
+      } else {
+        setFilteredWords([]);
+      }
     }
   };
 
