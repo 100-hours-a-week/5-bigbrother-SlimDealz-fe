@@ -35,7 +35,7 @@ const MyMainPage = () => {
     deleteCookie('jwtToken');
     deleteCookie('kakaoId')
     localStorage.removeItem('refreshToken');
-    navigate('/signIn');
+    navigate('/');
   };
   
   const deleteCookie = (name: string) => {

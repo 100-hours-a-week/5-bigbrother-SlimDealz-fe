@@ -37,14 +37,12 @@ const Footer = () => {
       default:
         setValue(0);
     }
-  }, [location.pathname]);
-
-  useEffect(() => {
-    const jwtToken = getCookie('jwtToken'); // 쿠키에서 refreshToken을 가져옴
+    
+    const jwtToken = getCookie('jwtToken'); // 쿠키에서 jwtToken 가져옴
     if (jwtToken) {
       setIsAuthenticated(true);
     } else setIsAuthenticated(false);
-  }, []);
+  }, [location.pathname]);
 
   const handleNavigation = (newValue: number) => {
     setValue(newValue);

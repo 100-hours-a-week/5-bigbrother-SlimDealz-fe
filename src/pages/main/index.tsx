@@ -27,19 +27,28 @@ const MainPage = () => {
     return null;
   };
 
-  useEffect(() => {
-    // 쿠키에서 refreshToken 가져와 로컬 스토리지에 저장
-    const refreshToken = getCookie('refreshToken'); // 쿠키에서 refreshToken을 가져옴
-    if (refreshToken) {
-      console.log('Refresh Token from cookie:', refreshToken);
-      localStorage.setItem('refreshToken', refreshToken); // 로컬 스토리지에 저장
-    } else {
-      console.warn('쿠키에 refreshToken이 없습니다.');
-    }
-  }, []);
+  const deleteCookie = (name: string) => {
+    document.cookie = `${name}=; Max-Age=0; path=/; domain=${window.location.hostname};`;
+  };
+  
+  // 쿠키에서 refreshToken 가져와 로컬 스토리지에 저장
+  const refreshToken = getCookie('refreshToken'); // 쿠키에서 refreshToken을 가져옴
+  if (refreshToken) {
+    console.log('Refresh Token from cookie:', refreshToken);
+    localStorage.setItem('refreshToken', refreshToken); // 로컬 스토리지에 저장
+    deleteCookie('refreshToken');
+  } else {
+    console.warn('쿠키에 refreshToken이 없습니다.');
+  }
 
   useEffect(() => {
     const fetchBookmarkProducts = async () => {
+      const jwtToken = getCookie('jwtToken'); // JWT 토큰을 확인
+      if (!jwtToken) {
+        console.log('JWT 토큰이 없으므로 북마크 API 요청을 건너뜁니다.');
+        return; // 토큰이 없으면 API 요청을 수행하지 않음
+      }
+
       try {
         const response = await api.get('/v1/users/bookmarks');  // JWT 토큰이 자동으로 전송됨
         const bookmarkData = response.data.map((product: any) => ({
