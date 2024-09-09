@@ -13,7 +13,6 @@ import {
   SalePrice,
   StyledSwiperContainer
 } from './styles';
-import { Title } from '../productSlider/styles';
 import { useNavigate } from 'react-router-dom';
 import { getNumberWithComma } from '@/components/utils/conversion';
 import { LoadingSearch } from '@/components/loading';
@@ -54,7 +53,6 @@ const ThirdSlider: React.FC<ThirdSliderProps> = ({ items, title }) => {
         flexDirection: 'column'
       }}
     >
-      <Title onClick={handleTitleClick}>{title}</Title>
       {items.length > 0 ? (
         <StyledSwiperContainer>
           <Swiper

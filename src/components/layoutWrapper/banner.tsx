@@ -40,7 +40,7 @@ const CarouselInner = styled.div<{ $activeIndex: number }>`
 
 const CarouselItem = memo(styled.div<{ $backgroundImage: string }>`
   width: 100%;
-  height: 30vh;
+  height: 25vh;
   background-size: cover;
   background-position: center;
   flex-shrink: 0;
