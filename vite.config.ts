@@ -48,6 +48,18 @@ export default defineConfig(({ command, mode }) => {
           }
         }
       }
+    },
+    server: {
+      port: 3000,
+      proxy: {
+        '/api': {
+          target: isProduction
+            ? 'https://api.slimdealz.store/'
+            : 'http://localhost:8080/',
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/api/, '')
+        }
+      }
     }
   };
 });

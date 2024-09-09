@@ -3,7 +3,7 @@ import Footer from '../components/layoutWrapper/footer';
 import Header from '../components/layoutWrapper/header';
 import { Outlet, useLocation } from 'react-router-dom';
 import { useHeaderHeight } from '@/components/utils/context/headerHeightContext';
-import { styles } from './styles';
+import { Background, Container } from './styles';
 
 const OutLetContainer = () => {
   const location = useLocation();
@@ -22,13 +22,13 @@ const OutLetContainer = () => {
   }
 
   return (
-    <div style={{ backgroundColor: '#f9f9f9' }}>
-      <Header pageTitle={pageTitle} />
-      <styles.Container $paddingTop={height}>
+    <Background>
+      <Container>
+        <Header pageTitle={pageTitle} />
         <Outlet />
-      </styles.Container>
+      </Container>
       <Footer />
-    </div>
+    </Background>
   );
 };
 

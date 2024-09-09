@@ -40,7 +40,7 @@ const Footer = () => {
   }, [location.pathname]);
 
   useEffect(() => {
-    const jwtToken = localStorage.getItem('jwtToken');
+    const jwtToken = getCookie('jwtToken'); // 쿠키에서 refreshToken을 가져옴
     if (jwtToken) {
       setIsAuthenticated(true);
     } else setIsAuthenticated(false);
@@ -78,6 +78,14 @@ const Footer = () => {
     return ['/category', '/searchResults', '/bookmark'].some((path) =>
       location.pathname.startsWith(path)
     );
+  };
+
+  // 쿠키에서 특정 값을 가져오는 함수
+  const getCookie = (name: string): string | null => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop()?.split(';').shift() || null;
+    return null;
   };
 
   const scrollToTop = () => {
