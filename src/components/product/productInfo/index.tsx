@@ -24,9 +24,17 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const navigate = useNavigate();
+  
+  // 쿠키에서 JWT 토큰을 가져오는 함수
+  const getCookie = (name: string): string | null => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop()?.split(';').shift() || null;
+    return null;
+  };
 
   useEffect(() => {
-    const jwtToken = localStorage.getItem('jwtToken');
+    const jwtToken = getCookie('jwtToken');
     if (jwtToken) {
       setIsAuthenticated(true);
     } else setIsAuthenticated(false);

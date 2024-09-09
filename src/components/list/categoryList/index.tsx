@@ -31,20 +31,14 @@ const CategoryList = ({ id, image, name, price, shipping }: Props) => {
 
   useEffect(() => {
     const authenticateAndCheckBookmark = async () => {
-      const jwtToken = localStorage.getItem('jwtToken');
+      const jwtToken = getCookie('jwtToken'); // 쿠키에서 JWT 토큰 가져오기
       if (!jwtToken) {
-        return;
-      }
-
-      const kakao_Id = extractKakaoIdFromToken(jwtToken);
-      if (!kakao_Id) {
-        alert('Kakao_ID를 찾을 수 없습니다.');
         return;
       }
 
       try {
         const bookmarkResponse = await api.get(
-          `/v1/users/kakao/${encodeURIComponent(kakao_Id)}/bookmarks/search`,
+          `/v1/users/bookmarks/search`,
           {
             headers: {
               Authorization: `Bearer ${jwtToken}`
@@ -52,11 +46,9 @@ const CategoryList = ({ id, image, name, price, shipping }: Props) => {
             params: { productName: name }
           }
         );
-        if (bookmarkResponse.status === 200) {
-          setBookmarked(true);
-        } else {
-          setBookmarked(false);
-        }
+
+        // 응답의 데이터에 따라 북마크 상태를 설정
+        setBookmarked(bookmarkResponse.data);
       } catch (error: any) {
         if (error.response && error.response.status === 404) {
           setBookmarked(false); // 북마크가 없으면 false로 설정
@@ -76,43 +68,19 @@ const CategoryList = ({ id, image, name, price, shipping }: Props) => {
     setIsModalOpen(false);
   };
 
-  const extractKakaoIdFromToken = (token: string): string | null => {
-    try {
-      const base64Url = token.split('.')[1];
-      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-      const jsonPayload = decodeURIComponent(
-        atob(base64)
-          .split('')
-          .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-          .join('')
-      );
-      const parsedToken = JSON.parse(jsonPayload);
-      return parsedToken.kakao_Id || null;
-    } catch (error) {
-      console.error('JWT 토큰 파싱 오류:', error);
-      return null;
-    }
-  };
-
   const handleBookmarkClick = async (e: React.MouseEvent) => {
     e.stopPropagation();
 
-    const jwtToken = localStorage.getItem('jwtToken');
+    const jwtToken = getCookie('jwtToken'); // 쿠키에서 JWT 토큰 가져오기
     if (!jwtToken) {
       setIsModalOpen(true);
-      return;
-    }
-
-    const kakao_Id = extractKakaoIdFromToken(jwtToken);
-    if (!kakao_Id) {
-      alert('Kakao ID를 찾을 수 없습니다.');
       return;
     }
 
     try {
       if (bookmarked) {
         await api.delete(
-          `/v1/users/kakao/${encodeURIComponent(kakao_Id)}/bookmarks`,
+          `/v1/users/bookmarks`,
           {
             headers: {
               Authorization: `Bearer ${jwtToken}`
@@ -124,7 +92,7 @@ const CategoryList = ({ id, image, name, price, shipping }: Props) => {
         alert('북마크가 삭제되었습니다.');
       } else {
         await api.post(
-          `/v1/users/kakao/${encodeURIComponent(kakao_Id)}/bookmarks`,
+          `/v1/users/bookmarks`,
           {
             productName: name
           },
@@ -145,6 +113,14 @@ const CategoryList = ({ id, image, name, price, shipping }: Props) => {
 
   const handleProductClick = (productName: string) => {
     navigate(`/product/${productName}`);
+  };
+
+  // 쿠키에서 JWT 토큰을 가져오는 함수
+  const getCookie = (name: string): string | null => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop()?.split(';').shift() || null;
+    return null;
   };
 
   return (

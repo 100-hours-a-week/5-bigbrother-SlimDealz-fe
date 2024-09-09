@@ -17,47 +17,35 @@ const MainPage = () => {
     setRandomProducts
   } = useProductStore();
 
-  const [jwtToken, setJwtToken] = useState<string | null>(null);
-  const [kakaoId, setKakaoId] = useState<string | null>(null);
   const [bookmarkProducts, setBookmarkProducts] = useState([]);
-  const serverUri = import.meta.env.VITE_SERVER_URI;
+
+  // 쿠키에서 특정 값을 가져오는 함수
+  const getCookie = (name: string): string | null => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop()?.split(';').shift() || null;
+    return null;
+  };
 
   useEffect(() => {
-    const extractKakaoIdFromToken = (token: string): string | null => {
-      try {
-        const base64Url = token.split('.')[1];
-        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        const jsonPayload = decodeURIComponent(
-          atob(base64)
-            .split('')
-            .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-            .join('')
-        );
-        const parsedToken = JSON.parse(jsonPayload);
-        return parsedToken.kakao_Id || null;
-      } catch (error) {
-        console.error('JWT token parsing error:', error);
-        return null;
-      }
-    };
+    // 쿠키에서 refreshToken 가져와 로컬 스토리지에 저장
+    const refreshToken = getCookie('refreshToken'); // 쿠키에서 refreshToken을 가져옴
+    if (refreshToken) {
+      console.log('Refresh Token from cookie:', refreshToken);
+      localStorage.setItem('refreshToken', refreshToken); // 로컬 스토리지에 저장
+    } else {
+      console.warn('쿠키에 refreshToken이 없습니다.');
+    }
+  }, []);
 
-    const fetchBookmarkProducts = async (kakaoId: string) => {
+  useEffect(() => {
+    const fetchBookmarkProducts = async () => {
       try {
-        const jwtToken = localStorage.getItem('jwtToken');
-        if (!jwtToken) return;
-
-        const response = await api.get(
-          `/v1/users/kakao/${encodeURIComponent(kakaoId)}/bookmarks`,
-          {
-            headers: {
-              Authorization: `Bearer ${jwtToken}`
-            }
-          }
-        );
+        const response = await api.get('/v1/users/bookmarks');  // JWT 토큰이 자동으로 전송됨
         const bookmarkData = response.data.map((product: any) => ({
           id: product.productId,
-          name: product.name,
-          imageUrl: product.imageUrl,
+          name: product.productName,
+          imageUrl: product.image,
           originalPrice: product.prices[0]?.setPrice,
           salePrice: product.prices[0]?.discountedPrice,
           discountRate: product.discountRate
@@ -68,32 +56,8 @@ const MainPage = () => {
       }
     };
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const token = urlParams.get('jwtToken');
-    const refreshToken = urlParams.get('refreshToken');
-
-    if (token && refreshToken) {
-      localStorage.setItem('jwtToken', token);
-      localStorage.setItem('refreshToken', refreshToken);
-      setJwtToken(token);
-
-      const newUrl = window.location.origin + window.location.pathname;
-      window.history.replaceState(null, '', newUrl);
-    } else {
-      const storedToken = localStorage.getItem('jwtToken');
-      if (storedToken) {
-        setJwtToken(storedToken);
-      }
-    }
-
-    if (jwtToken) {
-      const kakaoId = extractKakaoIdFromToken(jwtToken);
-      if (kakaoId) {
-        setKakaoId(kakaoId);
-        fetchBookmarkProducts(kakaoId);
-      }
-    }
-  }, [jwtToken, serverUri]);
+    fetchBookmarkProducts();
+  }, []);
 
   useEffect(() => {
     const fetchLowestProducts = async () => {
@@ -157,7 +121,7 @@ const MainPage = () => {
         <ChickenChestWrapper>
           <IconCategory />
         </ChickenChestWrapper>
-        {kakaoId && bookmarkProducts.length > 0 && (
+        {bookmarkProducts.length > 0 && (
           <ProductSlider title="MY BOOKMARKS" products={bookmarkProducts} />
         )}
         <ProductSlider title="오늘의 최저가" products={lowestProducts} />
