@@ -35,7 +35,9 @@ const MyMainPage = () => {
     deleteCookie('jwtToken');
     deleteCookie('kakaoId')
     localStorage.removeItem('refreshToken');
-    navigate('/');
+    const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/logout?client_id=${import.meta.env.VITE_KAKAO_API_KEY}&logout_redirect_uri=${encodeURIComponent(import.meta.env.VITE_SERVER_URI)}/auth/kakao/logout`;
+    window.location.href = KAKAO_AUTH_URL;
+    // navigate('/');
   };
   
   const deleteCookie = (name: string) => {

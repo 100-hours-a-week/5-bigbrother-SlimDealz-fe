@@ -9,7 +9,7 @@ const api = axios.create({
 // JWT 토큰 갱신을 위한 함수
 const refreshAccessToken = async () => {
   try {
-    const refreshToken = getCookie('refreshToken'); // 쿠키에서 Refresh Token을 가져옴
+    const refreshToken = localStorage.getItem('refreshToken'); // 쿠키에서 Refresh Token을 가져옴
     const jwtToken = getCookie('jwtToken')
     if (!refreshToken) {
       throw new Error('Refresh Token이 없습니다.');
