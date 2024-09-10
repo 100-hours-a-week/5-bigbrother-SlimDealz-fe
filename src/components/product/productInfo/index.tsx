@@ -11,6 +11,7 @@ import {
 } from './styles';
 import { useNavigate } from 'react-router-dom';
 import LoginRequiredModal from '@/components/modal/logInModal';
+import { getCookie } from '@/components/utils/cookieUtils';
 
 interface ProductInfoProps {
   originalPrice: number;
@@ -26,7 +27,7 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
   const navigate = useNavigate();
 
   useEffect(() => {
-    const jwtToken = localStorage.getItem('jwtToken');
+    const jwtToken = getCookie('jwtToken');
     if (jwtToken) {
       setIsAuthenticated(true);
     } else setIsAuthenticated(false);

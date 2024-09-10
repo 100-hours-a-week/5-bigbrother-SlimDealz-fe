@@ -10,6 +10,7 @@ import { FooterContainer } from './styles';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Fab from '@mui/material/Fab';
 import NavigationIcon from '@mui/icons-material/Navigation';
+import { getCookie } from '@/components/utils/cookieUtils';
 
 const Footer = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
@@ -37,14 +38,13 @@ const Footer = () => {
       default:
         setValue(0);
     }
-  }, [location.pathname]);
 
-  useEffect(() => {
-    const jwtToken = localStorage.getItem('jwtToken');
+    const jwtToken = getCookie('jwtToken');
+
     if (jwtToken) {
       setIsAuthenticated(true);
     } else setIsAuthenticated(false);
-  }, []);
+  }, [location.pathname]);
 
   const handleNavigation = (newValue: number) => {
     setValue(newValue);
@@ -99,10 +99,10 @@ const Footer = () => {
           }}
           sx={{
             '& .Mui-selected': {
-              color: '#112f08 !important' // 선택된 아이콘과 텍스트 색상 변경
+              color: '#112f08 !important'
             },
             '& .MuiBottomNavigationAction-root': {
-              color: '#5c5b5b' // 기본 아이콘 및 텍스트 색상 변경
+              color: '#5c5b5b'
             }
           }}
         >

@@ -3,6 +3,7 @@ import { IconButton } from '@mui/material';
 import BookmarkBorder from '@mui/icons-material/BookmarkBorder';
 import Bookmark from '@mui/icons-material/Bookmark';
 import api from '@/axiosInstance';
+import { getCookie } from '@/components/utils/cookieUtils';
 
 interface ProductBookmarkProps {
   productName: string;
@@ -13,33 +14,22 @@ const ProductBookmark: React.FC<ProductBookmarkProps> = ({ productName }) => {
 
   useEffect(() => {
     const authenticateAndCheckBookmark = async () => {
-      const jwtToken = localStorage.getItem('jwtToken');
+      const jwtToken = getCookie('jwtToken'); // 쿠키에서 JWT 토큰 가져오기
       if (!jwtToken) {
-        // alert('JWT 토큰이 없습니다.');
         return;
       }
-      const kakao_Id = extractKakaoIdFromToken(jwtToken);
 
-      if (!kakao_Id) {
-        alert('Kakao_ID를 찾을 수 없습니다.');
-        return;
-      }
       try {
         // 북마크 상태 확인
-        const bookmarkResponse = await api.get(
-          `/v1/users/kakao/${encodeURIComponent(kakao_Id)}/bookmarks/search`,
-          {
-            headers: {
-              Authorization: `Bearer ${jwtToken}`
-            },
-            params: { productName: productName }
-          }
-        );
-        if (bookmarkResponse.status === 200) {
-          setBookmarked(true);
-        } else {
-          setBookmarked(false);
-        }
+        const bookmarkResponse = await api.get(`/v1/users/bookmarks/search`, {
+          headers: {
+            Authorization: `Bearer ${jwtToken}`
+          },
+          params: { productName: productName }
+        });
+
+        // 응답의 데이터가 true/false에 따라 상태 변경
+        setBookmarked(bookmarkResponse.data);
       } catch (error: any) {
         if (error.response && error.response.status === 404) {
           setBookmarked(false); // 북마크가 없으면 false로 설정
@@ -54,52 +44,24 @@ const ProductBookmark: React.FC<ProductBookmarkProps> = ({ productName }) => {
     authenticateAndCheckBookmark();
   }, [productName]);
 
-  const extractKakaoIdFromToken = (token: string): string | null => {
-    try {
-      const base64Url = token.split('.')[1];
-      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-      const jsonPayload = decodeURIComponent(
-        atob(base64)
-          .split('')
-          .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-          .join('')
-      );
-      const parsedToken = JSON.parse(jsonPayload);
-
-      return parsedToken.kakao_Id || null;
-    } catch (error: any) {
-      console.error('JWT token parsing error:', error.message || error);
-      return null;
-    }
-  };
-
   const handleBookmarkClick = async () => {
-    const jwtToken = localStorage.getItem('jwtToken');
+    const jwtToken = getCookie('jwtToken'); // 쿠키에서 JWT 토큰 가져오기
     if (!jwtToken) {
-      return;
-    }
-    const kakao_Id = extractKakaoIdFromToken(jwtToken);
-
-    if (!kakao_Id) {
-      alert('Kakao_ID를 찾을 수 없습니다.');
       return;
     }
     try {
       if (bookmarked) {
-        await api.delete(
-          `/v1/users/kakao/${encodeURIComponent(kakao_Id)}/bookmarks`,
-          {
-            headers: {
-              Authorization: `Bearer ${jwtToken}`
-            },
-            params: { productName: productName }
-          }
-        );
+        await api.delete(`/v1/users/bookmarks`, {
+          headers: {
+            Authorization: `Bearer ${jwtToken}`
+          },
+          params: { productName: productName }
+        });
         setBookmarked(false);
         alert('북마크가 삭제되었습니다.');
       } else {
         await api.post(
-          `/v1/users/kakao/${encodeURIComponent(kakao_Id)}/bookmarks`,
+          `/v1/users/bookmarks`,
           {
             productName
           },
