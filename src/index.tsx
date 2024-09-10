@@ -6,7 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import GlobalStyles from './styles/globalStyles';
 import * as Sentry from '@sentry/react';
 import { initializeApp } from 'firebase/app';
-import { getMessaging } from 'firebase/messaging';
+import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 
 Sentry.init({
   dsn: import.meta.env.VITE_SENTRY_DSN,
@@ -58,11 +58,53 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const messaging = getMessaging(app);
+export const messaging = getMessaging(app);
+
+// Service Worker 등록 및 Firebase 설정 전달
+navigator.serviceWorker
+  .register('/firebase-messaging-sw.js')
+  .then((registration) => {
+    // Firebase 메시징 설정 전달
+    registration.active?.postMessage(firebaseConfig);
+
+    // FCM 토큰 요청
+    getToken(messaging, {
+      vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY,
+      serviceWorkerRegistration: registration
+    })
+      .then((currentToken) => {
+        if (currentToken) {
+          console.log('FCM Token:', currentToken);
+        } else {
+          console.warn('No registration token available.');
+        }
+      })
+      .catch((err) => {
+        console.error('An error occurred while retrieving token. ', err);
+      });
+  })
+  .catch((err) => {
+    console.error('Service Worker registration failed: ', err);
+  });
+
+// Foreground 메시지 수신 처리
+onMessage(messaging, (payload) => {
+  console.log('Message received. ', payload);
+
+  // 알림 생성
+  if (Notification.permission === 'granted') {
+    const { title, body, icon } = payload.notification || {};
+    new Notification(title || 'New Notification', {
+      body: body || 'You have a new message.',
+      icon: icon || '/default-icon.png'
+    });
+  }
+});
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
+
 root.render(
   <>
     <GlobalStyles />
