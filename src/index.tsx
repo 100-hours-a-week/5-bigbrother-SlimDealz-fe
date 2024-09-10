@@ -74,7 +74,7 @@ navigator.serviceWorker
     })
       .then((currentToken) => {
         if (currentToken) {
-          console.log('FCM Token:', currentToken);
+          // console.log('FCM Token:', currentToken);
         } else {
           console.warn('No registration token available.');
         }
@@ -89,7 +89,7 @@ navigator.serviceWorker
 
 // Foreground 메시지 수신 처리
 onMessage(messaging, (payload) => {
-  console.log('Message received. ', payload);
+  // console.log('Message received. ', payload);
 
   // 알림 생성
   if (Notification.permission === 'granted') {

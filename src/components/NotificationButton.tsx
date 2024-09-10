@@ -15,7 +15,7 @@ const NotificationButton: React.FC = () => {
           vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY
         });
         if (token) {
-          console.log('FCM Token:', token);
+          // console.log('FCM Token:', token);
           setFcmToken(token);
           setTokenFound(true);
         } else {
