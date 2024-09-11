@@ -7,6 +7,7 @@ import api from '@/axiosInstance';
 import SliderName from '@/components/product/slider/name';
 import DragSlider from '@/components/product/slider/dragSlider';
 import ThirdSlider from '@/components/product/slider/thirdSlider';
+import { deleteCookie, getCookie } from '@/components/utils/cookieUtils';
 
 const MainPage = () => {
   const {
@@ -49,7 +50,7 @@ const MainPage = () => {
             originalPrice: product.prices[0].setPrice
           }));
           setRandomProducts(productData);
-          randomProductsLoadedRef.current = true;
+          randomProductsLoadedRef.current = true
         }
       } catch (error) {
         console.error('Error fetching random products:', error);

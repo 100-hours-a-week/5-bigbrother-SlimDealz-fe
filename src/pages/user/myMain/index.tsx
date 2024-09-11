@@ -10,6 +10,7 @@ import {
 import PagePreparationModal from '@/components/modal/pagePreparationModal';
 import LogoutModal from '@/components/modal/logOutModal';
 import { Container } from '@/pages/main/styles';
+import { deleteCookie, getCookie } from '@/components/utils/cookieUtils';
 
 const MyMainPage = () => {
   const navigate = useNavigate();
@@ -17,9 +18,10 @@ const MyMainPage = () => {
   const [isLogModalOpen, setIsLogModalOpen] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem('jwtToken');
-    if (!token) {
-      navigate('/signIn');
+    const jwtToken = getCookie('jwtToken'); // 쿠키에서 JWT 토큰을 가져옴
+    if (!jwtToken) {
+      navigate('/signin');
+      return;
     }
   }, [navigate]);
 
@@ -32,10 +34,11 @@ const MyMainPage = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('jwtToken');
+    deleteCookie('jwtToken');
     localStorage.removeItem('refreshToken');
-    localStorage.removeItem('userId');
-    navigate('/signIn');
+    const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/logout?client_id=${import.meta.env.VITE_KAKAO_API_KEY}&logout_redirect_uri=${encodeURIComponent(import.meta.env.VITE_SERVER_URI)}/auth/kakao/logout`;
+    window.location.href = KAKAO_AUTH_URL;
+    // navigate('/');
   };
 
   return (

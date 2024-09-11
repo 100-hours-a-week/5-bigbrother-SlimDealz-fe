@@ -8,6 +8,7 @@ import { FooterContainer, StyledNavAction, CenterIconWrapper } from './styles';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Fab from '@mui/material/Fab';
 import NavigationIcon from '@mui/icons-material/Navigation';
+import { getCookie } from '@/components/utils/cookieUtils';
 
 interface NavActionProps {
   icon: JSX.Element;
@@ -35,11 +36,32 @@ const Footer = () => {
   const location = useLocation();
 
   useEffect(() => {
-    const jwtToken = localStorage.getItem('jwtToken');
+    switch (location.pathname) {
+      case '/':
+        setValue(0);
+        break;
+      case '/recentlyView':
+        setValue(1);
+        break;
+      case '/notifications':
+        setValue(2);
+        break;
+      case '/bookmark':
+        setValue(3);
+        break;
+      case '/myPage':
+        setValue(4);
+        break;
+      default:
+        setValue(0);
+    }
+
+    const jwtToken = getCookie('jwtToken');
+
     if (jwtToken) {
       setIsAuthenticated(true);
     } else setIsAuthenticated(false);
-  }, []);
+  }, [location.pathname]);
 
   const shouldShowNavigationIcon = () => {
     return ['/category', '/searchResults', '/bookmark'].some((path) =>
@@ -58,8 +80,7 @@ const Footer = () => {
         navigate('/');
         break;
       case 1:
-        navigate('/comingSoon');
-        // navigate('/recentlyView');
+        navigate('/recentlyView');
         break;
       case 2:
         navigate('/comingSoon');
@@ -101,8 +122,6 @@ const Footer = () => {
           active={value === 1}
           onClick={() => handleNavigation(1)}
         />
-
-        {/* Center Icon with diamond background */}
         <CenterIconWrapper
           active={value === 2}
           onClick={() => handleNavigation(2)}

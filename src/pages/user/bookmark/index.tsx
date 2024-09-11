@@ -33,47 +33,17 @@ interface Bookmark {
 }
 
 const UserBookmarkPage: React.FC = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
-  const serverUri = import.meta.env.VITE_SERVER_URI;
 
   useEffect(() => {
-    const authenticateAndFetchBookmarks = async () => {
-      const jwtToken = localStorage.getItem('jwtToken');
-      if (!jwtToken) {
-        setIsAuthenticated(false);
-        console.log('JWT 토큰이 없습니다.');
-        setLoading(false);
-        return;
-      } else {
-        setIsAuthenticated(true);
-      }
-
-      const kakao_Id = extractKakaoIdFromToken(jwtToken);
-      if (!kakao_Id) {
-        setIsAuthenticated(false);
-        console.log('Kakao_ID를 찾을 수 없습니다.');
-        setLoading(false);
-        return;
-      } else {
-        setIsAuthenticated(true);
-      }
-
+    const fetchBookmarks = async () => {
       try {
-        const bookmarksResponse = await api.get(
-          `/v1/users/kakao/${encodeURIComponent(kakao_Id)}/bookmarks`,
-          {
-            headers: {
-              Authorization: `Bearer ${jwtToken}`
-            }
-          }
-        );
+        const response = await api.get(`/v1/users/bookmarks`);
 
-        if (bookmarksResponse.status === 200) {
-          setIsAuthenticated(true);
-          setBookmarks(bookmarksResponse.data);
+        if (response.status === 200) {
+          setBookmarks(response.data);
         } else {
           throw new Error('북마크 데이터를 가져오는 데 실패했습니다.');
         }
@@ -94,33 +64,14 @@ const UserBookmarkPage: React.FC = () => {
       }
     };
 
-    authenticateAndFetchBookmarks();
-  }, [serverUri]);
-
-  const extractKakaoIdFromToken = (token: string): string | null => {
-    try {
-      const base64Url = token.split('.')[1];
-      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-      const jsonPayload = decodeURIComponent(
-        atob(base64)
-          .split('')
-          .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-          .join('')
-      );
-
-      const parsedToken = JSON.parse(jsonPayload);
-      return parsedToken.kakao_Id || null;
-    } catch (error) {
-      console.error('JWT 토큰 파싱 오류:', error);
-      return null;
-    }
-  };
+    fetchBookmarks();
+  }, []);
 
   if (loading) {
     return <LoadingProduct />;
   }
 
-  if (!isAuthenticated) {
+  if (!bookmarks.length) {
     return (
       <Container>
         <CustomBox>
