@@ -1,10 +1,5 @@
 import styled from 'styled-components';
 
-export const Container = styled.div`
-  padding: 20px;
-  background-color: var(--background-color);
-`;
-
 export const CustomBox = styled.div`
   display: flex;
   flex-direction: column;

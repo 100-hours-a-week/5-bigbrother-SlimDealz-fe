@@ -71,13 +71,11 @@ const SearchBar: React.FC = () => {
         sx={{
           display: 'flex',
           alignItems: 'center',
-          width: 300,
-          height: 35,
-          border: '0.1px solid #ccc',
+          width: 333,
+          height: 50,
           boxShadow: 'none',
-          paddingLeft: '10px',
-          borderRadius: '20px', // Rounded corners
-          backgroundColor: '#f5f5f5' // Light background color
+          borderRadius: '6px',
+          border: '1px solid #FFAF00'
         }}
         onSubmit={(event) => {
           event.preventDefault();
@@ -94,11 +92,18 @@ const SearchBar: React.FC = () => {
         />
         <IconButton
           type="button"
-          sx={{ p: '10px' }}
+          sx={{
+            p: '7px',
+            backgroundColor: '#FFAF00', // Background color of the button
+            borderRadius: '6px', // Make sure it matches the border radius
+            '&:hover': {
+              backgroundColor: '#FFB000' // Slightly different on hover, optional
+            }
+          }}
           aria-label="search"
           onClick={handleSearchClick}
         >
-          <SearchIcon sx={{ color: '#999' }} /> {/* Adjust icon color */}
+          <SearchIcon sx={{ color: '#000000' }} /> {/* Adjust icon color */}
         </IconButton>
       </Paper>
       {filteredWords.length > 0 && (

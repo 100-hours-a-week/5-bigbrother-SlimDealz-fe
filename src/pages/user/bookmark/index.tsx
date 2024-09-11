@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Container, CustomBox, CustomButton } from './styles';
+import { CustomBox, CustomButton } from './styles';
 import PageNameTag from '../../../components/tag/pageNameTag';
 import CategoryList from '../../../components/list/categoryList';
 import { useNavigate } from 'react-router-dom';
 import { Typography } from '@mui/material';
 import { LoadingProduct } from '@/components/loading';
 import api from '@/axiosInstance';
-import { getCookie } from '@/components/utils/cookieUtils';
+import { Container } from '@/pages/main/styles';
 
 interface Price {
   id: number;

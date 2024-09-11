@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, memo } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import OutLetContainer from './pages';
 import ScrollToTop from './components/utils/scrollToTop/scrollToTop';
@@ -23,7 +23,7 @@ const UserRecentlyViewPage = React.lazy(
 );
 // const UserInformationPage = React.lazy(() => import('./pages/user/information'));
 
-const Router = () => {
+const Router = memo(() => {
   return (
     <SearchProvider>
       <HeaderHeightProvider>
@@ -33,7 +33,10 @@ const Router = () => {
             <Routes>
               <Route path="/" element={<OutLetContainer />}>
                 <Route path="/" element={<MainPage />} />
-                <Route path="/category" element={<CategoryPage />} />
+                <Route
+                  path="/category/:categoryType"
+                  element={<CategoryPage />}
+                />
                 <Route path="/product/:productName" element={<DetailPage />} />
                 <Route path="/searchInitial" element={<SearchInitialPage />} />
                 <Route
@@ -58,6 +61,6 @@ const Router = () => {
       </HeaderHeightProvider>
     </SearchProvider>
   );
-};
+});
 
 export default Router;

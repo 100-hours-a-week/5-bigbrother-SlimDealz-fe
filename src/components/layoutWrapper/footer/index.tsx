@@ -1,20 +1,37 @@
 import React, { useEffect, useState } from 'react';
-import BottomNavigation from '@mui/material/BottomNavigation';
-import BottomNavigationAction from '@mui/material/BottomNavigationAction';
-import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
-import ArchiveOutlinedIcon from '@mui/icons-material/ArchiveOutlined';
-import NotificationsRoundedIcon from '@mui/icons-material/NotificationsRounded';
-import BookmarkRoundedIcon from '@mui/icons-material/BookmarkRounded';
-import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
-import { FooterContainer } from './styles';
+import { AiOutlineHome } from 'react-icons/ai';
+import { FiBox } from 'react-icons/fi';
+import { IoMdNotificationsOutline } from 'react-icons/io';
+import { BsBookmark } from 'react-icons/bs';
+import { FaRegUserCircle } from 'react-icons/fa';
+import { FooterContainer, StyledNavAction, CenterIconWrapper } from './styles';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Fab from '@mui/material/Fab';
 import NavigationIcon from '@mui/icons-material/Navigation';
 import { getCookie } from '@/components/utils/cookieUtils';
 
+interface NavActionProps {
+  icon: JSX.Element;
+  label: string;
+  active: boolean;
+  onClick: () => void;
+}
+
+const CustomBottomNavigationAction: React.FC<NavActionProps> = ({
+  icon,
+  label,
+  active,
+  onClick
+}) => (
+  <StyledNavAction active={active} onClick={onClick}>
+    {icon}
+    <span>{label}</span>
+  </StyledNavAction>
+);
+
 const Footer = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [value, setValue] = React.useState(0);
+  const [value, setValue] = useState(0);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -46,6 +63,16 @@ const Footer = () => {
     } else setIsAuthenticated(false);
   }, [location.pathname]);
 
+  const shouldShowNavigationIcon = () => {
+    return ['/category', '/searchResults', '/bookmark'].some((path) =>
+      location.pathname.startsWith(path)
+    );
+  };
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const handleNavigation = (newValue: number) => {
     setValue(newValue);
     switch (newValue) {
@@ -74,56 +101,46 @@ const Footer = () => {
     }
   };
 
-  const shouldShowNavigationIcon = () => {
-    return ['/category', '/searchResults', '/bookmark'].some((path) =>
-      location.pathname.startsWith(path)
-    );
-  };
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
   return (
     <FooterContainer>
       <div
         style={{
-          width: 390
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'space-between'
         }}
       >
-        <BottomNavigation
-          showLabels
-          value={value}
-          onChange={(event, newValue) => {
-            handleNavigation(newValue);
-          }}
-          sx={{
-            '& .Mui-selected': {
-              color: '#112f08 !important'
-            },
-            '& .MuiBottomNavigationAction-root': {
-              color: '#5c5b5b'
-            }
-          }}
+        <CustomBottomNavigationAction
+          icon={<AiOutlineHome />}
+          label="홈"
+          active={value === 0}
+          onClick={() => handleNavigation(0)}
+        />
+        <CustomBottomNavigationAction
+          icon={<FiBox />}
+          label="최근본상품"
+          active={value === 1}
+          onClick={() => handleNavigation(1)}
+        />
+        <CenterIconWrapper
+          active={value === 2}
+          onClick={() => handleNavigation(2)}
         >
-          <BottomNavigationAction label="Home" icon={<HomeOutlinedIcon />} />
-          <BottomNavigationAction
-            label="Recents"
-            icon={<ArchiveOutlinedIcon />}
-          />
-          <BottomNavigationAction
-            label="Notifications"
-            icon={<NotificationsRoundedIcon />}
-          />
-          <BottomNavigationAction
-            label="Bookmarks"
-            icon={<BookmarkRoundedIcon />}
-          />
-          <BottomNavigationAction
-            label="My page"
-            icon={<AccountCircleOutlinedIcon />}
-          />
-        </BottomNavigation>
+          <IoMdNotificationsOutline />
+        </CenterIconWrapper>
+
+        <CustomBottomNavigationAction
+          icon={<BsBookmark />}
+          label="북마크 상품"
+          active={value === 3}
+          onClick={() => handleNavigation(3)}
+        />
+        <CustomBottomNavigationAction
+          icon={<FaRegUserCircle />}
+          label="마이페이지"
+          active={value === 4}
+          onClick={() => handleNavigation(4)}
+        />
       </div>
       {shouldShowNavigationIcon() && (
         <Fab

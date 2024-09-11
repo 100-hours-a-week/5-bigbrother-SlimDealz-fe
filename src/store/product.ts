@@ -1,21 +1,51 @@
-import { create } from 'zustand';
+import create from 'zustand';
+import api from '@/axiosInstance'; // your axios instance
 
-interface ProductState {
-  lowestProducts: any[];
-  randomProducts: any[];
-  isLowestProductsLoaded: boolean;
-  isRandomProductsLoaded: boolean;
-  setLowestProducts: (products: any[]) => void;
-  setRandomProducts: (products: any[]) => void;
-}
+type Product = {
+  id: number;
+  name: string;
+  imageUrl: string;
+  originalPrice: number;
+};
+
+type ProductState = {
+  lowestProducts: Product[];
+  randomProducts: Product[];
+  fetchLowestProducts: () => Promise<void>;
+  fetchRandomProducts: () => Promise<void>;
+};
 
 export const useProductStore = create<ProductState>((set) => ({
   lowestProducts: [],
   randomProducts: [],
-  isLowestProductsLoaded: false,
-  isRandomProductsLoaded: false,
-  setLowestProducts: (products) =>
-    set({ lowestProducts: products, isLowestProductsLoaded: true }),
-  setRandomProducts: (products) =>
-    set({ randomProducts: products, isRandomProductsLoaded: true })
+
+  fetchLowestProducts: async () => {
+    try {
+      const response = await api.get('/v1/today-lowest-products');
+      const productData = response.data.map((product: any) => ({
+        id: product.id,
+        name: product.name,
+        imageUrl: product.imageUrl,
+        originalPrice: product.prices[0].setPrice
+      }));
+      set({ lowestProducts: productData });
+    } catch (error) {
+      console.error('Error fetching lowest products:', error);
+    }
+  },
+
+  fetchRandomProducts: async () => {
+    try {
+      const response = await api.get('/v1/random-products');
+      const productData = response.data.map((product: any) => ({
+        id: product.id,
+        name: product.name,
+        imageUrl: product.imageUrl,
+        originalPrice: product.prices[0].setPrice
+      }));
+      set({ randomProducts: productData });
+    } catch (error) {
+      console.error('Error fetching random products:', error);
+    }
+  }
 }));

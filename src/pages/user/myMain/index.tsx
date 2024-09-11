@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  Container,
   Section,
   SectionTitle,
   ArrowIcon,
@@ -10,6 +9,7 @@ import {
 } from './styles';
 import PagePreparationModal from '@/components/modal/pagePreparationModal';
 import LogoutModal from '@/components/modal/logOutModal';
+import { Container } from '@/pages/main/styles';
 import { deleteCookie, getCookie } from '@/components/utils/cookieUtils';
 
 const MyMainPage = () => {
