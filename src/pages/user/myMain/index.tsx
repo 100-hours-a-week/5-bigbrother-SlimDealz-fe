@@ -20,6 +20,7 @@ const MyMainPage = () => {
   useEffect(() => {
     const jwtToken = getCookie('jwtToken'); // 쿠키에서 JWT 토큰을 가져옴
     if (!jwtToken) {
+      navigate('/signin');
       return;
     }
   }, [navigate]);

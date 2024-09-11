@@ -43,6 +43,10 @@ api.interceptors.request.use(
   (config) => {
     const jwtToken = getCookie('jwtToken'); // 쿠키에서 JWT 토큰을 가져옴
 
+    // JWT 토큰이 없는 경우 요청을 진행하지 않음
+    if (!jwtToken && config.url && config.url.includes('/bookmarks')) {
+      return Promise.reject(new Error('JWT 토큰이 없습니다.'));
+    }
     // JWT 토큰이 있고, /refresh 요청이 아닌 경우 Authorization 헤더에 토큰을 추가
     if (jwtToken && config.url && !config.url.includes('/refresh')) {
       config.headers.Authorization = `Bearer ${jwtToken}`;
