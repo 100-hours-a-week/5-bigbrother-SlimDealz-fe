@@ -82,8 +82,6 @@ const Header = forwardRef<HTMLDivElement, HeaderProps>(({ pageTitle }, ref) => {
     '/signIn'
   ].includes(location.pathname);
 
-  const hasLogo = isMainPage || isCategoryPage;
-
   useEffect(() => {
     if (headerRef.current) {
       const headerHeight = headerRef.current.offsetHeight;
@@ -122,11 +120,11 @@ const Header = forwardRef<HTMLDivElement, HeaderProps>(({ pageTitle }, ref) => {
         </IconContainer>
       )}
       <LogoContainer
-        $isCentered={isMainPage || isCategoryPage}
+        $isCentered={isMainPage}
         $isSpecialPage={isSpecialPage}
         $isSimplePage={isSimplePage}
       >
-        {hasLogo && (
+        {isMainPage && (
           <img
             src="/assets/logo.png"
             alt="Slimdealz logo"
@@ -135,7 +133,7 @@ const Header = forwardRef<HTMLDivElement, HeaderProps>(({ pageTitle }, ref) => {
           />
         )}
       </LogoContainer>
-      {isSimplePage && !isCategoryPage && (
+      {isSimplePage && (
         <PageTitle $isSpecialPage={isSpecialPage} $isSimplePage={isSimplePage}>
           {pageTitle}
         </PageTitle>
