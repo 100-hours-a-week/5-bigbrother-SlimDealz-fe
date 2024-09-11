@@ -1,10 +1,5 @@
 import styled from 'styled-components';
 
-export const Container = styled.div`
-  padding: 20px;
-  background-color: #ffffff;
-`;
-
 export const Section = styled.div`
   display: flex;
   align-items: center;
