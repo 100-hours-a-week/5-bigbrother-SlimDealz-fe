@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import { ProductCard, Container, Slider } from './styles';
 import { truncateString } from '@/components/utils/conversion';
+import { LoadingSearch } from '@/components/loading';
 
 type Product = {
   id: number;
@@ -77,15 +78,19 @@ const DragSlider = ({ products }: Props) => {
 
   return (
     <Container>
-      <Slider ref={containerRef} onMouseDown={handleMouseDown}>
-        {products.map((product) => (
-          <ProductCard key={product.id}>
-            <img src={product.imageUrl} alt={product.name} />
-            <h3>{truncateString(product.name, 15)}</h3>
-            <p>{product.originalPrice.toLocaleString()}원</p>
-          </ProductCard>
-        ))}
-      </Slider>
+      {products.length > 0 ? (
+        <Slider ref={containerRef} onMouseDown={handleMouseDown}>
+          {products.map((product) => (
+            <ProductCard key={product.id}>
+              <img src={product.imageUrl} alt={product.name} />
+              <h3>{truncateString(product.name, 15)}</h3>
+              <p>{product.originalPrice.toLocaleString()}원</p>
+            </ProductCard>
+          ))}
+        </Slider>
+      ) : (
+        <LoadingSearch />
+      )}
     </Container>
   );
 };
