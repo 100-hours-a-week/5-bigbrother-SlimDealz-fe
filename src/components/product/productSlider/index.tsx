@@ -11,6 +11,7 @@ import {
 import Skeleton from '@mui/material/Skeleton';
 import { LoadingSearch } from '@/components/loading';
 import { LeftArrow, RightArrow } from '@/components/utils/arrow';
+import { truncateString } from '@/components/utils/conversion';
 
 type Product = {
   id: number;
@@ -59,8 +60,9 @@ const ProductSlider = ({ products = [] }: Props) => {
                   alt={`Product ${product.name}`}
                 />
                 <PriceInfo>
+                  <h3>{truncateString(product.name, 10)}</h3>
                   <div className="price-row">
-                    <div>최저가:</div>
+                    <div className="price-label">최저가:</div>
                     <div className="price-value">
                       {product.originalPrice.toLocaleString()}원
                     </div>

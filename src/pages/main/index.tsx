@@ -2,10 +2,11 @@ import React, { useEffect, useState, useRef } from 'react';
 import ProductSlider from '../../components/product/productSlider';
 import { Container } from './styles';
 import Banner from '../../components/layoutWrapper/banner';
-import ThirdSlider from '@/components/product/slider/thirdSlider';
 import { useProductStore } from '@/store/product';
 import api from '@/axiosInstance';
 import SliderName from '@/components/product/slider/name';
+import DragSlider from '@/components/product/slider/dragSlider';
+import ThirdSlider from '@/components/product/slider/thirdSlider';
 
 const MainPage = () => {
   const {
@@ -68,7 +69,11 @@ const MainPage = () => {
     <>
       <Banner />
       <Container>
-        <SliderName title="오늘의 최저가" />
+        <SliderName
+          title="오늘의 최저가"
+          showMoreButton={true}
+          moreButtonLink="/popular"
+        />
         <ProductSlider products={lowestProducts} />
 
         <SliderName
@@ -76,7 +81,13 @@ const MainPage = () => {
           showMoreButton={true}
           moreButtonLink="/popular"
         />
-        <ThirdSlider items={randomProducts} title="MD 추천 상품" />
+        <DragSlider products={lowestProducts} />
+        <SliderName
+          title="MD 추천 상품"
+          showMoreButton={true}
+          moreButtonLink="/popular"
+        />
+        <ThirdSlider items={randomProducts} />
       </Container>
     </>
   );

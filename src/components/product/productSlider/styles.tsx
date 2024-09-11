@@ -23,7 +23,6 @@ export const ProductsWrapper = styled.div`
   display: flex;
   overflow-x: auto;
   scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch;
 
   &::-webkit-scrollbar {
     display: none;
@@ -35,23 +34,22 @@ export const ProductsWrapper = styled.div`
 export const ProductItem = styled.div`
   flex: none;
   width: 140px;
-  height: 140px;
+  height: 170px;
   display: flex;
   flex-direction: column;
-  /* align-items: center; */
   cursor: pointer;
   transition: transform 0.2s;
   transform-origin: top;
-  margin-bottom: 20px;
+  margin: 5px 0 20px 10px;
   padding: 8px;
-  margin-right: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 
   &:hover {
     transform: scale(1.05);
   }
 
   scroll-snap-align: start;
-  background-color: #f5f5f5;
+  background-color: #fff5f5;
 `;
 
 export const ProductImage = styled.img`
@@ -67,18 +65,25 @@ export const PriceInfo = styled.div`
   flex-direction: column;
   gap: 7px;
 
+  h3 {
+    font-size: 14px;
+    font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
   .price-row {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     font-size: 12px;
-    font-weight: bold;
+    margin-top: 5px;
 
-    .price-label {
-      color: #333;
+    .price-value {
+      color: #5ca65e;
     }
   }
 
-  /* 평점 텍스트 */
   .rating {
     font-size: 8px;
     color: #888;

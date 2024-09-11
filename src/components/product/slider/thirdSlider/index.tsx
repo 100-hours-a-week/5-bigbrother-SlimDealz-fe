@@ -8,13 +8,14 @@ import {
   ItemDetails,
   ItemImage,
   ItemName,
-  OriginalPrice,
-  DiscountRate,
   SalePrice,
   StyledSwiperContainer
 } from './styles';
 import { useNavigate } from 'react-router-dom';
-import { getNumberWithComma } from '@/components/utils/conversion';
+import {
+  getNumberWithComma,
+  truncateString
+} from '@/components/utils/conversion';
 import { LoadingSearch } from '@/components/loading';
 
 interface ThirdSliderProps {
@@ -24,21 +25,10 @@ interface ThirdSliderProps {
     imageUrl: string;
     originalPrice: number;
   }[];
-  title: string;
 }
 
-const ThirdSlider: React.FC<ThirdSliderProps> = ({ items, title }) => {
+const ThirdSlider: React.FC<ThirdSliderProps> = ({ items }) => {
   const navigate = useNavigate();
-
-  const handleTitleClick = () => {
-    if (title === 'MY BOOKMARKS') {
-      navigate(`/bookmark`);
-    } else if (title === '최저가') {
-      navigate(`/lowest-price`);
-    } else if (title === '맞춤상품추천') {
-      navigate(`/recommended`);
-    }
-  };
 
   const handleProductClick = (productName: string) => {
     navigate(`/product/${productName}`);
@@ -60,8 +50,8 @@ const ThirdSlider: React.FC<ThirdSliderProps> = ({ items, title }) => {
             grabCursor={true}
             modules={[EffectCards]}
             style={{
-              width: '280px',
-              height: '350px'
+              width: '230px',
+              height: '300px'
             }}
           >
             {items.map((item) => (
@@ -72,11 +62,7 @@ const ThirdSlider: React.FC<ThirdSliderProps> = ({ items, title }) => {
                 <SwiperSlideStyled>
                   <ItemImage src={item.imageUrl} alt={item.name} />
                   <ItemDetails>
-                    <ItemName>{item.name}</ItemName>
-                    {/* <OriginalPrice>
-                    원가: {getNumberWithComma(item.originalPrice)}원
-                  </OriginalPrice>
-                  <DiscountRate>할인율: {item.discountRate}%</DiscountRate> */}
+                    <ItemName>{truncateString(item.name, 13)}</ItemName>
                     <SalePrice>
                       판매가: {getNumberWithComma(item.originalPrice)}원
                     </SalePrice>

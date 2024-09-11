@@ -5,3 +5,11 @@ export const getNumberWithComma = (number: number) => {
   }
   return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 };
+
+/** 문자열을 num부터 ...으로 출력 */
+export const truncateString = (str: string, num: number) => {
+  if (str.length <= num) {
+    return str;
+  }
+  return str.slice(0, num) + '...';
+};

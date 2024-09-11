@@ -1,8 +1,7 @@
 import styled from 'styled-components';
 
 export const SwiperSlideStyled = styled.div`
-  background-color: #ffffff;
-  padding: 20px;
+  padding-top: 10px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -35,25 +34,13 @@ export const ItemDetails = styled.div`
 export const ItemName = styled.div`
   font-weight: bold;
   font-size: 18px;
-  margin-bottom: 10px;
-  height: 55px;
-`;
-
-export const OriginalPrice = styled.div`
-  text-decoration: line-through;
-  color: grey;
-  margin-bottom: 5px;
-`;
-
-export const DiscountRate = styled.div`
-  color: red;
-  margin-bottom: 5px;
 `;
 
 export const SalePrice = styled.div`
   color: green;
   font-weight: bold;
   font-size: 18px;
+  padding: 10px 0;
 `;
 
 export const Title = styled.h2`
