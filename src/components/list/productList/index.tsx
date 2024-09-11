@@ -17,6 +17,7 @@ import {
   ProductPrice,
   BookmarkIcon
 } from './styles';
+import { getCookie } from '@/components/utils/cookieUtils';
 
 type Product = {
   id: number;
@@ -38,24 +39,15 @@ const ProductCard = ({ products }: Props) => {
 
   useEffect(() => {
     const authenticateAndCheckBookmarks = async () => {
-      const jwtToken = localStorage.getItem('jwtToken');
+      const jwtToken = getCookie('jwtToken');
       if (!jwtToken) return;
-
-      const kakao_Id = extractKakaoIdFromToken(jwtToken);
-      if (!kakao_Id) {
-        alert('Kakao_ID를 찾을 수 없습니다.');
-        return;
-      }
 
       try {
         const promises = products.map(async (product, index) => {
-          const bookmarkResponse = await api.get(
-            `/v1/users/kakao/${encodeURIComponent(kakao_Id)}/bookmarks/search`,
-            {
-              headers: { Authorization: `Bearer ${jwtToken}` },
-              params: { productName: product.name }
-            }
-          );
+          const bookmarkResponse = await api.get(`/v1/users/bookmarks/search`, {
+            headers: { Authorization: `Bearer ${jwtToken}` },
+            params: { productName: product.name }
+          });
           if (bookmarkResponse.status === 200) {
             setBookmarked((prev) => {
               const newBookmarks = [...prev];
@@ -76,24 +68,6 @@ const ProductCard = ({ products }: Props) => {
     authenticateAndCheckBookmarks();
   }, [products]);
 
-  const extractKakaoIdFromToken = (token: string): string | null => {
-    try {
-      const base64Url = token.split('.')[1];
-      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-      const jsonPayload = decodeURIComponent(
-        atob(base64)
-          .split('')
-          .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-          .join('')
-      );
-      const parsedToken = JSON.parse(jsonPayload);
-      return parsedToken.kakao_Id || null;
-    } catch (error) {
-      console.error('JWT 토큰 파싱 오류:', error);
-      return null;
-    }
-  };
-
   const handleBookmarkClick = async (
     e: React.MouseEvent,
     productName: string,
@@ -101,27 +75,18 @@ const ProductCard = ({ products }: Props) => {
   ) => {
     e.stopPropagation();
 
-    const jwtToken = localStorage.getItem('jwtToken');
+    const jwtToken = getCookie('jwtToken');
     if (!jwtToken) {
       setIsModalOpen(true);
       return;
     }
 
-    const kakao_Id = extractKakaoIdFromToken(jwtToken);
-    if (!kakao_Id) {
-      alert('Kakao ID를 찾을 수 없습니다.');
-      return;
-    }
-
     try {
       if (bookmarked[index]) {
-        await api.delete(
-          `/v1/users/kakao/${encodeURIComponent(kakao_Id)}/bookmarks`,
-          {
-            headers: { Authorization: `Bearer ${jwtToken}` },
-            params: { productName }
-          }
-        );
+        await api.delete(`/v1/users/bookmarks`, {
+          headers: { Authorization: `Bearer ${jwtToken}` },
+          params: { productName }
+        });
         setBookmarked((prev) => {
           const newBookmarks = [...prev];
           newBookmarks[index] = false;
@@ -130,7 +95,7 @@ const ProductCard = ({ products }: Props) => {
         alert('북마크가 삭제되었습니다.');
       } else {
         await api.post(
-          `/v1/users/kakao/${encodeURIComponent(kakao_Id)}/bookmarks`,
+          `/v1/users/bookmarks`,
           { productName },
           { headers: { Authorization: `Bearer ${jwtToken}` } }
         );
