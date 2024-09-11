@@ -1,0 +1,191 @@
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { IconButton } from '@mui/material';
+import Bookmark from '@mui/icons-material/Bookmark';
+import BookmarkBorder from '@mui/icons-material/BookmarkBorder';
+import api from '@/axiosInstance';
+import LoginRequiredModal from '@/components/modal/logInModal';
+import {
+  Container,
+  Title,
+  GridContainer,
+  Card,
+  ImagePlaceholder,
+  ProductImage,
+  ProductInfo,
+  ProductTitle,
+  ProductPrice,
+  BookmarkIcon
+} from './styles';
+
+type Product = {
+  id: number;
+  name: string;
+  imageUrl: string;
+  originalPrice: number;
+};
+
+type Props = {
+  products: Product[];
+};
+
+const ProductCard = ({ products }: Props) => {
+  const [bookmarked, setBookmarked] = useState<boolean[]>(
+    new Array(products.length).fill(false)
+  );
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const authenticateAndCheckBookmarks = async () => {
+      const jwtToken = localStorage.getItem('jwtToken');
+      if (!jwtToken) return;
+
+      const kakao_Id = extractKakaoIdFromToken(jwtToken);
+      if (!kakao_Id) {
+        alert('Kakao_ID를 찾을 수 없습니다.');
+        return;
+      }
+
+      try {
+        const promises = products.map(async (product, index) => {
+          const bookmarkResponse = await api.get(
+            `/v1/users/kakao/${encodeURIComponent(kakao_Id)}/bookmarks/search`,
+            {
+              headers: { Authorization: `Bearer ${jwtToken}` },
+              params: { productName: product.name }
+            }
+          );
+          if (bookmarkResponse.status === 200) {
+            setBookmarked((prev) => {
+              const newBookmarks = [...prev];
+              newBookmarks[index] = true;
+              return newBookmarks;
+            });
+          }
+        });
+        await Promise.all(promises);
+      } catch (error: any) {
+        console.error(
+          'Error checking bookmark status:',
+          error.message || error
+        );
+      }
+    };
+
+    authenticateAndCheckBookmarks();
+  }, [products]);
+
+  const extractKakaoIdFromToken = (token: string): string | null => {
+    try {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(
+        atob(base64)
+          .split('')
+          .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+          .join('')
+      );
+      const parsedToken = JSON.parse(jsonPayload);
+      return parsedToken.kakao_Id || null;
+    } catch (error) {
+      console.error('JWT 토큰 파싱 오류:', error);
+      return null;
+    }
+  };
+
+  const handleBookmarkClick = async (
+    e: React.MouseEvent,
+    productName: string,
+    index: number
+  ) => {
+    e.stopPropagation();
+
+    const jwtToken = localStorage.getItem('jwtToken');
+    if (!jwtToken) {
+      setIsModalOpen(true);
+      return;
+    }
+
+    const kakao_Id = extractKakaoIdFromToken(jwtToken);
+    if (!kakao_Id) {
+      alert('Kakao ID를 찾을 수 없습니다.');
+      return;
+    }
+
+    try {
+      if (bookmarked[index]) {
+        await api.delete(
+          `/v1/users/kakao/${encodeURIComponent(kakao_Id)}/bookmarks`,
+          {
+            headers: { Authorization: `Bearer ${jwtToken}` },
+            params: { productName }
+          }
+        );
+        setBookmarked((prev) => {
+          const newBookmarks = [...prev];
+          newBookmarks[index] = false;
+          return newBookmarks;
+        });
+        alert('북마크가 삭제되었습니다.');
+      } else {
+        await api.post(
+          `/v1/users/kakao/${encodeURIComponent(kakao_Id)}/bookmarks`,
+          { productName },
+          { headers: { Authorization: `Bearer ${jwtToken}` } }
+        );
+        setBookmarked((prev) => {
+          const newBookmarks = [...prev];
+          newBookmarks[index] = true;
+          return newBookmarks;
+        });
+        alert('북마크가 추가되었습니다.');
+      }
+    } catch (error: any) {
+      console.error('Error handling bookmark:', error.message || error);
+      alert('오류가 발생했습니다.');
+    }
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  return (
+    <Container>
+      <Title>총 {products.length}개 상품</Title>
+      <GridContainer>
+        {products.map((product, index) => (
+          <Card key={product.id}>
+            <ImagePlaceholder>
+              <ProductImage src={product.imageUrl} alt={product.name} />
+            </ImagePlaceholder>
+            <ProductInfo>
+              <ProductTitle>{product.name}</ProductTitle>
+              <ProductPrice>
+                {product.originalPrice.toLocaleString()}원
+              </ProductPrice>
+            </ProductInfo>
+            <BookmarkIcon>
+              <IconButton
+                onClick={(e) => handleBookmarkClick(e, product.name, index)}
+              >
+                {bookmarked[index] ? <Bookmark /> : <BookmarkBorder />}
+              </IconButton>
+            </BookmarkIcon>
+          </Card>
+        ))}
+      </GridContainer>
+      <LoginRequiredModal
+        open={isModalOpen}
+        onClose={closeModal}
+        onLogin={() => {
+          closeModal();
+          window.location.href = '/signIn';
+        }}
+      />
+    </Container>
+  );
+};
+
+export default ProductCard;

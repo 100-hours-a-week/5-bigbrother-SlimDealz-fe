@@ -33,7 +33,10 @@ const Router = memo(() => {
             <Routes>
               <Route path="/" element={<OutLetContainer />}>
                 <Route path="/" element={<MainPage />} />
-                <Route path="/category" element={<CategoryPage />} />
+                <Route
+                  path="/category/:categoryType"
+                  element={<CategoryPage />}
+                />
                 <Route path="/product/:productName" element={<DetailPage />} />
                 <Route path="/searchInitial" element={<SearchInitialPage />} />
                 <Route

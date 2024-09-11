@@ -1,92 +1,78 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Container } from './styles';
-import CategoryList from '../../components/list/categoryList';
-import PageNameTag from '../../components/tag/pageNameTag';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import { useProductStore } from '@/store/product';
 import { LoadingProduct } from '@/components/loading';
-import api from '@/axiosInstance';
+import ProductCard from '@/components/list/productList';
 
 type Product = {
   id: number;
   name: string;
   imageUrl: string;
-  shippingFee: string;
-  prices: { setPrice: number }[];
+  originalPrice: number;
+  // rating: number;  // 주석 처리
+  // reviews: number; // 주석 처리
 };
 
 const CategoryPage = () => {
-  const [products, setProducts] = useState<Product[]>([]);
+  const { categoryType } = useParams<{ categoryType: string }>();
+
+  const {
+    lowestProducts,
+    randomProducts,
+    fetchLowestProducts,
+    fetchRandomProducts
+  } = useProductStore();
+
   const [loading, setLoading] = useState(true);
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
 
-  const fetchProducts = useCallback(async () => {
-    try {
-      const response = await api.get('/v1/products', {
-        params: { category: '닭가슴살', page, limit: 10 }
-      });
-      const newProducts = response.data;
-      if (Array.isArray(newProducts) && newProducts.length > 0) {
-        setProducts((prevProducts) => [...prevProducts, ...newProducts]);
-      } else {
-        setHasMore(false);
-      }
-      setLoading(false);
-    } catch (err: any) {
-      setLoading(false);
-      if (err.response) {
-        if (err.response.status === 404) {
-          console.log('Products not found');
-        } else {
-          console.log('Server error');
-        }
-      } else {
-        console.log('Network error');
-      }
+  const getProducts = () => {
+    if (categoryType === 'today') {
+      return lowestProducts;
+    } else if (categoryType === 'popular' || categoryType === 'recommend') {
+      return randomProducts;
     }
-  }, [page]);
+    return [];
+  };
 
   useEffect(() => {
-    fetchProducts();
-  }, [fetchProducts]);
+    const fetchProducts = async () => {
+      setLoading(true);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (
-        window.innerHeight + document.documentElement.scrollTop !==
-          document.documentElement.offsetHeight ||
-        loading ||
-        !hasMore
-      )
-        return;
-      setPage((prevPage) => prevPage + 1);
+      try {
+        if (categoryType === 'today' && lowestProducts.length === 0) {
+          await fetchLowestProducts();
+        } else if (
+          (categoryType === 'popular' || categoryType === 'recommend') &&
+          randomProducts.length === 0
+        ) {
+          await fetchRandomProducts();
+        }
+      } catch (err) {
+        console.error('Error fetching products:', err);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [loading, hasMore]);
+    if (getProducts().length === 0) {
+      fetchProducts();
+    } else {
+      setLoading(false);
+    }
+  }, [
+    categoryType,
+    fetchLowestProducts,
+    fetchRandomProducts,
+    lowestProducts,
+    randomProducts
+  ]);
 
-  return (
-    <Container>
-      <PageNameTag pageName="추천 페이지" />
-      {loading && page === 1 ? (
-        <LoadingProduct />
-      ) : (
-        <>
-          {products.map((product: any, index: number) => (
-            <div key={`${product.id}-${index}`}>
-              <CategoryList
-                id={product.id}
-                image={product.imageUrl}
-                name={product.name}
-                shipping={product.shippingFee}
-                price={product.prices?.[0]?.setPrice || '가격 없음'}
-              />
-            </div>
-          ))}
-          {loading && <LoadingProduct />}
-        </>
-      )}
-    </Container>
+  const products = getProducts();
+
+  return loading || products.length === 0 ? (
+    <LoadingProduct />
+  ) : (
+    <ProductCard products={products} />
   );
 };
 
