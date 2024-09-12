@@ -1,5 +1,5 @@
 import create from 'zustand';
-import api from '@/axiosInstance'; // your axios instance
+import api from '@/axiosInstance';
 
 type Product = {
   id: number;
@@ -15,7 +15,7 @@ type ProductState = {
   fetchRandomProducts: () => Promise<void>;
 };
 
-export const useProductStore = create<ProductState>((set) => ({
+export const useProductStore = create<ProductState>((set, get) => ({
   lowestProducts: [],
   randomProducts: [],
 
@@ -28,13 +28,23 @@ export const useProductStore = create<ProductState>((set) => ({
         imageUrl: product.imageUrl,
         originalPrice: product.prices[0].setPrice
       }));
-      set({ lowestProducts: productData });
+
+      const { lowestProducts } = get();
+      if (JSON.stringify(lowestProducts) !== JSON.stringify(productData)) {
+        set({ lowestProducts: productData });
+      }
     } catch (error) {
       console.error('Error fetching lowest products:', error);
     }
   },
 
   fetchRandomProducts: async () => {
+    const { randomProducts } = get();
+
+    if (randomProducts.length > 0) {
+      return;
+    }
+
     try {
       const response = await api.get('/v1/random-products');
       const productData = response.data.map((product: any) => ({
@@ -43,6 +53,7 @@ export const useProductStore = create<ProductState>((set) => ({
         imageUrl: product.imageUrl,
         originalPrice: product.prices[0].setPrice
       }));
+
       set({ randomProducts: productData });
     } catch (error) {
       console.error('Error fetching random products:', error);

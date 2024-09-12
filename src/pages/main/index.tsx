@@ -17,8 +17,10 @@ const MainPage = () => {
 
   useEffect(() => {
     fetchLowestProducts();
-    fetchRandomProducts();
-  }, [fetchLowestProducts, fetchRandomProducts]);
+    if (randomProducts.length === 0) {
+      fetchRandomProducts();
+    }
+  }, [fetchLowestProducts, fetchRandomProducts, randomProducts.length]);
 
   return (
     <>
