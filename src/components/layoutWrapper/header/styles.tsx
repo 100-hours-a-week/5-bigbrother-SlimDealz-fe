@@ -101,7 +101,7 @@ export const SearchContainer = styled.div<{
     `
       justify-content: flex-start;
       margin-left: 50px;
-      padding-top: 10px;
+      padding-top: 13px;
     `}
 `;
 export const PageTitle = styled.div<{

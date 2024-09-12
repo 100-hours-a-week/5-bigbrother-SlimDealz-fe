@@ -43,9 +43,22 @@ const SearchBar: React.FC<{ isSpecialPage: boolean }> = ({ isSpecialPage }) => {
       const inputElement = document.getElementById('search-input');
       inputElement?.blur();
 
-      navigate(`/searchResults/${encodeURIComponent(value)}`, {
-        state: { searchQuery: value }
-      });
+      const searchHistory = JSON.parse(
+        localStorage.getItem('searchHistory') || '[]'
+      );
+
+      if (!searchHistory.includes(value)) {
+        searchHistory.push(value);
+        localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
+      }
+
+      const currentUrl = `/searchResults/${encodeURIComponent(value)}`;
+
+      if (location.pathname === currentUrl) {
+        navigate(currentUrl, { state: { searchQuery: value }, replace: true });
+      } else {
+        navigate(currentUrl, { state: { searchQuery: value } });
+      }
     }
   };
 
@@ -58,10 +71,6 @@ const SearchBar: React.FC<{ isSpecialPage: boolean }> = ({ isSpecialPage }) => {
 
   const handleSearchClick = () => {
     handleSearch(searchQuery);
-  };
-
-  const handleInputClick = () => {
-    setSearchQuery('');
   };
 
   return (
@@ -89,7 +98,6 @@ const SearchBar: React.FC<{ isSpecialPage: boolean }> = ({ isSpecialPage }) => {
           value={searchQuery}
           onChange={handleSearchChange}
           onKeyPress={handleKeyPress}
-          onClick={handleInputClick}
           $isSpecialPage={isSpecialPage}
         />
         <IconButton
