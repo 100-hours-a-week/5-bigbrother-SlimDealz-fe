@@ -133,12 +133,12 @@ const Header = forwardRef<HTMLDivElement, HeaderProps>(({ pageTitle }, ref) => {
           />
         )}
       </LogoContainer>
-      {isSimplePage && (
+      {(isSimplePage || isCategoryPage) && (
         <PageTitle $isSpecialPage={isSpecialPage} $isSimplePage={isSimplePage}>
           {pageTitle}
         </PageTitle>
       )}
-      {(isMainPage || isCategoryPage || isSpecialPage) && (
+      {(isMainPage || isSpecialPage) && (
         <SearchContainer
           $isSpecialPage={isSpecialPage}
           $isSimplePage={isSimplePage}
