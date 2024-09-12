@@ -68,12 +68,17 @@ const ProductCard = ({ products }: Props) => {
     authenticateAndCheckBookmarks();
   }, [products]);
 
+  // handleProductClick 함수 구현
+  const handleProductClick = (productName: string) => {
+    navigate(`/product/${productName}`);
+  };
+
   const handleBookmarkClick = async (
     e: React.MouseEvent,
     productName: string,
     index: number
   ) => {
-    e.stopPropagation();
+    e.stopPropagation(); // 북마크 클릭 시 카드 클릭이 동작하지 않도록 중지
 
     const jwtToken = getCookie('jwtToken');
     if (!jwtToken) {
@@ -121,7 +126,10 @@ const ProductCard = ({ products }: Props) => {
       <Title>총 {products.length}개 상품</Title>
       <GridContainer>
         {products.map((product, index) => (
-          <Card key={product.id}>
+          <Card
+            key={product.id}
+            onClick={() => handleProductClick(product.name)} // 카드 클릭 시 이동
+          >
             <ImagePlaceholder>
               <ProductImage src={product.imageUrl} alt={product.name} />
             </ImagePlaceholder>
@@ -133,7 +141,7 @@ const ProductCard = ({ products }: Props) => {
             </ProductInfo>
             <BookmarkIcon>
               <IconButton
-                onClick={(e) => handleBookmarkClick(e, product.name, index)}
+                onClick={(e) => handleBookmarkClick(e, product.name, index)} // 북마크 클릭
               >
                 {bookmarked[index] ? <Bookmark /> : <BookmarkBorder />}
               </IconButton>

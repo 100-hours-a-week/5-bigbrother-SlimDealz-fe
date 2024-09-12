@@ -5,7 +5,6 @@ import Banner from '../../components/layoutWrapper/banner';
 import SliderName from '@/components/product/slider/name';
 import DragSlider from '@/components/product/slider/dragSlider';
 import ThirdSlider from '@/components/product/slider/thirdSlider';
-import { deleteCookie, getCookie } from '@/components/utils/cookieUtils';
 import { useProductStore } from '@/store/product';
 
 const MainPage = () => {

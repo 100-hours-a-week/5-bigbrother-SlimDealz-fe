@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useProductStore } from '@/store/product';
 import { LoadingProduct } from '@/components/loading';
-import ProductCard from '@/components/list/productList';
+import ProductCard from '@/components/list/productCard';
 
 type Product = {
   id: number;
