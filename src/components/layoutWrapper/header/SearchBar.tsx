@@ -2,15 +2,17 @@ import React, { useEffect, useState, useContext } from 'react';
 import Paper from '@mui/material/Paper';
 import IconButton from '@mui/material/IconButton';
 import SearchIcon from '@mui/icons-material/Search';
+import Tooltip from '@mui/material/Tooltip';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { AutoCompleteItem, AutoCompleteList, CustomInput } from './styles';
 import { SearchContext } from '../../utils/context/searchContext';
 
-const words = ['example', 'search', 'terms', 'list', 'of', 'words']; // 검색어를 필터링하기 위한 단어 목록
+const words = ['예제', '검색', '단어', '목록'];
 
 const SearchBar: React.FC = () => {
   const { searchQuery, setSearchQuery } = useContext(SearchContext);
   const [filteredWords, setFilteredWords] = useState<string[]>([]);
+  const [showTooltip, setShowTooltip] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -22,12 +24,20 @@ const SearchBar: React.FC = () => {
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
-    if (value.length <= 50) {
-      setSearchQuery(value);
+    const cleanedValue = value.replace(/[a-zA-Z~!@#$%^&*()_+|<>?:{}]/g, ''); // 한글, 숫자, 공백만 허용하는 정규식
 
-      if (value) {
+    if (value !== cleanedValue) {
+      setShowTooltip(true);
+    } else {
+      setShowTooltip(false);
+    }
+
+    if (cleanedValue.length <= 50) {
+      setSearchQuery(cleanedValue);
+
+      if (cleanedValue) {
         const filtered = words.filter((word) =>
-          word.toLowerCase().includes(value.toLowerCase())
+          word.toLowerCase().includes(cleanedValue.toLowerCase())
         );
         setFilteredWords(filtered);
       } else {
@@ -37,14 +47,21 @@ const SearchBar: React.FC = () => {
   };
 
   const handleSearch = (value: string) => {
+    const trimmedValue = value.trim();
+
+    if (!trimmedValue) {
+      setShowTooltip(true);
+      return;
+    }
+
     setFilteredWords([]);
 
-    if (value.trim() !== '') {
+    if (trimmedValue !== '') {
       const inputElement = document.getElementById('search-input');
       inputElement?.blur();
 
-      navigate(`/searchResults/${encodeURIComponent(value)}`, {
-        state: { searchQuery: value }
+      navigate(`/searchResults/${encodeURIComponent(trimmedValue)}`, {
+        state: { searchQuery: trimmedValue }
       });
     }
   };
@@ -66,41 +83,49 @@ const SearchBar: React.FC = () => {
 
   return (
     <>
-      <Paper
-        component="form"
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          width: 300,
-          height: 35,
-          border: '0.1px solid #ccc',
-          boxShadow: 'none',
-          paddingLeft: '10px',
-          borderRadius: '20px', // Rounded corners
-          backgroundColor: '#f5f5f5' // Light background color
-        }}
-        onSubmit={(event) => {
-          event.preventDefault();
-          handleSearchClick();
-        }}
+      <Tooltip
+        title="영어, 특수문자, 공백은 입력불가합니다."
+        open={showTooltip}
+        placement="top"
+        arrow
+        disableHoverListener
       >
-        <CustomInput
-          id="search-input"
-          placeholder="검색어를 입력하세요"
-          value={searchQuery}
-          onChange={handleSearchChange}
-          onKeyPress={handleKeyPress}
-          onClick={handleInputClick}
-        />
-        <IconButton
-          type="button"
-          sx={{ p: '10px' }}
-          aria-label="search"
-          onClick={handleSearchClick}
+        <Paper
+          component="form"
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            width: 300,
+            height: 35,
+            border: '0.1px solid #ccc',
+            boxShadow: 'none',
+            paddingLeft: '10px',
+            borderRadius: '20px',
+            backgroundColor: '#f5f5f5'
+          }}
+          onSubmit={(event) => {
+            event.preventDefault();
+            handleSearchClick();
+          }}
         >
-          <SearchIcon sx={{ color: '#999' }} /> {/* Adjust icon color */}
-        </IconButton>
-      </Paper>
+          <CustomInput
+            id="search-input"
+            placeholder="검색어를 입력하세요"
+            value={searchQuery}
+            onChange={handleSearchChange}
+            onKeyPress={handleKeyPress}
+            onClick={handleInputClick}
+          />
+          <IconButton
+            type="button"
+            sx={{ p: '10px' }}
+            aria-label="search"
+            onClick={handleSearchClick}
+          >
+            <SearchIcon sx={{ color: '#999' }} />
+          </IconButton>
+        </Paper>
+      </Tooltip>
       {filteredWords.length > 0 && (
         <AutoCompleteList>
           {filteredWords.map((word, index) => (
