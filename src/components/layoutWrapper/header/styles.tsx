@@ -70,10 +70,8 @@ export const IconContainer = styled.div<{
 export const LogoContainer = styled.div<{
   $isCentered: boolean;
   $isSpecialPage: boolean;
-  $isSimplePage: boolean;
 }>`
-  display: ${({ $isSpecialPage, $isSimplePage }) =>
-    $isSpecialPage || $isSimplePage ? 'none' : 'flex'};
+  display: ${({ $isSpecialPage }) => ($isSpecialPage ? 'none' : 'flex')};
   justify-content: center;
   align-items: center;
   width: 100%;
@@ -114,7 +112,7 @@ export const PageTitle = styled.div<{
   width: 100%;
   max-width: 380px;
   height: 60px;
-  font-size: 30px;
+  font-size: 20px;
   font-weight: bold;
   margin: 5px;
 

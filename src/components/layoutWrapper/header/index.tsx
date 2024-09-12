@@ -76,9 +76,7 @@ const Header = forwardRef<HTMLDivElement, HeaderProps>(({ pageTitle }, ref) => {
     '/alarm',
     '/bookmark',
     '/myPage',
-    '/information',
     '/recentlyView',
-    '/signUp',
     '/signIn'
   ].includes(location.pathname);
 
@@ -119,11 +117,7 @@ const Header = forwardRef<HTMLDivElement, HeaderProps>(({ pageTitle }, ref) => {
           <ArrowBackRoundedIcon style={{ cursor: 'pointer' }} />
         </IconContainer>
       )}
-      <LogoContainer
-        $isCentered={isMainPage}
-        $isSpecialPage={isSpecialPage}
-        $isSimplePage={isSimplePage}
-      >
+      <LogoContainer $isCentered={isMainPage} $isSpecialPage={isSpecialPage}>
         {isMainPage && (
           <img
             src="/assets/logo.png"
