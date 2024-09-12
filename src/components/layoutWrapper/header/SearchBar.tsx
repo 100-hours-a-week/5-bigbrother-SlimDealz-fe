@@ -24,7 +24,10 @@ const SearchBar: React.FC = () => {
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
-    const cleanedValue = value.replace(/[a-zA-Z~!@#$%^&*()_+|<>?:{}]/g, ''); // 한글, 숫자, 공백만 허용하는 정규식
+    const cleanedValue = value.replace(
+      /[a-zA-Z~!@#$%^&*()_+|₩<>?:{}\[\]\\;'",./`=<>№$%^\[\]_|-]/g,
+      ''
+    );
 
     if (value !== cleanedValue) {
       setShowTooltip(true);
