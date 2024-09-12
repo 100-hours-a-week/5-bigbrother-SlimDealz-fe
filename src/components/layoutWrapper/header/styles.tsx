@@ -1,13 +1,15 @@
 import styled from 'styled-components';
 import InputBase from '@mui/material/InputBase';
 
-export const CustomInput = styled(InputBase)(({ theme }) => ({
-  '& .MuiInputBase-input': {
-    width: '255px',
-    padding: '10px 15px',
-    fontSize: '18px'
+export const CustomInput = styled(InputBase)<{
+  $isSpecialPage: boolean;
+}>`
+  & .MuiInputBase-input {
+    width: ${({ $isSpecialPage }) => ($isSpecialPage ? '240px' : '255px')};
+    padding: 10px 15px;
+    font-size: 18px;
   }
-}));
+`;
 
 export const AutoCompleteList = styled.ul`
   margin-top: 10px;
@@ -82,7 +84,6 @@ export const LogoContainer = styled.div<{
     height: auto;
   }
 `;
-
 export const SearchContainer = styled.div<{
   $isSpecialPage: boolean;
   $isSimplePage: boolean;
@@ -91,16 +92,18 @@ export const SearchContainer = styled.div<{
   justify-content: center;
   align-items: center;
   width: 100%;
+  height: 100%;
   box-sizing: border-box;
   margin-top: 5px;
 
   ${({ $isSpecialPage }) =>
     $isSpecialPage &&
     `
-      margin-left: auto; /* DetailPage에서 검색 버튼 위치 조정 */
+      justify-content: flex-start;
+      margin-left: 50px;
+      padding-top: 10px;
     `}
 `;
-
 export const PageTitle = styled.div<{
   $isSpecialPage: boolean;
   $isSimplePage: boolean;

@@ -137,7 +137,7 @@ const Header = forwardRef<HTMLDivElement, HeaderProps>(({ pageTitle }, ref) => {
           $isSpecialPage={isSpecialPage}
           $isSimplePage={isSimplePage}
         >
-          <SearchBar />
+          <SearchBar isSpecialPage={isSpecialPage} />
         </SearchContainer>
       )}
       {isMainPage && <MenuItemsContainer menuItems={menuItems} />}

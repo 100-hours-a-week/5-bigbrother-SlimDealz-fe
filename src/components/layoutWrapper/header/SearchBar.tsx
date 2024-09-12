@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Paper from '@mui/material/Paper';
 import IconButton from '@mui/material/IconButton';
 import SearchIcon from '@mui/icons-material/Search';
@@ -6,9 +6,9 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { AutoCompleteItem, AutoCompleteList, CustomInput } from './styles';
 import { SearchContext } from '../../utils/context/searchContext';
 
-const words = ['example', 'search', 'terms', 'list', 'of', 'words']; // 검색어를 필터링하기 위한 단어 목록
+const words = ['example', 'search', 'terms', 'list', 'of', 'words'];
 
-const SearchBar: React.FC = () => {
+const SearchBar: React.FC<{ isSpecialPage: boolean }> = ({ isSpecialPage }) => {
   const { searchQuery, setSearchQuery } = useContext(SearchContext);
   const [filteredWords, setFilteredWords] = useState<string[]>([]);
   const location = useLocation();
@@ -71,7 +71,8 @@ const SearchBar: React.FC = () => {
         sx={{
           display: 'flex',
           alignItems: 'center',
-          width: 333,
+          justifyContent: 'center',
+          width: isSpecialPage ? 320 : 333,
           height: 50,
           boxShadow: 'none',
           borderRadius: '6px',
@@ -89,21 +90,22 @@ const SearchBar: React.FC = () => {
           onChange={handleSearchChange}
           onKeyPress={handleKeyPress}
           onClick={handleInputClick}
+          $isSpecialPage={isSpecialPage}
         />
         <IconButton
           type="button"
           sx={{
             p: '7px',
-            backgroundColor: '#FFAF00', // Background color of the button
-            borderRadius: '6px', // Make sure it matches the border radius
+            backgroundColor: '#FFAF00',
+            borderRadius: '6px',
             '&:hover': {
-              backgroundColor: '#FFB000' // Slightly different on hover, optional
+              backgroundColor: '#FFB000'
             }
           }}
           aria-label="search"
           onClick={handleSearchClick}
         >
-          <SearchIcon sx={{ color: '#000000' }} /> {/* Adjust icon color */}
+          <SearchIcon sx={{ color: '#000000' }} />
         </IconButton>
       </Paper>
       {filteredWords.length > 0 && (
