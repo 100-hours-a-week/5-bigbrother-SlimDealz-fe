@@ -3,41 +3,35 @@ import styled from 'styled-components';
 export const Container = styled.div`
   width: 100%;
   padding: 20px;
+  padding-bottom: 50px;
 `;
 
 export const Title = styled.h2`
   font-size: 18px;
   margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #000000;
 `;
 
 export const GridContainer = styled.div`
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-
-  @media (max-width: 768px) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  @media (max-width: 480px) {
-    grid-template-columns: 1fr;
-  }
+  grid-template-columns: repeat(2, 1fr);
+  gap: 30px;
 `;
 
 export const Card = styled.div`
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  background-color: #f9f9f9;
-  border: 1px solid #e0e0e0;
   border-radius: 10px;
-  padding: 15px;
-  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
 `;
 
 export const ImagePlaceholder = styled.div`
-  height: 150px;
+  height: 160px;
   border-radius: 8px;
+  overflow: hidden;
 `;
 
 export const ProductImage = styled.img`
@@ -52,9 +46,12 @@ export const ProductInfo = styled.div`
 `;
 
 export const ProductTitle = styled.h3`
-  font-size: 16px;
+  font-size: 14px;
   font-weight: bold;
   margin-bottom: 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 export const ProductPrice = styled.p`
@@ -63,8 +60,9 @@ export const ProductPrice = styled.p`
 `;
 
 export const BookmarkIcon = styled.div`
-  margin-top: 10px;
-  text-align: right;
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
   font-size: 20px;
   cursor: pointer;
 `;
