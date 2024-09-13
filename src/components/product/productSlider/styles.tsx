@@ -34,7 +34,7 @@ export const ProductsWrapper = styled.div`
 export const ProductItem = styled.div`
   flex: none;
   width: 140px;
-  height: 170px;
+  height: 150px;
   display: flex;
   flex-direction: column;
   cursor: pointer;

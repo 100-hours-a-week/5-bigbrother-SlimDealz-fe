@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { useProductStore } from '@/store/product';
 import { LoadingProduct } from '@/components/loading';
@@ -9,63 +9,93 @@ type Product = {
   name: string;
   imageUrl: string;
   originalPrice: number;
-  // rating: number;  // 주석 처리
-  // reviews: number; // 주석 처리
 };
 
 const CategoryPage = () => {
   const { categoryType } = useParams<{ categoryType: string }>();
-
   const {
     lowestProducts,
     randomProducts,
+    popularProducts,
     fetchLowestProducts,
-    fetchRandomProducts
+    fetchRandomProducts,
+    fetchPopularProducts
   } = useProductStore();
 
+  const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [hasMore, setHasMore] = useState(true);
 
-  const getProducts = () => {
-    if (categoryType === 'today') {
-      return lowestProducts;
-    } else if (categoryType === 'popular' || categoryType === 'recommend') {
-      return randomProducts;
+  const fetchPopularProductsCallback = useCallback(async () => {
+    const fetchedProducts = await fetchPopularProducts(page);
+    if (fetchedProducts.length === 0) {
+      setHasMore(false);
     }
-    return [];
-  };
+    setLoading(false);
+  }, [fetchPopularProducts, page]);
 
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
-
       try {
         if (categoryType === 'today' && lowestProducts.length === 0) {
           await fetchLowestProducts();
+        } else if (categoryType === 'popular') {
+          if (page === 1 && popularProducts.length === 0) {
+            await fetchPopularProductsCallback();
+          }
         } else if (
-          (categoryType === 'popular' || categoryType === 'recommend') &&
+          categoryType === 'recommend' &&
           randomProducts.length === 0
         ) {
           await fetchRandomProducts();
         }
       } catch (err) {
-        console.error('Error fetching products:', err);
+        console.error('상품을 불러오는 중 오류가 발생했습니다:', err);
       } finally {
         setLoading(false);
       }
     };
 
-    if (getProducts().length === 0) {
-      fetchProducts();
-    } else {
-      setLoading(false);
-    }
+    fetchProducts();
   }, [
     categoryType,
     fetchLowestProducts,
     fetchRandomProducts,
+    fetchPopularProductsCallback,
     lowestProducts,
-    randomProducts
+    randomProducts,
+    popularProducts,
+    page
   ]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (
+        window.innerHeight + document.documentElement.scrollTop !==
+          document.documentElement.offsetHeight ||
+        loading ||
+        !hasMore
+      ) {
+        return;
+      }
+      setPage((prevPage) => prevPage + 1);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [loading, hasMore]);
+
+  const getProducts = () => {
+    if (categoryType === 'today') {
+      return lowestProducts;
+    } else if (categoryType === 'popular') {
+      return popularProducts;
+    } else if (categoryType === 'recommend') {
+      return randomProducts;
+    }
+    return [];
+  };
 
   const products = getProducts();
 

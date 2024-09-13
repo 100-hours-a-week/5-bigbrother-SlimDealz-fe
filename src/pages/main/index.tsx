@@ -11,8 +11,10 @@ const MainPage = () => {
   const {
     lowestProducts,
     randomProducts,
+    popularProducts,
     fetchLowestProducts,
-    fetchRandomProducts
+    fetchRandomProducts,
+    fetchPopularProducts
   } = useProductStore();
 
   useEffect(() => {
@@ -20,7 +22,16 @@ const MainPage = () => {
     if (randomProducts.length === 0) {
       fetchRandomProducts();
     }
-  }, [fetchLowestProducts, fetchRandomProducts, randomProducts.length]);
+    if (popularProducts.length === 0) {
+      fetchPopularProducts(1);
+    }
+  }, [
+    fetchLowestProducts,
+    fetchRandomProducts,
+    fetchPopularProducts,
+    randomProducts.length,
+    popularProducts.length
+  ]);
 
   return (
     <>
@@ -38,7 +49,7 @@ const MainPage = () => {
           showMoreButton={true}
           moreButtonLink="/category/popular"
         />
-        <DragSlider products={lowestProducts} />
+        <DragSlider products={popularProducts} />
         <SliderName
           title="MD 추천 상품"
           showMoreButton={true}
