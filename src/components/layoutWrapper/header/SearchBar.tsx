@@ -2,15 +2,17 @@ import React, { useContext, useEffect, useState } from 'react';
 import Paper from '@mui/material/Paper';
 import IconButton from '@mui/material/IconButton';
 import SearchIcon from '@mui/icons-material/Search';
+import Tooltip from '@mui/material/Tooltip';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { AutoCompleteItem, AutoCompleteList, CustomInput } from './styles';
 import { SearchContext } from '../../utils/context/searchContext';
 
-const words = ['example', 'search', 'terms', 'list', 'of', 'words'];
+const words = ['예제', '검색', '단어', '목록'];
 
 const SearchBar: React.FC<{ isSpecialPage: boolean }> = ({ isSpecialPage }) => {
   const { searchQuery, setSearchQuery } = useContext(SearchContext);
   const [filteredWords, setFilteredWords] = useState<string[]>([]);
+  const [showTooltip, setShowTooltip] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -22,12 +24,23 @@ const SearchBar: React.FC<{ isSpecialPage: boolean }> = ({ isSpecialPage }) => {
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
-    if (value.length <= 50) {
-      setSearchQuery(value);
+    const cleanedValue = value.replace(
+      /[a-zA-Z~!@#$%^&*()_+|₩<>?:{}\[\]\\;'",./`=<>№$%^\[\]_|-]/g,
+      ''
+    );
 
-      if (value) {
+    if (value !== cleanedValue) {
+      setShowTooltip(true);
+    } else {
+      setShowTooltip(false);
+    }
+
+    if (cleanedValue.length <= 50) {
+      setSearchQuery(cleanedValue);
+
+      if (cleanedValue) {
         const filtered = words.filter((word) =>
-          word.toLowerCase().includes(value.toLowerCase())
+          word.toLowerCase().includes(cleanedValue.toLowerCase())
         );
         setFilteredWords(filtered);
       } else {
@@ -37,9 +50,16 @@ const SearchBar: React.FC<{ isSpecialPage: boolean }> = ({ isSpecialPage }) => {
   };
 
   const handleSearch = (value: string) => {
+    const trimmedValue = value.trim();
+
+    if (!trimmedValue) {
+      setShowTooltip(true);
+      return;
+    }
+
     setFilteredWords([]);
 
-    if (value.trim() !== '') {
+    if (trimmedValue !== '') {
       const inputElement = document.getElementById('search-input');
       inputElement?.blur();
 
@@ -75,56 +95,64 @@ const SearchBar: React.FC<{ isSpecialPage: boolean }> = ({ isSpecialPage }) => {
 
   return (
     <>
-      <Paper
-        component="form"
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          width: isSpecialPage ? 320 : 333,
-          height: 50,
-          boxShadow: 'none',
-          borderRadius: '6px',
-          border: '1px solid #FFAF00'
-        }}
-        onSubmit={(event) => {
-          event.preventDefault();
-          handleSearchClick();
-        }}
+      <Tooltip
+        title="영어, 특수문자, 공백은 입력불가합니다."
+        open={showTooltip}
+        placement="top"
+        arrow
+        disableHoverListener
       >
-        <CustomInput
-          id="search-input"
-          placeholder="검색어를 입력하세요"
-          value={searchQuery}
-          onChange={handleSearchChange}
-          onKeyPress={handleKeyPress}
-          $isSpecialPage={isSpecialPage}
-        />
-        <IconButton
-          type="button"
+        <Paper
+          component="form"
           sx={{
-            p: '7px',
-            backgroundColor: '#FFAF00',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: isSpecialPage ? 320 : 333,
+            height: 50,
+            boxShadow: 'none',
             borderRadius: '6px',
-            '&:hover': {
-              backgroundColor: '#FFB000'
-            }
+            border: '1px solid #FFAF00'
           }}
-          aria-label="search"
-          onClick={handleSearchClick}
+          onSubmit={(event) => {
+            event.preventDefault();
+            handleSearchClick();
+          }}
         >
-          <SearchIcon sx={{ color: '#000000' }} />
-        </IconButton>
-      </Paper>
-      {filteredWords.length > 0 && (
-        <AutoCompleteList>
-          {filteredWords.map((word, index) => (
-            <AutoCompleteItem key={index} onClick={() => handleSearch(word)}>
-              {word}
-            </AutoCompleteItem>
-          ))}
-        </AutoCompleteList>
-      )}
+          <CustomInput
+            id="search-input"
+            placeholder="검색어를 입력하세요"
+            value={searchQuery}
+            onChange={handleSearchChange}
+            onKeyPress={handleKeyPress}
+            $isSpecialPage={isSpecialPage}
+          />
+          <IconButton
+            type="button"
+            sx={{
+              p: '7px',
+              backgroundColor: '#FFAF00',
+              borderRadius: '6px',
+              '&:hover': {
+                backgroundColor: '#FFB000'
+              }
+            }}
+            aria-label="search"
+            onClick={handleSearchClick}
+          >
+            <SearchIcon sx={{ color: '#000000' }} />
+          </IconButton>
+        </Paper>
+      </Tooltip>
+        {filteredWords.length > 0 && (
+          <AutoCompleteList>
+            {filteredWords.map((word, index) => (
+              <AutoCompleteItem key={index} onClick={() => handleSearch(word)}>
+                {word}
+              </AutoCompleteItem>
+            ))}
+          </AutoCompleteList>
+        )}
     </>
   );
 };
