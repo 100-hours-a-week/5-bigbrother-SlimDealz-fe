@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, memo } from 'react';
 import styled from 'styled-components';
 
 const CarouselContainer = styled.div`
@@ -38,14 +38,14 @@ const CarouselInner = styled.div<{ $activeIndex: number }>`
   transition: transform 0.5s ease-in-out;
 `;
 
-const CarouselItem = styled.div<{ $backgroundImage: string }>`
+const CarouselItem = memo(styled.div<{ $backgroundImage: string }>`
   width: 100%;
-  height: 30vh;
+  height: 25vh;
   background-size: cover;
   background-position: center;
   flex-shrink: 0;
   background-image: url(${(props) => props.$backgroundImage});
-`;
+`);
 
 const images = [
   '/assets/banner1.png',
@@ -53,7 +53,7 @@ const images = [
   '/assets/banner3.png'
 ];
 
-const Banner: React.FC = () => {
+const Banner = memo(() => {
   const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
@@ -87,6 +87,6 @@ const Banner: React.FC = () => {
       </CarouselInner>
     </CarouselContainer>
   );
-};
+});
 
 export default Banner;

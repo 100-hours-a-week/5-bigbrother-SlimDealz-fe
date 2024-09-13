@@ -1,13 +1,15 @@
 import styled from 'styled-components';
 import InputBase from '@mui/material/InputBase';
 
-export const CustomInput = styled(InputBase)(({ theme }) => ({
-  '& .MuiInputBase-input': {
-    width: '215px',
-    padding: '10px 15px',
-    fontSize: '14px'
+export const CustomInput = styled(InputBase)<{
+  $isSpecialPage: boolean;
+}>`
+  & .MuiInputBase-input {
+    width: ${({ $isSpecialPage }) => ($isSpecialPage ? '240px' : '255px')};
+    padding: 10px 15px;
+    font-size: 18px;
   }
-}));
+`;
 
 export const AutoCompleteList = styled.ul`
   margin-top: 10px;
@@ -42,23 +44,15 @@ export const AutoCompleteItem = styled.li`
   }
 `;
 
-export const HeaderContainer = styled.div<{
-  $hasLogo: boolean;
-}>`
-  position: fixed;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
+export const HeaderContainer = styled.div`
+  position: relative;
   width: 100%;
-  max-width: 390px;
   min-height: 8vh;
   height: auto;
   flex-direction: column;
   align-items: center;
   z-index: 1000;
-  background-color: #f3e6e6;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-  padding-bottom: ${({ $hasLogo }) => ($hasLogo ? '10px' : '0')};
+  background-color: #ffffff;
 `;
 
 export const IconContainer = styled.div<{
@@ -78,21 +72,18 @@ export const IconContainer = styled.div<{
 export const LogoContainer = styled.div<{
   $isCentered: boolean;
   $isSpecialPage: boolean;
-  $isSimplePage: boolean;
 }>`
-  display: ${({ $isSpecialPage, $isSimplePage }) =>
-    $isSpecialPage || $isSimplePage ? 'none' : 'flex'};
+  display: ${({ $isSpecialPage }) => ($isSpecialPage ? 'none' : 'flex')};
   justify-content: center;
   align-items: center;
   width: 100%;
-  margin-top: 20px;
+  margin-top: 5px;
 
   img {
     width: 200px;
     height: auto;
   }
 `;
-
 export const SearchContainer = styled.div<{
   $isSpecialPage: boolean;
   $isSimplePage: boolean;
@@ -101,17 +92,18 @@ export const SearchContainer = styled.div<{
   justify-content: center;
   align-items: center;
   width: 100%;
-  padding: 10px 20px 0px;
+  height: 100%;
   box-sizing: border-box;
-  margin-top: 10px;
+  margin-top: 5px;
 
   ${({ $isSpecialPage }) =>
     $isSpecialPage &&
     `
-      margin-left: auto; /* DetailPage에서 검색 버튼 위치 조정 */
+      justify-content: flex-start;
+      margin-left: 50px;
+      padding-top: 13px;
     `}
 `;
-
 export const PageTitle = styled.div<{
   $isSpecialPage: boolean;
   $isSimplePage: boolean;
@@ -123,7 +115,7 @@ export const PageTitle = styled.div<{
   width: 100%;
   max-width: 380px;
   height: 60px;
-  font-size: 30px;
+  font-size: 20px;
   font-weight: bold;
   margin: 5px;
 

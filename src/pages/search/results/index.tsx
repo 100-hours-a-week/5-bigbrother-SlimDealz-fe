@@ -1,11 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Container } from './styles';
 import PageNameTag from '../../../components/tag/pageNameTag';
 import CategoryList from '../../../components/list/categoryList';
 import { SearchContext } from '../../../components/utils/context/searchContext';
 import { useParams, Link } from 'react-router-dom';
 import { LoadingProduct, NoResultsSpinner } from '@/components/loading';
 import api from '@/axiosInstance';
+import { Container } from '@/pages/main/styles';
 
 const SearchResultsPage: React.FC = () => {
   const { keyword } = useParams<{ keyword: string }>();
@@ -45,7 +45,7 @@ const SearchResultsPage: React.FC = () => {
 
   return (
     <Container>
-      <PageNameTag pageName="Search Results" />
+      <PageNameTag pageName={`"${keyword}" 검색결과: ${data.length}개`} />
       {loading ? (
         <LoadingProduct />
       ) : data.length > 0 ? (

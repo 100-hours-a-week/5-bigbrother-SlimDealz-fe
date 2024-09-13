@@ -1,21 +1,60 @@
 import { create } from 'zustand';
+import axios from 'axios';
 
-interface ProductState {
-  lowestProducts: any[];
-  randomProducts: any[];
-  isLowestProductsLoaded: boolean;
-  isRandomProductsLoaded: boolean;
-  setLowestProducts: (products: any[]) => void;
-  setRandomProducts: (products: any[]) => void;
-}
+type Product = {
+  id: number;
+  name: string;
+  imageUrl: string;
+  originalPrice: number;
+};
+
+type ProductState = {
+  lowestProducts: Product[];
+  randomProducts: Product[];
+  popularProducts: Product[];
+  fetchLowestProducts: () => Promise<void>;
+  fetchRandomProducts: () => Promise<void>;
+  fetchPopularProducts: (page: number) => Promise<Product[]>;
+};
 
 export const useProductStore = create<ProductState>((set) => ({
   lowestProducts: [],
   randomProducts: [],
-  isLowestProductsLoaded: false,
-  isRandomProductsLoaded: false,
-  setLowestProducts: (products) =>
-    set({ lowestProducts: products, isLowestProductsLoaded: true }),
-  setRandomProducts: (products) =>
-    set({ randomProducts: products, isRandomProductsLoaded: true })
+  popularProducts: [],
+
+  fetchLowestProducts: async () => {
+    try {
+      const response = await axios.get('/api/v1/lowest-products');
+      set({ lowestProducts: response.data });
+    } catch (error) {
+      console.error('최저가 상품을 불러오는 중 오류가 발생했습니다:', error);
+    }
+  },
+
+  fetchRandomProducts: async () => {
+    try {
+      const response = await axios.get('/api/v1/random-products');
+      set({ randomProducts: response.data });
+    } catch (error) {
+      console.error('랜덤 상품을 불러오는 중 오류가 발생했습니다:', error);
+    }
+  },
+
+  fetchPopularProducts: async (page: number): Promise<Product[]> => {
+    try {
+      const response = await axios.get('/api/v1/products', {
+        params: { category: 'popular', page, limit: 10 }
+      });
+      const newProducts = response.data;
+
+      set((state) => ({
+        popularProducts: [...state.popularProducts, ...newProducts]
+      }));
+
+      return newProducts;
+    } catch (error) {
+      console.error('인기 상품을 불러오는 중 오류가 발생했습니다:', error);
+      return [];
+    }
+  }
 }));

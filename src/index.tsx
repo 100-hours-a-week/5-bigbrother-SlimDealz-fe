@@ -5,15 +5,16 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import GlobalStyles from './styles/globalStyles';
 import * as Sentry from '@sentry/react';
+import { initializeApp } from 'firebase/app';
+import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 
 Sentry.init({
   dsn: import.meta.env.VITE_SENTRY_DSN,
   integrations: [
     Sentry.browserTracingIntegration(),
-    Sentry.browserProfilingIntegration(),
+    // Sentry.browserProfilingIntegration(),
     Sentry.replayIntegration(),
     Sentry.feedbackIntegration({
-      // Additional SDK configuration goes in here, for example:
       colorScheme: 'system',
       isNameRequired: true,
       isEmailRequired: true,
@@ -35,36 +36,80 @@ Sentry.init({
       successMessageText: '신고가 접수되었어요. 감사합니다!'
     })
   ],
-  // Tracing
-  tracesSampleRate: 1.0, //  Capture 100% of the transactions
-  // Set 'tracePropagationTargets' to control for which URLs distributed tracing should be enabled
+  tracesSampleRate: 1.0,
   tracePropagationTargets: [
     'localhost',
     /^https:\/\/api\.slimdealz\.store/,
     /^https:\/\/slimdealz\.store/
   ],
-  // Set profilesSampleRate to 1.0 to profile every transaction.
-  // Since profilesSampleRate is relative to tracesSampleRate,
-  // the final profiling rate can be computed as tracesSampleRate * profilesSampleRate
-  // For example, a tracesSampleRate of 0.5 and profilesSampleRate of 0.5 would
-  // results in 25% of transactions being profiled (0.5*0.5=0.25)
-  profilesSampleRate: 1.0,
-  // Session Replay
-  replaysSessionSampleRate: 0.1, // This sets the sample rate at 10%. You may want to change it to 100% while in development and then sample at a lower rate in production.
-  replaysOnErrorSampleRate: 1.0 // If you're not already sampling the entire session, change the sample rate to 100% when sampling sessions where errors occur.
+  profilesSampleRate: 0, // 프로파일링 비활성화
+  replaysSessionSampleRate: 0.1,
+  replaysOnErrorSampleRate: 1.0
+});
+
+const firebaseConfig = {
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
+};
+
+const app = initializeApp(firebaseConfig);
+export const messaging = getMessaging(app);
+
+// Service Worker 등록 및 Firebase 설정 전달
+navigator.serviceWorker
+  .register('/firebase-messaging-sw.js')
+  .then((registration) => {
+    // Firebase 메시징 설정 전달
+    registration.active?.postMessage(firebaseConfig);
+
+    // FCM 토큰 요청
+    getToken(messaging, {
+      vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY,
+      serviceWorkerRegistration: registration
+    })
+      .then((currentToken) => {
+        if (currentToken) {
+          // console.log('FCM Token:', currentToken);
+        } else {
+          console.warn('No registration token available.');
+        }
+      })
+      .catch((err) => {
+        console.error('An error occurred while retrieving token. ', err);
+      });
+  })
+  .catch((err) => {
+    console.error('Service Worker registration failed: ', err);
+  });
+
+// Foreground 메시지 수신 처리
+onMessage(messaging, (payload) => {
+  // console.log('Message received. ', payload);
+
+  // 알림 생성
+  if (Notification.permission === 'granted') {
+    const { title, body, icon } = payload.notification || {};
+    new Notification(title || 'New Notification', {
+      body: body || 'You have a new message.',
+      icon: icon || '/default-icon.png'
+    });
+  }
 });
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
+
 root.render(
-  <React.StrictMode>
+  <>
     <GlobalStyles />
     <App />
-  </React.StrictMode>
+  </>
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();

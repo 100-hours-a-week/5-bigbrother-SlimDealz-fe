@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, memo } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import OutLetContainer from './pages';
 import ScrollToTop from './components/utils/scrollToTop/scrollToTop';
@@ -16,14 +16,12 @@ const CategoryPage = React.lazy(() => import('./pages/category'));
 const DetailPage = React.lazy(() => import('./pages/detail'));
 const SearchInitialPage = React.lazy(() => import('./pages/search/initial'));
 const SearchResultsPage = React.lazy(() => import('./pages/search/results'));
-const SignUpPage = React.lazy(() => import('./pages/signUp'));
 const UserAlarmPage = React.lazy(() => import('./pages/user/alarm'));
 const UserRecentlyViewPage = React.lazy(
   () => import('./pages/user/recentlyView')
 );
-// const UserInformationPage = React.lazy(() => import('./pages/user/information'));
 
-const Router = () => {
+const Router = memo(() => {
   return (
     <SearchProvider>
       <HeaderHeightProvider>
@@ -33,7 +31,10 @@ const Router = () => {
             <Routes>
               <Route path="/" element={<OutLetContainer />}>
                 <Route path="/" element={<MainPage />} />
-                <Route path="/category" element={<CategoryPage />} />
+                <Route
+                  path="/category/:categoryType"
+                  element={<CategoryPage />}
+                />
                 <Route path="/product/:productName" element={<DetailPage />} />
                 <Route path="/searchInitial" element={<SearchInitialPage />} />
                 <Route
@@ -41,11 +42,9 @@ const Router = () => {
                   element={<SearchResultsPage />}
                 />
                 <Route path="/signIn" element={<SignInPage />} />
-                <Route path="/signUp" element={<SignUpPage />} />
                 <Route path="/myPage" element={<MyMainPage />} />
-                <Route path="/alarm" element={<UserAlarmPage />} />
+                <Route path="/notifications" element={<UserAlarmPage />} />
                 <Route path="/bookmark" element={<UserBookmarkPage />} />
-                {/* <Route path="/information" element={<UserInformationPage />} /> */}
                 <Route
                   path="/recentlyView"
                   element={<UserRecentlyViewPage />}
@@ -58,6 +57,6 @@ const Router = () => {
       </HeaderHeightProvider>
     </SearchProvider>
   );
-};
+});
 
 export default Router;

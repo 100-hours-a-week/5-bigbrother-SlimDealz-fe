@@ -1,55 +1,73 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Container } from './styles';
-import CategoryList from '../../components/list/categoryList';
-import { ChickenChestWrapper } from '../main/styles';
-import IconCategory from '../../components/icon/iconCategory';
-import PageNameTag from '../../components/tag/pageNameTag';
+import { useParams } from 'react-router-dom';
+import { useProductStore } from '@/store/product';
 import { LoadingProduct } from '@/components/loading';
-import api from '@/axiosInstance';
+import ProductCard from '@/components/list/productCard';
 
 type Product = {
   id: number;
   name: string;
   imageUrl: string;
-  shippingFee: string;
-  prices: { setPrice: number }[];
+  originalPrice: number;
 };
 
 const CategoryPage = () => {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { categoryType } = useParams<{ categoryType: string }>();
+  const {
+    lowestProducts,
+    randomProducts,
+    popularProducts,
+    fetchLowestProducts,
+    fetchRandomProducts,
+    fetchPopularProducts
+  } = useProductStore();
+
   const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(true);
   const [hasMore, setHasMore] = useState(true);
 
-  const fetchProducts = useCallback(async () => {
-    try {
-      const response = await api.get('/v1/products', {
-        params: { category: '닭가슴살', page, limit: 10 }
-      });
-      const newProducts = response.data;
-      if (Array.isArray(newProducts) && newProducts.length > 0) {
-        setProducts((prevProducts) => [...prevProducts, ...newProducts]);
-      } else {
-        setHasMore(false);
-      }
-      setLoading(false);
-    } catch (err: any) {
-      setLoading(false);
-      if (err.response) {
-        if (err.response.status === 404) {
-          console.log('Products not found');
-        } else {
-          console.log('Server error');
-        }
-      } else {
-        console.log('Network error');
-      }
+  const fetchPopularProductsCallback = useCallback(async () => {
+    const fetchedProducts = await fetchPopularProducts(page);
+    if (fetchedProducts.length === 0) {
+      setHasMore(false);
     }
-  }, [page]);
+    setLoading(false);
+  }, [fetchPopularProducts, page]);
 
   useEffect(() => {
+    const fetchProducts = async () => {
+      setLoading(true);
+      try {
+        if (categoryType === 'today' && lowestProducts.length === 0) {
+          await fetchLowestProducts();
+        } else if (categoryType === 'popular') {
+          if (page === 1 && popularProducts.length === 0) {
+            await fetchPopularProductsCallback();
+          }
+        } else if (
+          categoryType === 'recommend' &&
+          randomProducts.length === 0
+        ) {
+          await fetchRandomProducts();
+        }
+      } catch (err) {
+        console.error('상품을 불러오는 중 오류가 발생했습니다:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchProducts();
-  }, [fetchProducts]);
+  }, [
+    categoryType,
+    fetchLowestProducts,
+    fetchRandomProducts,
+    fetchPopularProductsCallback,
+    lowestProducts,
+    randomProducts,
+    popularProducts,
+    page
+  ]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -58,8 +76,9 @@ const CategoryPage = () => {
           document.documentElement.offsetHeight ||
         loading ||
         !hasMore
-      )
+      ) {
         return;
+      }
       setPage((prevPage) => prevPage + 1);
     };
 
@@ -67,31 +86,23 @@ const CategoryPage = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [loading, hasMore]);
 
-  return (
-    <Container>
-      <ChickenChestWrapper>
-        <IconCategory />
-      </ChickenChestWrapper>
-      <PageNameTag pageName="추천 페이지" />
-      {loading && page === 1 ? (
-        <LoadingProduct />
-      ) : (
-        <>
-          {products.map((product: any, index: number) => (
-            <div key={`${product.id}-${index}`}>
-              <CategoryList
-                id={product.id}
-                image={product.imageUrl}
-                name={product.name}
-                shipping={product.shippingFee}
-                price={product.prices?.[0]?.setPrice || '가격 없음'}
-              />
-            </div>
-          ))}
-          {loading && <LoadingProduct />}
-        </>
-      )}
-    </Container>
+  const getProducts = () => {
+    if (categoryType === 'today') {
+      return lowestProducts;
+    } else if (categoryType === 'popular') {
+      return popularProducts;
+    } else if (categoryType === 'recommend') {
+      return randomProducts;
+    }
+    return [];
+  };
+
+  const products = getProducts();
+
+  return loading || products.length === 0 ? (
+    <LoadingProduct />
+  ) : (
+    <ProductCard products={products} />
   );
 };
 

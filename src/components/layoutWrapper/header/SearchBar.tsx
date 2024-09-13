@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Paper from '@mui/material/Paper';
 import IconButton from '@mui/material/IconButton';
 import SearchIcon from '@mui/icons-material/Search';
@@ -9,7 +9,7 @@ import { SearchContext } from '../../utils/context/searchContext';
 
 const words = ['예제', '검색', '단어', '목록'];
 
-const SearchBar: React.FC = () => {
+const SearchBar: React.FC<{ isSpecialPage: boolean }> = ({ isSpecialPage }) => {
   const { searchQuery, setSearchQuery } = useContext(SearchContext);
   const [filteredWords, setFilteredWords] = useState<string[]>([]);
   const [showTooltip, setShowTooltip] = useState(false);
@@ -63,9 +63,22 @@ const SearchBar: React.FC = () => {
       const inputElement = document.getElementById('search-input');
       inputElement?.blur();
 
-      navigate(`/searchResults/${encodeURIComponent(trimmedValue)}`, {
-        state: { searchQuery: trimmedValue }
-      });
+      const searchHistory = JSON.parse(
+        localStorage.getItem('searchHistory') || '[]'
+      );
+
+      if (!searchHistory.includes(value)) {
+        searchHistory.push(value);
+        localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
+      }
+
+      const currentUrl = `/searchResults/${encodeURIComponent(value)}`;
+
+      if (location.pathname === currentUrl) {
+        navigate(currentUrl, { state: { searchQuery: value }, replace: true });
+      } else {
+        navigate(currentUrl, { state: { searchQuery: value } });
+      }
     }
   };
 
@@ -78,10 +91,6 @@ const SearchBar: React.FC = () => {
 
   const handleSearchClick = () => {
     handleSearch(searchQuery);
-  };
-
-  const handleInputClick = () => {
-    setSearchQuery('');
   };
 
   return (
@@ -98,13 +107,12 @@ const SearchBar: React.FC = () => {
           sx={{
             display: 'flex',
             alignItems: 'center',
-            width: 300,
-            height: 35,
-            border: '0.1px solid #ccc',
+            justifyContent: 'center',
+            width: isSpecialPage ? 320 : 333,
+            height: 50,
             boxShadow: 'none',
-            paddingLeft: '10px',
-            borderRadius: '20px',
-            backgroundColor: '#f5f5f5'
+            borderRadius: '6px',
+            border: '1px solid #FFAF00'
           }}
           onSubmit={(event) => {
             event.preventDefault();
@@ -117,27 +125,34 @@ const SearchBar: React.FC = () => {
             value={searchQuery}
             onChange={handleSearchChange}
             onKeyPress={handleKeyPress}
-            onClick={handleInputClick}
+            $isSpecialPage={isSpecialPage}
           />
           <IconButton
             type="button"
-            sx={{ p: '10px' }}
+            sx={{
+              p: '7px',
+              backgroundColor: '#FFAF00',
+              borderRadius: '6px',
+              '&:hover': {
+                backgroundColor: '#FFB000'
+              }
+            }}
             aria-label="search"
             onClick={handleSearchClick}
           >
-            <SearchIcon sx={{ color: '#999' }} />
+            <SearchIcon sx={{ color: '#000000' }} />
           </IconButton>
         </Paper>
       </Tooltip>
-      {filteredWords.length > 0 && (
-        <AutoCompleteList>
-          {filteredWords.map((word, index) => (
-            <AutoCompleteItem key={index} onClick={() => handleSearch(word)}>
-              {word}
-            </AutoCompleteItem>
-          ))}
-        </AutoCompleteList>
-      )}
+        {filteredWords.length > 0 && (
+          <AutoCompleteList>
+            {filteredWords.map((word, index) => (
+              <AutoCompleteItem key={index} onClick={() => handleSearch(word)}>
+                {word}
+              </AutoCompleteItem>
+            ))}
+          </AutoCompleteList>
+        )}
     </>
   );
 };

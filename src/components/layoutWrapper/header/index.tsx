@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useRef } from 'react';
+import React, { forwardRef, useEffect, useRef, useState } from 'react';
 import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
 import SearchBar from './SearchBar';
 import {
@@ -11,8 +11,7 @@ import {
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useHeaderHeight } from '@/components/utils/context/headerHeightContext';
 import { SearchContext } from '@/components/utils/context/searchContext';
-
-const logo = '/assets/logo.png';
+import MenuItemsContainer from '@/components/list/menuItemsList';
 
 type HeaderProps = {
   pageTitle?: string;
@@ -25,6 +24,26 @@ const Header = forwardRef<HTMLDivElement, HeaderProps>(({ pageTitle }, ref) => {
   const navigate = useNavigate();
   const location = useLocation();
   const headerRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement | null>(null);
+  const [isSticky, setIsSticky] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (menuRef.current) {
+        const stickyPoint = menuRef.current.offsetTop; // 메뉴의 상단 위치
+        if (window.scrollY > stickyPoint) {
+          setIsSticky(true);
+        } else {
+          setIsSticky(false);
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
 
   useEffect(() => {
     const resizeObserver = new ResizeObserver(() => {
@@ -54,16 +73,13 @@ const Header = forwardRef<HTMLDivElement, HeaderProps>(({ pageTitle }, ref) => {
     ) || isProductPage;
 
   const isSimplePage = [
-    '/alarm',
+    '/comingSoon',
+    '/notifications',
     '/bookmark',
     '/myPage',
-    '/information',
     '/recentlyView',
-    '/signUp',
     '/signIn'
   ].includes(location.pathname);
-
-  const hasLogo = isMainPage || isCategoryPage;
 
   useEffect(() => {
     if (headerRef.current) {
@@ -83,47 +99,43 @@ const Header = forwardRef<HTMLDivElement, HeaderProps>(({ pageTitle }, ref) => {
 
   const handleBackClick = () => {
     if (window.history.length > 2) {
-      // 뒤로 갈 히스토리가 있는 경우
       window.history.back();
     } else {
-      navigate('/', { replace: true }); // 히스토리가 없으면 메인 페이지로 이동하고, 이동된 히스토리를 삭제
+      navigate('/', { replace: true });
     }
   };
 
   return (
-    <HeaderContainer ref={headerRef} $hasLogo={hasLogo}>
+    <HeaderContainer ref={headerRef}>
       {(isSpecialPage || isSimplePage || !isMainPage) && (
         <IconContainer onClick={handleBackClick} $isHidden={isMainPage}>
           <ArrowBackRoundedIcon style={{ cursor: 'pointer' }} />
         </IconContainer>
       )}
-      <LogoContainer
-        $isCentered={isMainPage || isCategoryPage}
-        $isSpecialPage={isSpecialPage}
-        $isSimplePage={isSimplePage}
-      >
-        {hasLogo && (
+      <LogoContainer $isCentered={isMainPage} $isSpecialPage={isSpecialPage}>
+        {isMainPage && (
           <img
-            src={logo}
+            src="/assets/logo.png"
             alt="Slimdealz logo"
             onClick={handleLogoClick}
             style={{ cursor: 'pointer' }}
           />
         )}
       </LogoContainer>
-      {isSimplePage && !isCategoryPage && (
+      {(isSimplePage || isCategoryPage) && (
         <PageTitle $isSpecialPage={isSpecialPage} $isSimplePage={isSimplePage}>
           {pageTitle}
         </PageTitle>
       )}
-      {(isMainPage || isCategoryPage || isSpecialPage) && (
+      {(isMainPage || isSpecialPage) && (
         <SearchContainer
           $isSpecialPage={isSpecialPage}
           $isSimplePage={isSimplePage}
         >
-          <SearchBar />
+          <SearchBar isSpecialPage={isSpecialPage} />
         </SearchContainer>
       )}
+      {isMainPage && <MenuItemsContainer />}
     </HeaderContainer>
   );
 });
