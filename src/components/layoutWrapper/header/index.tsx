@@ -104,12 +104,6 @@ const Header = forwardRef<HTMLDivElement, HeaderProps>(({ pageTitle }, ref) => {
     }
   };
 
-  const menuItems = [
-    { src: '/assets/icons/chicken.png', alt: 'chicken', label: '닭가슴살' },
-    { src: '/assets/icons/protein.png', alt: 'protein', label: '프로틴' },
-    { src: '/assets/icons/salad.png', alt: 'salad', label: '샐러드' }
-  ];
-
   return (
     <HeaderContainer ref={headerRef}>
       {(isSpecialPage || isSimplePage || !isMainPage) && (
@@ -140,7 +134,7 @@ const Header = forwardRef<HTMLDivElement, HeaderProps>(({ pageTitle }, ref) => {
           <SearchBar isSpecialPage={isSpecialPage} />
         </SearchContainer>
       )}
-      {isMainPage && <MenuItemsContainer menuItems={menuItems} />}
+      {isMainPage && <MenuItemsContainer />}
     </HeaderContainer>
   );
 });
