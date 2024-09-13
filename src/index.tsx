@@ -12,7 +12,7 @@ Sentry.init({
   dsn: import.meta.env.VITE_SENTRY_DSN,
   integrations: [
     Sentry.browserTracingIntegration(),
-    Sentry.browserProfilingIntegration(),
+    // Sentry.browserProfilingIntegration(),
     Sentry.replayIntegration(),
     Sentry.feedbackIntegration({
       colorScheme: 'system',
@@ -42,7 +42,7 @@ Sentry.init({
     /^https:\/\/api\.slimdealz\.store/,
     /^https:\/\/slimdealz\.store/
   ],
-  profilesSampleRate: 1.0,
+  profilesSampleRate: 0, // 프로파일링 비활성화
   replaysSessionSampleRate: 0.1,
   replaysOnErrorSampleRate: 1.0
 });

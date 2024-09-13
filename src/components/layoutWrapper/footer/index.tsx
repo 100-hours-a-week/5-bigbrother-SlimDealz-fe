@@ -23,7 +23,7 @@ const CustomBottomNavigationAction: React.FC<NavActionProps> = ({
   active,
   onClick
 }) => (
-  <StyledNavAction active={active} onClick={onClick}>
+  <StyledNavAction $active={active} onClick={onClick}>
     {icon}
     <span>{label}</span>
   </StyledNavAction>
@@ -123,7 +123,7 @@ const Footer = () => {
           onClick={() => handleNavigation(1)}
         />
         <CenterIconWrapper
-          active={value === 2}
+          $active={value === 2}
           onClick={() => handleNavigation(2)}
         >
           <IoMdNotificationsOutline />

@@ -47,7 +47,7 @@ export const AutoCompleteItem = styled.li`
 export const HeaderContainer = styled.div`
   position: relative;
   width: 100%;
-  min-height: 3vh;
+  min-height: 8vh;
   height: auto;
   flex-direction: column;
   align-items: center;
