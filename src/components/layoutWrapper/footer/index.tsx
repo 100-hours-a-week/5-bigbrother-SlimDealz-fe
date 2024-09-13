@@ -23,7 +23,7 @@ const CustomBottomNavigationAction: React.FC<NavActionProps> = ({
   active,
   onClick
 }) => (
-  <StyledNavAction active={active} onClick={onClick}>
+  <StyledNavAction $active={active} onClick={onClick}>
     {icon}
     <span>{label}</span>
   </StyledNavAction>
@@ -123,7 +123,7 @@ const Footer = () => {
           onClick={() => handleNavigation(1)}
         />
         <CenterIconWrapper
-          active={value === 2}
+          $active={value === 2}
           onClick={() => handleNavigation(2)}
         >
           <IoMdNotificationsOutline />
@@ -149,8 +149,10 @@ const Footer = () => {
           onClick={scrollToTop}
           sx={{
             position: 'fixed',
-            bottom: 80,
+            bottom: 75,
             right: 16,
+            height: '30px',
+            width: '36px',
             backgroundColor: '#FFC0CB',
             '&:hover': {
               backgroundColor: '#FFB6C1'

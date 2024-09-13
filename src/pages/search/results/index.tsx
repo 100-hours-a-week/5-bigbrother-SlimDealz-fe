@@ -45,7 +45,7 @@ const SearchResultsPage: React.FC = () => {
 
   return (
     <Container>
-      <PageNameTag pageName="Search Results" />
+      <PageNameTag pageName={`"${keyword}" 검색결과: ${data.length}개`} />
       {loading ? (
         <LoadingProduct />
       ) : data.length > 0 ? (

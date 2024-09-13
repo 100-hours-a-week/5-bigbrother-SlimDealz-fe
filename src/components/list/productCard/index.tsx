@@ -18,6 +18,7 @@ import {
   BookmarkIcon
 } from './styles';
 import { getCookie } from '@/components/utils/cookieUtils';
+import { truncateString } from '@/components/utils/conversion';
 
 type Product = {
   id: number;
@@ -68,12 +69,16 @@ const ProductCard = ({ products }: Props) => {
     authenticateAndCheckBookmarks();
   }, [products]);
 
+  const handleProductClick = (productName: string) => {
+    navigate(`/product/${productName}`);
+  };
+
   const handleBookmarkClick = async (
     e: React.MouseEvent,
     productName: string,
     index: number
   ) => {
-    e.stopPropagation();
+    e.stopPropagation(); // 북마크 클릭 시 카드 클릭이 동작하지 않도록 중지
 
     const jwtToken = getCookie('jwtToken');
     if (!jwtToken) {
@@ -121,12 +126,15 @@ const ProductCard = ({ products }: Props) => {
       <Title>총 {products.length}개 상품</Title>
       <GridContainer>
         {products.map((product, index) => (
-          <Card key={product.id}>
+          <Card
+            key={product.id}
+            onClick={() => handleProductClick(product.name)}
+          >
             <ImagePlaceholder>
               <ProductImage src={product.imageUrl} alt={product.name} />
             </ImagePlaceholder>
             <ProductInfo>
-              <ProductTitle>{product.name}</ProductTitle>
+              <ProductTitle>{truncateString(product.name, 10)}</ProductTitle>
               <ProductPrice>
                 {product.originalPrice.toLocaleString()}원
               </ProductPrice>

@@ -1,13 +1,15 @@
 import styled from 'styled-components';
 import InputBase from '@mui/material/InputBase';
 
-export const CustomInput = styled(InputBase)(({ theme }) => ({
-  '& .MuiInputBase-input': {
-    width: '255px',
-    padding: '10px 15px',
-    fontSize: '18px'
+export const CustomInput = styled(InputBase)<{
+  $isSpecialPage: boolean;
+}>`
+  & .MuiInputBase-input {
+    width: ${({ $isSpecialPage }) => ($isSpecialPage ? '240px' : '255px')};
+    padding: 10px 15px;
+    font-size: 18px;
   }
-}));
+`;
 
 export const AutoCompleteList = styled.ul`
   margin-top: 10px;
@@ -45,7 +47,7 @@ export const AutoCompleteItem = styled.li`
 export const HeaderContainer = styled.div`
   position: relative;
   width: 100%;
-  min-height: 3vh;
+  min-height: 8vh;
   height: auto;
   flex-direction: column;
   align-items: center;
@@ -70,10 +72,8 @@ export const IconContainer = styled.div<{
 export const LogoContainer = styled.div<{
   $isCentered: boolean;
   $isSpecialPage: boolean;
-  $isSimplePage: boolean;
 }>`
-  display: ${({ $isSpecialPage, $isSimplePage }) =>
-    $isSpecialPage || $isSimplePage ? 'none' : 'flex'};
+  display: ${({ $isSpecialPage }) => ($isSpecialPage ? 'none' : 'flex')};
   justify-content: center;
   align-items: center;
   width: 100%;
@@ -84,7 +84,6 @@ export const LogoContainer = styled.div<{
     height: auto;
   }
 `;
-
 export const SearchContainer = styled.div<{
   $isSpecialPage: boolean;
   $isSimplePage: boolean;
@@ -93,16 +92,18 @@ export const SearchContainer = styled.div<{
   justify-content: center;
   align-items: center;
   width: 100%;
+  height: 100%;
   box-sizing: border-box;
   margin-top: 5px;
 
   ${({ $isSpecialPage }) =>
     $isSpecialPage &&
     `
-      margin-left: auto; /* DetailPage에서 검색 버튼 위치 조정 */
+      justify-content: flex-start;
+      margin-left: 50px;
+      padding-top: 13px;
     `}
 `;
-
 export const PageTitle = styled.div<{
   $isSpecialPage: boolean;
   $isSimplePage: boolean;
@@ -114,7 +115,7 @@ export const PageTitle = styled.div<{
   width: 100%;
   max-width: 380px;
   height: 60px;
-  font-size: 30px;
+  font-size: 20px;
   font-weight: bold;
   margin: 5px;
 

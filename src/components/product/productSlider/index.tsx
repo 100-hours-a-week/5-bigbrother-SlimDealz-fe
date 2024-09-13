@@ -67,7 +67,7 @@ const ProductSlider = ({ products = [] }: Props) => {
                       {product.originalPrice.toLocaleString()}원
                     </div>
                   </div>
-                  <div className="rating">평점:</div>
+                  {/* <div className="rating">평점:</div> */}
                 </PriceInfo>
               </ProductItem>
             ))}

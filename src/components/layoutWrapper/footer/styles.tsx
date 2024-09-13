@@ -16,7 +16,7 @@ export const FooterContainer = styled.div`
   border-radius: 10px;
 `;
 
-export const StyledNavAction = styled.div<{ active: boolean }>`
+export const StyledNavAction = styled.div<{ $active: boolean }>`
   flex-grow: 1;
   display: flex;
   flex-direction: column;
@@ -24,7 +24,7 @@ export const StyledNavAction = styled.div<{ active: boolean }>`
   align-items: center;
   width: 60px;
   height: 60px;
-  color: ${({ active }) => (active ? '#FFAF00' : '#888888')};
+  color: ${({ $active }) => ($active ? '#FFAF00' : '#888888')};
   font-size: 12px;
   cursor: pointer;
   transition: color 0.3s ease;
@@ -39,9 +39,9 @@ export const StyledNavAction = styled.div<{ active: boolean }>`
   }
 `;
 
-export const CenterIconWrapper = styled.div<{ active: boolean }>`
+export const CenterIconWrapper = styled.div<{ $active: boolean }>`
   position: relative;
-  background-color: ${({ active }) => (active ? '#FFAF00' : '#f0a500')};
+  background-color: ${({ $active }) => ($active ? '#FFAF00' : '#f0a500')};
   width: 60px;
   height: 60px;
   display: flex;

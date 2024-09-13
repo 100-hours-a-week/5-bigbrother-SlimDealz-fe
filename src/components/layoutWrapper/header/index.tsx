@@ -73,12 +73,11 @@ const Header = forwardRef<HTMLDivElement, HeaderProps>(({ pageTitle }, ref) => {
     ) || isProductPage;
 
   const isSimplePage = [
-    '/alarm',
+    '/comingSoon',
+    '/notifications',
     '/bookmark',
     '/myPage',
-    '/information',
     '/recentlyView',
-    '/signUp',
     '/signIn'
   ].includes(location.pathname);
 
@@ -106,12 +105,6 @@ const Header = forwardRef<HTMLDivElement, HeaderProps>(({ pageTitle }, ref) => {
     }
   };
 
-  const menuItems = [
-    { src: '/assets/icons/chicken.png', alt: 'chicken', label: '닭가슴살' },
-    { src: '/assets/icons/protein.png', alt: 'protein', label: '프로틴' },
-    { src: '/assets/icons/salad.png', alt: 'salad', label: '샐러드' }
-  ];
-
   return (
     <HeaderContainer ref={headerRef}>
       {(isSpecialPage || isSimplePage || !isMainPage) && (
@@ -119,11 +112,7 @@ const Header = forwardRef<HTMLDivElement, HeaderProps>(({ pageTitle }, ref) => {
           <ArrowBackRoundedIcon style={{ cursor: 'pointer' }} />
         </IconContainer>
       )}
-      <LogoContainer
-        $isCentered={isMainPage}
-        $isSpecialPage={isSpecialPage}
-        $isSimplePage={isSimplePage}
-      >
+      <LogoContainer $isCentered={isMainPage} $isSpecialPage={isSpecialPage}>
         {isMainPage && (
           <img
             src="/assets/logo.png"
@@ -133,20 +122,20 @@ const Header = forwardRef<HTMLDivElement, HeaderProps>(({ pageTitle }, ref) => {
           />
         )}
       </LogoContainer>
-      {isSimplePage && (
+      {(isSimplePage || isCategoryPage) && (
         <PageTitle $isSpecialPage={isSpecialPage} $isSimplePage={isSimplePage}>
           {pageTitle}
         </PageTitle>
       )}
-      {(isMainPage || isCategoryPage || isSpecialPage) && (
+      {(isMainPage || isSpecialPage) && (
         <SearchContainer
           $isSpecialPage={isSpecialPage}
           $isSimplePage={isSimplePage}
         >
-          <SearchBar />
+          <SearchBar isSpecialPage={isSpecialPage} />
         </SearchContainer>
       )}
-      {isMainPage && <MenuItemsContainer menuItems={menuItems} />}
+      {isMainPage && <MenuItemsContainer />}
     </HeaderContainer>
   );
 });

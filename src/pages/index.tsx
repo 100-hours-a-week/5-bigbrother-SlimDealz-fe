@@ -10,13 +10,19 @@ const OutLetContainer = () => {
   let pageTitle = '';
 
   if (location.pathname.includes('/bookmark')) {
-    pageTitle = 'BOOKMARKS';
+    pageTitle = '북마크 상품';
   } else if (location.pathname.includes('/myPage')) {
-    pageTitle = 'MY PAGE';
-  } else if (location.pathname.includes('/alarm')) {
+    pageTitle = '마이페이지';
+  } else if (location.pathname.includes('/comingSoon')) {
     pageTitle = '알람';
-  } else if (location.pathname.includes('/information')) {
-    pageTitle = '회원가입 추가 정보';
+  } else if (location.pathname.includes('/recentlyView')) {
+    pageTitle = '최근 본 상품';
+  } else if (location.pathname.includes('/category/today')) {
+    pageTitle = '오늘의 최저가';
+  } else if (location.pathname.includes('/category/popular')) {
+    pageTitle = '인기 급상승';
+  } else if (location.pathname.includes('/category/recommend')) {
+    pageTitle = 'MD의 추천템';
   }
 
   return (
