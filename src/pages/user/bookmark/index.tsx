@@ -7,6 +7,7 @@ import { Typography } from '@mui/material';
 import { LoadingProduct } from '@/components/loading';
 import api from '@/axiosInstance';
 import { Container } from '@/pages/main/styles';
+import { getCookie } from '@/components/utils/cookieUtils';
 
 interface Price {
   id: number;
