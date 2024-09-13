@@ -43,7 +43,7 @@ const Router = memo(() => {
                 />
                 <Route path="/signIn" element={<SignInPage />} />
                 <Route path="/myPage" element={<MyMainPage />} />
-                <Route path="/alarm" element={<UserAlarmPage />} />
+                <Route path="/notifications" element={<UserAlarmPage />} />
                 <Route path="/bookmark" element={<UserBookmarkPage />} />
                 <Route
                   path="/recentlyView"

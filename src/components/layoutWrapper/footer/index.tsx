@@ -149,8 +149,10 @@ const Footer = () => {
           onClick={scrollToTop}
           sx={{
             position: 'fixed',
-            bottom: 80,
+            bottom: 75,
             right: 16,
+            height: '30px',
+            width: '36px',
             backgroundColor: '#FFC0CB',
             '&:hover': {
               backgroundColor: '#FFB6C1'

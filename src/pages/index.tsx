@@ -13,7 +13,7 @@ const OutLetContainer = () => {
     pageTitle = '북마크 상품';
   } else if (location.pathname.includes('/myPage')) {
     pageTitle = '마이페이지';
-  } else if (location.pathname.includes('/alarm')) {
+  } else if (location.pathname.includes('/comingSoon')) {
     pageTitle = '알람';
   } else if (location.pathname.includes('/recentlyView')) {
     pageTitle = '최근 본 상품';

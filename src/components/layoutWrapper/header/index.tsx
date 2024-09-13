@@ -73,7 +73,8 @@ const Header = forwardRef<HTMLDivElement, HeaderProps>(({ pageTitle }, ref) => {
     ) || isProductPage;
 
   const isSimplePage = [
-    '/alarm',
+    '/comingSoon',
+    '/notifications',
     '/bookmark',
     '/myPage',
     '/recentlyView',
