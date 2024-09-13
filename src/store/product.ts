@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import api from '@/axiosInstance';
+import { AxiosError } from 'axios'; // Axios 에러 타입을 추가로 가져옴
 
 type Product = {
   id: number;
@@ -27,7 +28,19 @@ export const useProductStore = create<ProductState>((set) => ({
       const response = await api.get('/v1/today-lowest-products');
       set({ lowestProducts: response.data });
     } catch (error) {
-      console.error('최저가 상품을 불러오는 중 오류가 발생했습니다:', error);
+      if (error instanceof AxiosError) {
+        console.error('최저가 상품을 불러오는 중 오류가 발생했습니다:', {
+          message: error.message,
+          code: error.code,
+          status: error.response?.status,
+          responseData: error.response?.data
+        });
+      } else {
+        console.error(
+          '최저가 상품을 불러오는 중 알 수 없는 오류가 발생했습니다:',
+          error
+        );
+      }
     }
   },
 
@@ -36,7 +49,19 @@ export const useProductStore = create<ProductState>((set) => ({
       const response = await api.get('/v1/random-products');
       set({ randomProducts: response.data });
     } catch (error) {
-      console.error('랜덤 상품을 불러오는 중 오류가 발생했습니다:', error);
+      if (error instanceof AxiosError) {
+        console.error('랜덤 상품을 불러오는 중 오류가 발생했습니다:', {
+          message: error.message,
+          code: error.code,
+          status: error.response?.status,
+          responseData: error.response?.data
+        });
+      } else {
+        console.error(
+          '랜덤 상품을 불러오는 중 알 수 없는 오류가 발생했습니다:',
+          error
+        );
+      }
     }
   },
 
@@ -53,7 +78,19 @@ export const useProductStore = create<ProductState>((set) => ({
 
       return newProducts;
     } catch (error) {
-      console.error('인기 상품을 불러오는 중 오류가 발생했습니다:', error);
+      if (error instanceof AxiosError) {
+        console.error('인기 상품을 불러오는 중 오류가 발생했습니다:', {
+          message: error.message,
+          code: error.code,
+          status: error.response?.status,
+          responseData: error.response?.data
+        });
+      } else {
+        console.error(
+          '인기 상품을 불러오는 중 알 수 없는 오류가 발생했습니다:',
+          error
+        );
+      }
       return [];
     }
   }
