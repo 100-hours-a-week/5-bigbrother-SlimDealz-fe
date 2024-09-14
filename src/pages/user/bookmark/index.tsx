@@ -8,6 +8,7 @@ import { LoadingProduct } from '@/components/loading';
 import api from '@/axiosInstance';
 import { Container } from '@/pages/main/styles';
 import { getCookie } from '@/components/utils/cookieUtils';
+import LoginRequiredModal from '@/components/modal/logInModal';
 
 interface Price {
   id: number;
@@ -37,6 +38,7 @@ const UserBookmarkPage: React.FC = () => {
   const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [jwtToken, setJwtToken] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -70,6 +72,7 @@ const UserBookmarkPage: React.FC = () => {
             console.log('잘못된 데이터 요청입니다.');
           } else if (err.response.status === 401) {
             console.log('권한이 없습니다.');
+            setIsModalOpen(true);
           } else if (err.response.status === 500) {
             console.log('서버 오류가 발생했습니다.');
           }
@@ -134,12 +137,20 @@ const UserBookmarkPage: React.FC = () => {
         <CategoryList
           key={bookmark.bookmarkId}
           id={bookmark.productId}
-          image={bookmark.image || 'default_image_url_here'} // 이미지가 없을 경우 기본 이미지 설정
+          image={bookmark.image || 'default_image_url_here'}
           name={bookmark.productName}
           shipping={bookmark.shippingFee}
           price={bookmark.prices[0]?.setPrice}
         />
       ))}
+      <LoginRequiredModal
+        open={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onLogin={() => {
+          setIsModalOpen(false);
+          window.location.href = '/signIn';
+        }}
+      />
     </Container>
   );
 };
