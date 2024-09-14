@@ -1,4 +1,5 @@
 import React, { useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ProductCard, Container, Slider } from './styles';
 import { truncateString } from '@/components/utils/conversion';
 import { LoadingSearch } from '@/components/loading';
@@ -20,6 +21,7 @@ const DragSlider = ({ products }: Props) => {
   const startX = useRef(0);
   const scrollStart = useRef(0);
   const animationFrame = useRef<number | null>(null);
+  const navigate = useNavigate();
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     if (containerRef.current) {
@@ -52,6 +54,10 @@ const DragSlider = ({ products }: Props) => {
     }
   };
 
+  const handleProductClick = (productName: string) => {
+    navigate(`/product/${productName}`);
+  };
+
   useEffect(() => {
     const handleMouseUp = () => stopDragging();
 
@@ -81,7 +87,10 @@ const DragSlider = ({ products }: Props) => {
       {products.length > 0 ? (
         <Slider ref={containerRef} onMouseDown={handleMouseDown}>
           {products.map((product) => (
-            <ProductCard key={product.id}>
+            <ProductCard
+              key={product.id}
+              onClick={() => handleProductClick(product.name)}
+            >
               <img src={product.imageUrl} alt={product.name} />
               <h3>{truncateString(product.name, 15)}</h3>
               <p>{product.prices?.[0]?.setPrice?.toLocaleString()}원</p>
