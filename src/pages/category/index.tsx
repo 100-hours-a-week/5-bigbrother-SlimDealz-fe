@@ -4,11 +4,20 @@ import { useProductStore } from '@/store/product';
 import { LoadingProduct } from '@/components/loading';
 import ProductCard from '@/components/list/productCard';
 
+type Price = {
+  id: number;
+  setPrice: number;
+  promotion: string | null;
+  productId: number;
+  vendorId: number;
+};
+
 type Product = {
   id: number;
   name: string;
+  category: string;
+  prices: Price[];
   imageUrl: string;
-  originalPrice: number;
 };
 
 const CategoryPage = () => {

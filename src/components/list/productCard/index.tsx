@@ -18,13 +18,20 @@ import {
   BookmarkIcon
 } from './styles';
 import { getCookie } from '@/components/utils/cookieUtils';
-import { truncateString } from '@/components/utils/conversion';
+import {
+  truncateString,
+  getNumberWithComma
+} from '@/components/utils/conversion';
+
+type Price = {
+  setPrice: number;
+};
 
 type Product = {
   id: number;
   name: string;
   imageUrl: string;
-  originalPrice: number;
+  prices: Price[];
 };
 
 type Props = {
@@ -78,7 +85,7 @@ const ProductCard = ({ products }: Props) => {
     productName: string,
     index: number
   ) => {
-    e.stopPropagation(); // 북마크 클릭 시 카드 클릭이 동작하지 않도록 중지
+    e.stopPropagation();
 
     const jwtToken = getCookie('jwtToken');
     if (!jwtToken) {
@@ -136,7 +143,7 @@ const ProductCard = ({ products }: Props) => {
             <ProductInfo>
               <ProductTitle>{truncateString(product.name, 10)}</ProductTitle>
               <ProductPrice>
-                {product.originalPrice.toLocaleString()}원
+                {getNumberWithComma(product.prices[0]?.setPrice)}원
               </ProductPrice>
             </ProductInfo>
             <BookmarkIcon>
