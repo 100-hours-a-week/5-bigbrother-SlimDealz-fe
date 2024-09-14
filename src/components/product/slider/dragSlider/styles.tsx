@@ -44,7 +44,7 @@ export const ProductCard = styled.div`
   img {
     width: 100%;
     height: 80px;
-    object-fit: fill;
+    object-fit: contain;
     border-radius: 8px;
     pointer-events: none;
   }
