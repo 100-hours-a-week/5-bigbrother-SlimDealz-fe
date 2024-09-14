@@ -2,11 +2,20 @@ import { create } from 'zustand';
 import api from '@/axiosInstance';
 import { AxiosError } from 'axios'; // Axios 에러 타입을 추가로 가져옴
 
+type Price = {
+  id: number;
+  setPrice: number;
+  promotion: string | null;
+  productId: number;
+  vendorId: number;
+};
+
 type Product = {
   id: number;
   name: string;
   imageUrl: string;
   originalPrice: number;
+  prices: Price[];
 };
 
 type ProductState = {

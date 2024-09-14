@@ -23,7 +23,7 @@ interface ThirdSliderProps {
     id: number;
     name: string;
     imageUrl: string;
-    originalPrice: number;
+    prices: { setPrice: number }[];
   }[];
 }
 
@@ -64,7 +64,7 @@ const ThirdSlider: React.FC<ThirdSliderProps> = ({ items }) => {
                   <ItemDetails>
                     <ItemName>{truncateString(item.name, 13)}</ItemName>
                     <SalePrice>
-                      판매가: {getNumberWithComma(item.originalPrice)}원
+                      판매가: {getNumberWithComma(item.prices[0].setPrice)}원
                     </SalePrice>
                   </ItemDetails>
                 </SwiperSlideStyled>

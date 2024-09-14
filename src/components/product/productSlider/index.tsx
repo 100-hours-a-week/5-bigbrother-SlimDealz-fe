@@ -17,7 +17,7 @@ type Product = {
   id: number;
   name: string;
   imageUrl: string;
-  originalPrice: number;
+  prices: { setPrice: number }[];
 };
 
 type Props = {
@@ -64,10 +64,9 @@ const ProductSlider = ({ products = [] }: Props) => {
                   <div className="price-row">
                     <div className="price-label">최저가:</div>
                     <div className="price-value">
-                      {product.originalPrice.toLocaleString()}원
+                      {product.prices[0].setPrice.toLocaleString()}원
                     </div>
                   </div>
-                  {/* <div className="rating">평점:</div> */}
                 </PriceInfo>
               </ProductItem>
             ))}

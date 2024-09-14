@@ -11,14 +11,11 @@ import { getNumberWithComma } from '@/components/utils/conversion';
 import { LoadingProduct } from '@/components/loading';
 import api from '@/axiosInstance';
 
-interface Vendor {
-  vendorName: string;
-  vendorUrl: string;
-}
-
 interface Price {
   setPrice: number;
-  vendor: Vendor;
+  promotion: string | null;
+  productId: number;
+  vendorId: number;
 }
 
 interface MallData {
@@ -26,7 +23,7 @@ interface MallData {
   name: string;
   category: string;
   shippingFee: number;
-  vendorUrl: string;
+  vendorUrl: string | null;
   prices: Price[];
 }
 
@@ -67,12 +64,12 @@ const MallList: React.FC<TabsComponentProps> = ({ productName }) => {
           <MallItem
             key={`${index}-${idx}`}
             onClick={() => {
-              if (price.vendor.vendorUrl) {
-                window.open(price.vendor.vendorUrl, '_blank');
+              if (item.vendorUrl) {
+                window.open(item.vendorUrl, '_blank');
               }
             }}
           >
-            <MallInfo>{price.vendor.vendorName}</MallInfo>
+            <MallInfo>{item.name}</MallInfo>
             <PriceContainer>
               {`최저가 ${getNumberWithComma(price.setPrice)}원`}
               <ShippingFeeContainer>

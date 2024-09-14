@@ -7,7 +7,7 @@ type Product = {
   id: number;
   name: string;
   imageUrl: string;
-  originalPrice: number;
+  prices: { setPrice: number }[];
 };
 
 interface Props {
@@ -84,7 +84,7 @@ const DragSlider = ({ products }: Props) => {
             <ProductCard key={product.id}>
               <img src={product.imageUrl} alt={product.name} />
               <h3>{truncateString(product.name, 15)}</h3>
-              <p>{product.originalPrice.toLocaleString()}원</p>
+              <p>{product.prices[0].setPrice.toLocaleString()}원</p>
             </ProductCard>
           ))}
         </Slider>
