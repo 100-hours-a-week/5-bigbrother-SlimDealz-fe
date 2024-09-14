@@ -4,7 +4,6 @@ import BookmarkBorder from '@mui/icons-material/BookmarkBorder';
 import Bookmark from '@mui/icons-material/Bookmark';
 import api from '@/axiosInstance';
 import { getCookie } from '@/components/utils/cookieUtils';
-import LoginRequiredModal from '@/components/modal/logInModal';
 
 interface ProductBookmarkProps {
   productName: string;
@@ -12,25 +11,28 @@ interface ProductBookmarkProps {
 
 const ProductBookmark: React.FC<ProductBookmarkProps> = ({ productName }) => {
   const [bookmarked, setBookmarked] = useState<boolean>(false);
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
     const authenticateAndCheckBookmark = async () => {
-      const jwtToken = getCookie('jwtToken');
+      const jwtToken = getCookie('jwtToken'); // 쿠키에서 JWT 토큰 가져오기
       if (!jwtToken) {
         return;
       }
 
       try {
+        // 북마크 상태 확인
         const bookmarkResponse = await api.get(`/v1/users/bookmarks/search`, {
-          headers: { Authorization: `Bearer ${jwtToken}` },
-          params: { productName }
+          headers: {
+            Authorization: `Bearer ${jwtToken}`
+          },
+          params: { productName: productName }
         });
 
+        // 응답의 데이터가 true/false에 따라 상태 변경
         setBookmarked(bookmarkResponse.data);
       } catch (error: any) {
         if (error.response && error.response.status === 404) {
-          setBookmarked(false);
+          setBookmarked(false); // 북마크가 없으면 false로 설정
         } else {
           console.error(
             'Error checking bookmark status:',
@@ -39,62 +41,49 @@ const ProductBookmark: React.FC<ProductBookmarkProps> = ({ productName }) => {
         }
       }
     };
-
     authenticateAndCheckBookmark();
   }, [productName]);
 
   const handleBookmarkClick = async () => {
-    const jwtToken = getCookie('jwtToken');
+    const jwtToken = getCookie('jwtToken'); // 쿠키에서 JWT 토큰 가져오기
     if (!jwtToken) {
-      setIsModalOpen(true);
       return;
     }
-
     try {
       if (bookmarked) {
         await api.delete(`/v1/users/bookmarks`, {
-          headers: { Authorization: `Bearer ${jwtToken}` },
-          params: { productName }
+          headers: {
+            Authorization: `Bearer ${jwtToken}`
+          },
+          params: { productName: productName }
         });
         setBookmarked(false);
         alert('북마크가 삭제되었습니다.');
       } else {
         await api.post(
           `/v1/users/bookmarks`,
-          { productName },
-          { headers: { Authorization: `Bearer ${jwtToken}` } }
+          {
+            productName
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${jwtToken}`
+            }
+          }
         );
         setBookmarked(true);
         alert('북마크가 추가되었습니다.');
       }
     } catch (error: any) {
-      if (error.response?.status === 401) {
-        setIsModalOpen(true); // 401 에러 처리
-      } else {
-        console.error('Error handling bookmark:', error.message || error);
-        alert('오류가 발생했습니다.');
-      }
+      console.error('Error handling bookmark:', error.message || error);
+      alert('오류가 발생했습니다.');
     }
   };
 
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
-
   return (
-    <>
-      <IconButton onClick={handleBookmarkClick}>
-        {bookmarked ? <Bookmark /> : <BookmarkBorder />}
-      </IconButton>
-      <LoginRequiredModal
-        open={isModalOpen}
-        onClose={closeModal}
-        onLogin={() => {
-          closeModal();
-          window.location.href = '/signIn';
-        }}
-      />
-    </>
+    <IconButton onClick={handleBookmarkClick}>
+      {bookmarked ? <Bookmark /> : <BookmarkBorder />}
+    </IconButton>
   );
 };
 

@@ -100,12 +100,8 @@ const CategoryList = ({ id, image, name, price, shipping }: Props) => {
         alert('북마크가 추가되었습니다.');
       }
     } catch (error: any) {
-      if (error.response?.status === 401) {
-        setIsModalOpen(true); // 401 에러 시 로그인 모달을 염
-      } else {
-        console.error('Error handling bookmark:', error.message || error);
-        alert('오류가 발생했습니다.');
-      }
+      console.error('Error handling bookmark:', error.message || error);
+      alert('오류가 발생했습니다.');
     }
   };
 
@@ -143,7 +139,7 @@ const CategoryList = ({ id, image, name, price, shipping }: Props) => {
         onClose={closeModal}
         onLogin={() => {
           closeModal();
-          window.location.href = '/signIn'; // 로그인 페이지로 이동
+          window.location.href = '/signIn';
         }}
       />
     </Container>
