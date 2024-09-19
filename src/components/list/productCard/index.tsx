@@ -56,7 +56,7 @@ const ProductCard = ({ products }: Props) => {
             headers: { Authorization: `Bearer ${jwtToken}` },
             params: { productName: product.name }
           });
-          if (bookmarkResponse.status === 200) {
+          if (bookmarkResponse.status === 200 && bookmarkResponse.data) {
             setBookmarked((prev) => {
               const newBookmarks = [...prev];
               newBookmarks[index] = true;
