@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Line } from 'react-chartjs-2';
 import { Container } from './styles';
 import {
@@ -9,8 +9,11 @@ import {
   LineElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  ChartOptions
 } from 'chart.js';
+import api from '@/axiosInstance';
+import Select, { SingleValue } from 'react-select';
 
 ChartJS.register(
   CategoryScale,
@@ -22,88 +25,155 @@ ChartJS.register(
   Legend
 );
 
-const data = {
-  labels: ['07.29', '07.30', '08.01', '08.02', '08.03', '08.04', '08.05'],
-  datasets: [
-    {
-      label: '최저가 추이',
-      data: [18900, 19000, 19200, 19300, 19400, 19500, 18900],
-      borderColor: '#1565C0',
-      backgroundColor: 'rgba(21, 101, 192, 0.5)',
-      tension: 0.3,
-      pointBackgroundColor: '#1565C0',
-      pointBorderColor: '#fff',
-      pointBorderWidth: 2,
-      pointRadius: 5,
-      pointHoverRadius: 7
-    }
-  ]
-};
+interface Props {
+  productName: string;
+}
 
-const options = {
-  responsive: true,
-  maintainAspectRatio: false,
-  plugins: {
-    legend: {
-      display: true,
-      position: 'top' as const,
-      labels: {
+interface PriceHistory {
+  date: string;
+  lowestPrice: number;
+}
+
+interface OptionType {
+  value: string;
+  label: string;
+}
+
+const dateOptions: OptionType[] = [
+  { value: 'week', label: '1주일' },
+  { value: 'month', label: '1달' }
+];
+
+const ChartView: React.FC<Props> = ({ productName }) => {
+  const [dateLimit, setDateLimit] = useState<string>('week');
+  const [priceHistory, setPriceHistory] = useState<PriceHistory[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchPriceHistory = async () => {
+      try {
+        const response = await api.get('/v1/price-compare', {
+          params: { productName, dateLimit }
+        });
+        setPriceHistory(response.data);
+        setLoading(false);
+      } catch (error: any) {
+        setError(
+          error.response?.data?.message || 'Failed to fetch price history'
+        );
+        setLoading(false);
+      }
+    };
+
+    fetchPriceHistory();
+  }, [productName, dateLimit]);
+
+  const labels = priceHistory.map((item) =>
+    new Date(item.date)
+      .toLocaleDateString('ko-KR', {
+        month: '2-digit',
+        day: '2-digit'
+      })
+      .replace('. ', '/')
+      .replace('.', '')
+  );
+
+  const handleDateLimitChange = (selectedOption: SingleValue<OptionType>) => {
+    if (selectedOption) setDateLimit(selectedOption.value);
+  };
+
+  const prices = priceHistory.map((item) => item.lowestPrice);
+
+  const data = {
+    labels,
+    datasets: [
+      {
+        label: '가격',
+        data: prices,
+        borderColor: '#ffdba1',
+        backgroundColor: 'rgba(255, 199, 120, 0.5)',
+        tension: 0.1,
+        pointBackgroundColor: '#eda5ff',
+        pointBorderColor: '#fff',
+        pointBorderWidth: 2,
+        pointRadius: 5,
+        pointHoverRadius: 7
+      }
+    ]
+  };
+
+  const options: ChartOptions<'line'> = {
+    responsive: true,
+    plugins: {
+      legend: {
+        display: false
+      },
+      title: {
+        display: true,
+        text: '최저가 추이',
         font: {
-          size: 14,
-          weight: 'bold' as const
+          size: 18,
+          weight: 'bold'
         },
-        color: '#333'
-      }
-    },
-    title: {
-      display: true,
-      text: '최저가 추이',
-      font: {
-        size: 18,
-        weight: 'bold' as const
-      },
-      color: '#333',
-      padding: {
-        top: 20,
-        bottom: 10
-      }
-    }
-  },
-  scales: {
-    x: {
-      grid: {
-        color: 'rgba(0, 0, 0, 0.1)'
-      },
-      ticks: {
-        color: '#666',
-        font: {
-          size: 12,
-          weight: 'normal' as const
+        color: '#333',
+        padding: {
+          top: 20,
+          bottom: 20
         }
+      },
+      tooltip: {
+        enabled: true,
+        displayColors: false,
+        backgroundColor: 'rgba(255, 255, 255, 1.0)',
+        bodyColor: '#585858',
+        borderColor: 'rgba(0,0,0,0)',
+        borderWidth: 0,
+        titleColor: '#585858'
       }
     },
-    y: {
-      grid: {
-        color: 'rgba(0, 0, 0, 0.1)'
-      },
-      ticks: {
-        color: '#666',
-        font: {
-          size: 12,
-          weight: 'normal' as const
+    scales: {
+      x: {
+        grid: {
+          color: 'rgba(0, 0, 0, 0.1)'
         },
-        beginAtZero: false,
-        padding: 10
+        ticks: {
+          color: '#666',
+          font: {
+            size: 12,
+            weight: 'normal'
+          }
+        }
       },
-      suggestedMin: 18000,
-      suggestedMax: 20000
+      y: {
+        grid: {
+          color: 'rgba(0, 0, 0, 0.1)'
+        },
+        ticks: {
+          color: '#666',
+          font: {
+            size: 12,
+            weight: 'normal'
+          },
+          padding: 5
+        },
+        suggestedMin: prices.length > 0 ? Math.min(...prices) - 50 : 0,
+        suggestedMax: prices.length > 0 ? Math.max(...prices) + 50 : 1000
+      }
     }
-  }
-};
+  };
 
-const ChartView = () => {
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+
   return (
-    <Container style={{ height: '300px', width: '100%' }}>
+    <Container style={{ height: 'auto', width: '100%' }}>
+      <Select
+        options={dateOptions}
+        defaultValue={dateOptions[0]}
+        onChange={handleDateLimitChange}
+        isSearchable={false}
+      />
       <Line data={data} options={options} />
     </Container>
   );

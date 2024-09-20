@@ -18,11 +18,10 @@ const TabsComponent = ({ productName }: Props) => {
     <div style={{ width: '100%', paddingBottom: '20px' }}>
       <Tabs value={value} onChange={handleChange} centered>
         <Tab label="최저가 비교" />
-        {/* <Tab label="상품 시세 차트" /> */}
+        <Tab label="상품 시세 차트" />
       </Tabs>
       {value === 0 && <MallList productName={productName} />}
-      {/* Pass the name to MallList */}
-      {/* {value === 1 && <ChartView />} */}
+      {value === 1 && <ChartView productName={productName} />}
     </div>
   );
 };
