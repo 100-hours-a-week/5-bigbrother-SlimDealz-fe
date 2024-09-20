@@ -65,7 +65,9 @@ const CategoryList = ({ id, image, name, price, shipping }: Props) => {
     setIsModalOpen(false);
   };
 
-  const handleBookmarkClick = async (e: React.MouseEvent) => {
+  const handleBookmarkClick = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
     e.stopPropagation();
 
     const jwtToken = getCookie('jwtToken');
@@ -106,7 +108,9 @@ const CategoryList = ({ id, image, name, price, shipping }: Props) => {
   };
 
   const handleProductClick = (productName: string) => {
-    navigate(`/product/${productName}`);
+    if (!isModalOpen) {
+      navigate(`/product/${productName}`);
+    }
   };
 
   return (

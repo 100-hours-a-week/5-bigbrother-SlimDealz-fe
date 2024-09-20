@@ -50,19 +50,13 @@ const SearchResultsPage: React.FC = () => {
         <LoadingProduct />
       ) : data.length > 0 ? (
         data.map((item: any, index: number) => (
-          <Link
-            to={`/product/${encodeURIComponent(item.name)}`}
-            key={index}
-            style={{ textDecoration: 'none', color: 'inherit' }}
-          >
-            <CategoryList
-              id={item.id}
-              image={item.imageUrl}
-              name={item.name}
-              shipping={item.shippingFee}
-              price={item.prices[0]?.setPrice}
-            />
-          </Link>
+          <CategoryList
+            id={item.id}
+            image={item.imageUrl}
+            name={item.name}
+            shipping={item.shippingFee}
+            price={item.prices[0]?.setPrice}
+          />
         ))
       ) : (
         <NoResultsSpinner />
