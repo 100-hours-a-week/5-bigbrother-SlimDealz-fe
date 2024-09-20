@@ -50,9 +50,9 @@ const ProductSlider = ({ products = [] }: Props) => {
         <ProductSliderContainer>
           <LeftArrow onClick={scrollLeft} />
           <ProductsWrapper ref={scrollRef}>
-            {products.map((product) => (
+            {products.map((product, index) => (
               <ProductItem
-                key={product.id}
+                key={`${product.id}-${index}`}
                 onClick={() => handleProductClick(product.name)}
               >
                 <ImageWithSkeleton

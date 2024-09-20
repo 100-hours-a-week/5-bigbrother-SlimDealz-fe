@@ -54,9 +54,9 @@ const ThirdSlider: React.FC<ThirdSliderProps> = ({ items }) => {
               height: '300px'
             }}
           >
-            {items.map((item) => (
+            {items.map((item, index) => (
               <SwiperSlide
-                key={item.id}
+                key={`${item.id}-${index}`}
                 onClick={() => handleProductClick(item.name)}
               >
                 <SwiperSlideStyled>

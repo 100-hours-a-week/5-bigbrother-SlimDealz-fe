@@ -86,9 +86,9 @@ const DragSlider = ({ products }: Props) => {
     <Container>
       {products.length > 0 ? (
         <Slider ref={containerRef} onMouseDown={handleMouseDown}>
-          {products.map((product) => (
+          {products.map((product, index) => (
             <ProductCard
-              key={product.id}
+              key={`${product.id}-${index}`}
               onClick={() => handleProductClick(product.name)}
             >
               <img src={product.imageUrl} alt={product.name} />
