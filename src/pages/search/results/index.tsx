@@ -77,7 +77,6 @@ const SearchResultsPage: React.FC = () => {
   }, [keyword]);
 
   useEffect(() => {
-    console.log(lastSeenId);
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && !isLoadingMore && hasMore) {
