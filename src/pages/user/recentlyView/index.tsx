@@ -22,9 +22,6 @@ const UserRecentlyViewPage = () => {
 
   return (
     <Container>
-      {recentProducts.length > 0 && (
-        <PageNameTag pageName={`전체 ${recentProducts.length}개`} />
-      )}
       {recentProducts.length > 0 ? (
         recentProducts.map((product: any) => (
           <CategoryList

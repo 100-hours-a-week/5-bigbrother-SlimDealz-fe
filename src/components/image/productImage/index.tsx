@@ -10,7 +10,7 @@ interface ImageViewProps {
 const ImageView: React.FC<ImageViewProps> = ({ src, alt }) => {
   return (
     <ImageViewContainer>
-      <ImageComponent src={src} alt={alt} width="300px" height="300px" />
+      <ImageComponent src={src} alt={alt} width="300px" height="auto" />
     </ImageViewContainer>
   );
 };

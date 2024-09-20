@@ -27,7 +27,7 @@ export const MallItem = styled.div`
 export const MallInfo = styled.div`
   display: flex;
   align-items: center;
-  max-width: 100px;
+  max-width: 80px;
 `;
 
 export const PriceContainer = styled.div`

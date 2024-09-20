@@ -6,7 +6,7 @@ export const Container = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: calc(100dvh - 120px);
+  height: calc(100dvh - 130px);
 `;
 
 export const Section = styled.div`
@@ -20,7 +20,7 @@ export const Description = styled.p`
   font-size: 20px;
   margin-bottom: 15px;
   line-height: 30px;
-  padding-bottom: 100px;
+  padding-bottom: 30px;
 `;
 
 export const KakaoButton = styled.button`

@@ -2,7 +2,6 @@ import React from 'react';
 import { Container, Section, Description, KakaoButton } from './styles';
 
 const SignInPage = () => {
-  // 카카오 로그인 URL을 생성합니다.
   const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${import.meta.env.VITE_KAKAO_API_KEY}&redirect_uri=${encodeURIComponent(import.meta.env.VITE_SERVER_URI)}/auth/kakao/callback&response_type=code`;
 
   const handleLogin = () => {
@@ -12,6 +11,11 @@ const SignInPage = () => {
   return (
     <Container>
       <Section>
+        <img
+          src="/public/assets/logo.png"
+          alt="Logo"
+          style={{ width: '250px', height: 'auto', margin: '60px 0px' }}
+        />
         {!import.meta.env.VITE_KAKAO_API_KEY ||
         !import.meta.env.VITE_SERVER_URI ? (
           <Description>
