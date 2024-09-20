@@ -6,7 +6,6 @@ import SliderName from '@/components/product/slider/name';
 import DragSlider from '@/components/product/slider/dragSlider';
 import ThirdSlider from '@/components/product/slider/thirdSlider';
 import { useProductStore } from '@/store/product';
-import { deleteCookie, getCookie } from '@/components/utils/cookieUtils';
 
 const MainPage = () => {
   const {
@@ -19,13 +18,6 @@ const MainPage = () => {
   } = useProductStore();
 
   useEffect(() => {
-    // 쿠키에서 refreshToken 가져와 로컬 스토리지에 저장
-    const refreshToken = getCookie('refreshToken');
-    if (refreshToken) {
-      localStorage.setItem('refreshToken', refreshToken);
-      deleteCookie('refreshToken');
-    }
-
     fetchLowestProducts();
     if (randomProducts.length === 0) {
       fetchRandomProducts();
