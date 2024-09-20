@@ -5,7 +5,7 @@ export const CustomBox = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: calc(100dvh - 160px);
+  height: calc(100dvh - 200px);
   text-align: center;
 `;
 

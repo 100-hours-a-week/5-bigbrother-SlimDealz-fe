@@ -6,6 +6,7 @@ export const Container = styled.div`
   gap: 16px;
   width: 100%;
   padding: 16px;
+  padding-bottom: 40px;
   background-color: var(--background-color);
 `;
 
