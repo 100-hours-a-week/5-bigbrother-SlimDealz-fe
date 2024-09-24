@@ -107,14 +107,14 @@ const CategoryList = ({ id, image, name, price, shipping }: Props) => {
     }
   };
 
-  const handleProductClick = (productName: string) => {
+  const handleProductClick = (productName: string, id: number) => {
     if (!isModalOpen) {
-      navigate(`/product/${productName}`);
+      navigate(`/product/${productName}/${id}`);
     }
   };
 
   return (
-    <Container onClick={() => handleProductClick(name)}>
+    <Container onClick={() => handleProductClick(name, id)}>
       <ImageContainer>
         <img
           src={image}

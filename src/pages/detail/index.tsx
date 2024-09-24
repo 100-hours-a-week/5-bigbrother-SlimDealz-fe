@@ -11,14 +11,17 @@ import { LoadingSpinner } from '@/components/loading';
 import api from '@/axiosInstance';
 
 const DetailPage = () => {
-  const { productName } = useParams<{ productName: string }>();
+  const { productName, productId } = useParams<{
+    productName: string;
+    productId: string;
+  }>();
   const [productData, setProductData] = useState(null);
 
   useEffect(() => {
     const fetchProductData = async () => {
       try {
         const response = await api.get(
-          `/v1/product-detail?productName=${encodeURIComponent(productName as string)}`
+          `/v1/product-detail?productName=${productName as string}&productId=${productId}`
         );
         setProductData(response.data);
 
@@ -49,7 +52,7 @@ const DetailPage = () => {
     };
 
     fetchProductData();
-  }, [productName]);
+  }, [productName, productId]);
 
   if (!productData) {
     return <LoadingSpinner />;

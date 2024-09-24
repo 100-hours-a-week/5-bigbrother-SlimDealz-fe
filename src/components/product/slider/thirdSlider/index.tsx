@@ -30,8 +30,8 @@ interface ThirdSliderProps {
 const ThirdSlider: React.FC<ThirdSliderProps> = ({ items }) => {
   const navigate = useNavigate();
 
-  const handleProductClick = (productName: string) => {
-    navigate(`/product/${productName}`);
+  const handleProductClick = (productName: string, id: number) => {
+    navigate(`/product/${productName}/${id}`);
   };
 
   return (
@@ -57,7 +57,7 @@ const ThirdSlider: React.FC<ThirdSliderProps> = ({ items }) => {
             {items.map((item, index) => (
               <SwiperSlide
                 key={`${item.id}-${index}`}
-                onClick={() => handleProductClick(item.name)}
+                onClick={() => handleProductClick(item.name, item.id)}
               >
                 <SwiperSlideStyled>
                   <ItemImage src={item.imageUrl} alt={item.name} />
