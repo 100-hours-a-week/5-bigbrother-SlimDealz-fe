@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState, useRef } from 'react';
-import PageNameTag from '../../../components/tag/pageNameTag';
 import CategoryList from '../../../components/list/categoryList';
 import { SearchContext } from '../../../components/utils/context/searchContext';
 import { useParams } from 'react-router-dom';
@@ -29,12 +28,34 @@ const SearchResultsPage: React.FC = () => {
   const [hasMore, setHasMore] = useState<boolean>(true);
   const loaderRef = useRef<HTMLDivElement>(null);
 
+  const saveSearchWordToLocalStorage = (word: string) => {
+    const storedSearchWords = JSON.parse(
+      localStorage.getItem('recentSearchWords') || '[]'
+    );
+
+    const updatedSearchWords = [
+      word,
+      ...storedSearchWords.filter((w: string) => w !== word)
+    ];
+
+    if (updatedSearchWords.length > 10) {
+      updatedSearchWords.pop();
+    }
+
+    localStorage.setItem(
+      'recentSearchWords',
+      JSON.stringify(updatedSearchWords)
+    );
+  };
+
   useEffect(() => {
     if (keyword) {
       setSearchQuery(keyword);
       setData([]);
       setLoading(true);
       setLastSeenId(null);
+
+      saveSearchWordToLocalStorage(keyword);
     }
   }, [keyword, setSearchQuery]);
 

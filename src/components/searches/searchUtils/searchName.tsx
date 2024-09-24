@@ -18,16 +18,13 @@ const SearchNameContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100px;
+  width: 120px;
   height: auto;
-  padding: 8px;
-  border-radius: 20px;
-  background-color: #f2f2f7;
 `;
 
 const NameTextContainer = styled.div`
   text-align: center;
-  font-size: 13px;
+  font-size: 20px;
   font-weight: bold;
   color: black;
 `;

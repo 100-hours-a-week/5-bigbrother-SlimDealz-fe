@@ -76,7 +76,7 @@ const SearchBar: React.FC<{ isSpecialPage: boolean }> = ({ isSpecialPage }) => {
   };
 
   const handleFocus = () => {
-    navigate('/searchInitial', { replace: true });
+    navigate('/searchInitial');
   };
 
   return (
