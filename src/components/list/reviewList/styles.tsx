@@ -34,8 +34,10 @@ export const ReviewContainer = styled.div`
   }
 
   small {
+    display: block;
     color: #757575;
     font-size: 12px;
+    margin-top: 4px;
   }
 `;
 
