@@ -7,8 +7,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { AutoCompleteItem, AutoCompleteList, CustomInput } from './styles';
 import { SearchContext } from '../../utils/context/searchContext';
 
-const words = ['예제', '검색', '단어', '목록'];
-
 const SearchBar: React.FC<{ isSpecialPage: boolean }> = ({ isSpecialPage }) => {
   const { searchQuery, setSearchQuery } = useContext(SearchContext);
   const [filteredWords, setFilteredWords] = useState<string[]>([]);
@@ -37,15 +35,6 @@ const SearchBar: React.FC<{ isSpecialPage: boolean }> = ({ isSpecialPage }) => {
 
     if (cleanedValue.length <= 50) {
       setSearchQuery(cleanedValue);
-
-      if (cleanedValue) {
-        const filtered = words.filter((word) =>
-          word.toLowerCase().includes(cleanedValue.toLowerCase())
-        );
-        setFilteredWords(filtered);
-      } else {
-        setFilteredWords([]);
-      }
     }
   };
 
@@ -82,15 +71,12 @@ const SearchBar: React.FC<{ isSpecialPage: boolean }> = ({ isSpecialPage }) => {
     }
   };
 
-  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') {
-      event.preventDefault();
-      handleSearch(searchQuery);
-    }
-  };
-
   const handleSearchClick = () => {
     handleSearch(searchQuery);
+  };
+
+  const handleFocus = () => {
+    navigate('/searchInitial', { replace: true });
   };
 
   return (
@@ -123,8 +109,8 @@ const SearchBar: React.FC<{ isSpecialPage: boolean }> = ({ isSpecialPage }) => {
             id="search-input"
             placeholder="검색어를 입력하세요"
             value={searchQuery}
+            onFocus={handleFocus}
             onChange={handleSearchChange}
-            onKeyPress={handleKeyPress}
             $isSpecialPage={isSpecialPage}
           />
           <IconButton
@@ -144,15 +130,15 @@ const SearchBar: React.FC<{ isSpecialPage: boolean }> = ({ isSpecialPage }) => {
           </IconButton>
         </Paper>
       </Tooltip>
-        {filteredWords.length > 0 && (
-          <AutoCompleteList>
-            {filteredWords.map((word, index) => (
-              <AutoCompleteItem key={index} onClick={() => handleSearch(word)}>
-                {word}
-              </AutoCompleteItem>
-            ))}
-          </AutoCompleteList>
-        )}
+      {filteredWords.length > 0 && (
+        <AutoCompleteList>
+          {filteredWords.map((word, index) => (
+            <AutoCompleteItem key={index} onClick={() => handleSearch(word)}>
+              {word}
+            </AutoCompleteItem>
+          ))}
+        </AutoCompleteList>
+      )}
     </>
   );
 };

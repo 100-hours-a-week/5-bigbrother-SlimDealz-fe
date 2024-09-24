@@ -10,11 +10,11 @@ import SignInPage from './pages/signIn';
 import UserBookmarkPage from './pages/user/bookmark';
 import ComingSoon from './components/utils/comingSoon';
 import { LoadingSpinner } from './components/loading';
+import SearchInitialPage from './pages/search/initial';
 
 // 동적 import()를 사용한 페이지 컴포넌트 로드
 const CategoryPage = React.lazy(() => import('./pages/category'));
 const DetailPage = React.lazy(() => import('./pages/detail'));
-const SearchInitialPage = React.lazy(() => import('./pages/search/initial'));
 const SearchResultsPage = React.lazy(() => import('./pages/search/results'));
 const UserAlarmPage = React.lazy(() => import('./pages/user/alarm'));
 const UserRecentlyViewPage = React.lazy(
