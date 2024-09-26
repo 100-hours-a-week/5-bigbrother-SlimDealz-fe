@@ -121,7 +121,7 @@ const SearchBar: React.FC<{ isSpecialPage: boolean }> = ({ isSpecialPage }) => {
         >
           <CustomInput
             id="search-input"
-            placeholder="검색어를 입력하세요"
+            placeholder="원하는 제품를 검색해보세요 🔍"
             value={searchQuery}
             onChange={handleSearchChange}
             onKeyPress={handleKeyPress}
@@ -144,15 +144,15 @@ const SearchBar: React.FC<{ isSpecialPage: boolean }> = ({ isSpecialPage }) => {
           </IconButton>
         </Paper>
       </Tooltip>
-        {filteredWords.length > 0 && (
-          <AutoCompleteList>
-            {filteredWords.map((word, index) => (
-              <AutoCompleteItem key={index} onClick={() => handleSearch(word)}>
-                {word}
-              </AutoCompleteItem>
-            ))}
-          </AutoCompleteList>
-        )}
+      {filteredWords.length > 0 && (
+        <AutoCompleteList>
+          {filteredWords.map((word, index) => (
+            <AutoCompleteItem key={index} onClick={() => handleSearch(word)}>
+              {word}
+            </AutoCompleteItem>
+          ))}
+        </AutoCompleteList>
+      )}
     </>
   );
 };

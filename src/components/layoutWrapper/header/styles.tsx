@@ -7,7 +7,7 @@ export const CustomInput = styled(InputBase)<{
   & .MuiInputBase-input {
     width: ${({ $isSpecialPage }) => ($isSpecialPage ? '240px' : '255px')};
     padding: 10px 15px;
-    font-size: 18px;
+    font-size: 16px;
   }
 `;
 

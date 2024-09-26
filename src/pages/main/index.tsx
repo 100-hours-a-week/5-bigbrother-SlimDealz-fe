@@ -51,7 +51,7 @@ const MainPage = () => {
         />
         <DragSlider products={popularProducts} />
         <SliderName
-          title="MD 추천 상품"
+          title="SLIMDEALZ 추천 상품"
           showMoreButton={true}
           moreButtonLink="/category/recommend"
         />
