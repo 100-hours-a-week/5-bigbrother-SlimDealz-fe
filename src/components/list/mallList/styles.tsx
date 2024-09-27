@@ -44,6 +44,7 @@ export const ShippingFeeContainer = styled.div`
   font-size: 14px;
   color: #666;
   margin-left: 10px;
+  min-width: 100px;
 `;
 
 export const ShowMoreButton = styled.button`

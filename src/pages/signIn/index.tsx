@@ -12,7 +12,7 @@ const SignInPage = () => {
     <Container>
       <Section>
         <img
-          src="/public/assets/logo.png"
+          src="/assets/logo.png"
           alt="Logo"
           style={{ width: '250px', height: 'auto', margin: '60px 0px' }}
         />

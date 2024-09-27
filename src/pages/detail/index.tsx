@@ -69,8 +69,8 @@ const DetailPage = () => {
       <ProductInfo originalPrice={setPrice} productName={name} />
       {/* <PriceAlertSetting /> */}
       <TabsComponent productName={name} />
-      {/* <Title>리뷰</Title>
-      <ReviewList /> */}
+      <Title>리뷰</Title>
+      <ReviewList productName={name} />
     </Container>
   );
 };
