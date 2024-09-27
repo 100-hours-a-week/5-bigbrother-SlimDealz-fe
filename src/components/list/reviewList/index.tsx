@@ -86,7 +86,7 @@ const ReviewList: React.FC<ReviewListProps> = ({ productName }) => {
           <ReviewContainer key={index}>
             <div>
               <h3>{review.content.slice(0, 6)}...</h3>
-              <p style={{ color: '#282828' }}>{review.content}</p>
+              <p>{review.content}</p>
               <small>{`별점: ${review.customerRating} | 출처: ${review.productSource}`}</small>
               <small>{`${review.reviewDate} | ${review.userName}`}</small>
             </div>

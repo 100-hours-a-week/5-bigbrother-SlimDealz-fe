@@ -25,12 +25,13 @@ export const ReviewContainer = styled.div`
     margin: 0;
     font-size: 16px;
     font-weight: bold;
+    padding-bottom: 5px;
   }
 
   p {
     margin: 4px 0;
-    font-size: 14px;
     white-space: pre-wrap;
+    font: -webkit-small-control;
   }
 
   small {
