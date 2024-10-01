@@ -77,7 +77,7 @@ export const useProductStore = create<ProductState>((set) => ({
   fetchPopularProducts: async (size: number): Promise<Product[]> => {
     try {
       const response = await api.get('/v1/products', {
-        params: { category: '닭가슴살', size }
+        params: { category: '닭가슴살', size: 10 }
       });
       const newProducts = response.data;
 
