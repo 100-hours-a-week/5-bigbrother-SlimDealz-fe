@@ -22,7 +22,6 @@ const DetailPage = () => {
   useEffect(() => {
     const fetchProductData = async () => {
       try {
-        // productId를 숫자로 변환
         const numericProductId = Number(productId);
 
         if (isNaN(numericProductId)) {
@@ -72,7 +71,7 @@ const DetailPage = () => {
     return <LoadingSpinner />;
   }
 
-  const { imageUrl, productName: name, prices } = productData;
+  const { imageUrl, name, prices } = productData;
   const { setPrice } = prices[0];
 
   return (
