@@ -12,7 +12,7 @@ type Price = {
 
 type Product = {
   id: number;
-  name: string;
+  productName: string;
   imageUrl: string;
   originalPrice: number;
   prices: Price[];
@@ -24,7 +24,7 @@ type ProductState = {
   popularProducts: Product[];
   fetchLowestProducts: () => Promise<void>;
   fetchRandomProducts: () => Promise<void>;
-  fetchPopularProducts: (page: number) => Promise<Product[]>;
+  fetchPopularProducts: () => Promise<Product[]>;
 };
 
 export const useProductStore = create<ProductState>((set) => ({
@@ -74,10 +74,10 @@ export const useProductStore = create<ProductState>((set) => ({
     }
   },
 
-  fetchPopularProducts: async (size: number): Promise<Product[]> => {
+  fetchPopularProducts: async (): Promise<Product[]> => {
     try {
       const response = await api.get('/v1/products', {
-        params: { category: '닭가슴살', size: size }
+        params: { category: '닭가슴살', size: 10 }
       });
       const newProducts = response.data;
 

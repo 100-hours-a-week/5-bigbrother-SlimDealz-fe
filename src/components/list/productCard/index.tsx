@@ -29,7 +29,7 @@ type Price = {
 
 type Product = {
   id: number;
-  name: string;
+  productName: string;
   imageUrl: string;
   prices: Price[];
 };
@@ -54,7 +54,7 @@ const ProductCard = ({ products }: Props) => {
         const promises = products.map(async (product, index) => {
           const bookmarkResponse = await api.get(`/v1/users/bookmarks/search`, {
             headers: { Authorization: `Bearer ${jwtToken}` },
-            params: { productName: product.name }
+            params: { productName: product.productName }
           });
           if (bookmarkResponse.status === 200 && bookmarkResponse.data) {
             setBookmarked((prev) => {
@@ -135,20 +135,24 @@ const ProductCard = ({ products }: Props) => {
         {products.map((product, index) => (
           <Card
             key={product.id}
-            onClick={() => handleProductClick(product.name)}
+            onClick={() => handleProductClick(product.productName)}
           >
             <ImagePlaceholder>
-              <ProductImage src={product.imageUrl} alt={product.name} />
+              <ProductImage src={product.imageUrl} alt={product.productName} />
             </ImagePlaceholder>
             <ProductInfo>
-              <ProductTitle>{truncateString(product.name, 10)}</ProductTitle>
+              <ProductTitle>
+                {truncateString(product.productName, 10)}
+              </ProductTitle>
               <ProductPrice>
                 {getNumberWithComma(product.prices[0]?.setPrice)}원
               </ProductPrice>
             </ProductInfo>
             <BookmarkIcon>
               <IconButton
-                onClick={(e) => handleBookmarkClick(e, product.name, index)}
+                onClick={(e) =>
+                  handleBookmarkClick(e, product.productName, index)
+                }
               >
                 {bookmarked[index] ? <Bookmark /> : <BookmarkBorder />}
               </IconButton>

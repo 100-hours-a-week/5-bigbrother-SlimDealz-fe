@@ -23,7 +23,7 @@ const MainPage = () => {
       fetchRandomProducts();
     }
     if (popularProducts.length === 0) {
-      fetchPopularProducts(10);
+      fetchPopularProducts();
     }
   }, [
     fetchLowestProducts,

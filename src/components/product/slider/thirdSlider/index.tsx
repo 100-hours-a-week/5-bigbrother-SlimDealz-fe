@@ -21,7 +21,7 @@ import { LoadingSearch } from '@/components/loading';
 interface ThirdSliderProps {
   items: {
     id: number;
-    name: string;
+    productName: string;
     imageUrl: string;
     prices: { setPrice: number }[];
   }[];
@@ -57,12 +57,12 @@ const ThirdSlider: React.FC<ThirdSliderProps> = ({ items }) => {
             {items.map((item, index) => (
               <SwiperSlide
                 key={`${item.id}-${index}`}
-                onClick={() => handleProductClick(item.name)}
+                onClick={() => handleProductClick(item.productName)}
               >
                 <SwiperSlideStyled>
-                  <ItemImage src={item.imageUrl} alt={item.name} />
+                  <ItemImage src={item.imageUrl} alt={item.productName} />
                   <ItemDetails>
-                    <ItemName>{truncateString(item.name, 13)}</ItemName>
+                    <ItemName>{truncateString(item.productName, 13)}</ItemName>
                     <SalePrice>
                       판매가: {getNumberWithComma(item.prices[0].setPrice)}원
                     </SalePrice>

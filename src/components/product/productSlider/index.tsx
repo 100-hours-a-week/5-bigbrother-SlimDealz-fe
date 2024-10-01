@@ -15,7 +15,7 @@ import { truncateString } from '@/components/utils/conversion';
 
 type Product = {
   id: number;
-  name: string;
+  productName: string;
   imageUrl: string;
   prices: { setPrice: number }[];
 };
@@ -53,14 +53,14 @@ const ProductSlider = ({ products = [] }: Props) => {
             {products.map((product, index) => (
               <ProductItem
                 key={`${product.id}-${index}`}
-                onClick={() => handleProductClick(product.name)}
+                onClick={() => handleProductClick(product.productName)}
               >
                 <ImageWithSkeleton
                   src={product.imageUrl}
-                  alt={`Product ${product.name}`}
+                  alt={`Product ${product.productName}`}
                 />
                 <PriceInfo>
-                  <h3>{truncateString(product.name, 10)}</h3>
+                  <h3>{truncateString(product.productName, 10)}</h3>
                   <div className="price-row">
                     <div className="price-label">최저가:</div>
                     <div className="price-value">

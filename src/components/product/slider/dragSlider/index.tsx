@@ -6,7 +6,7 @@ import { LoadingSearch } from '@/components/loading';
 
 type Product = {
   id: number;
-  name: string;
+  productName: string;
   imageUrl: string;
   prices: { setPrice: number }[];
 };
@@ -89,10 +89,10 @@ const DragSlider = ({ products }: Props) => {
           {products.map((product, index) => (
             <ProductCard
               key={`${product.id}-${index}`}
-              onClick={() => handleProductClick(product.name)}
+              onClick={() => handleProductClick(product.productName)}
             >
-              <img src={product.imageUrl} alt={product.name} />
-              <h3>{truncateString(product.name, 15)}</h3>
+              <img src={product.imageUrl} alt={product.productName} />
+              <h3>{truncateString(product.productName, 15)}</h3>
               <p>{product.prices?.[0]?.setPrice?.toLocaleString()}원</p>
             </ProductCard>
           ))}

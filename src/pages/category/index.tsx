@@ -36,12 +36,19 @@ const CategoryPage = () => {
   const [hasMore, setHasMore] = useState(true);
 
   const fetchPopularProductsCallback = useCallback(async () => {
-    const fetchedProducts = await fetchPopularProducts(page);
-    if (fetchedProducts.length === 0) {
-      setHasMore(false);
+    setLoading(true); // 추가
+    try {
+      const fetchedProducts = await fetchPopularProducts();
+      if (fetchedProducts.length === 0) {
+        setHasMore(false);
+      }
+    } catch (error) {
+      console.error('인기 상품을 불러오는 중 오류가 발생했습니다:', error);
+      setHasMore(false); // 에러 발생 시에도 더 이상 불러올 데이터가 없다고 처리
+    } finally {
+      setLoading(false); // 데이터를 불러오거나 에러가 발생한 후 로딩 상태 해제
     }
-    setLoading(false);
-  }, [fetchPopularProducts, page]);
+  }, [fetchPopularProducts]);
 
   useEffect(() => {
     const fetchProducts = async () => {
