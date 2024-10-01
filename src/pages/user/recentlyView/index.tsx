@@ -28,7 +28,7 @@ const UserRecentlyViewPage = () => {
             key={product.id}
             id={product.id}
             image={product.imageUrl}
-            name={product.name}
+            productName={product.productName}
             shipping={product.shippingFee}
             price={product.prices?.[0]?.setPrice}
           />

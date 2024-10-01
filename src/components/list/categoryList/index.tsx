@@ -20,12 +20,12 @@ import { getCookie } from '@/components/utils/cookieUtils';
 type Props = {
   id: number;
   image: string;
-  name: string;
+  productName: string;
   price: number;
   shipping: string;
 };
 
-const CategoryList = ({ id, image, name, price, shipping }: Props) => {
+const CategoryList = ({ id, image, productName, price, shipping }: Props) => {
   const [bookmarked, setBookmarked] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
@@ -42,7 +42,7 @@ const CategoryList = ({ id, image, name, price, shipping }: Props) => {
           headers: {
             Authorization: `Bearer ${jwtToken}`
           },
-          params: { productName: name }
+          params: { productName: productName }
         });
 
         setBookmarked(bookmarkResponse.data);
@@ -59,7 +59,7 @@ const CategoryList = ({ id, image, name, price, shipping }: Props) => {
     };
 
     authenticateAndCheckBookmark();
-  }, [name]);
+  }, [productName]);
 
   const closeModal = () => {
     setIsModalOpen(false);
@@ -82,7 +82,7 @@ const CategoryList = ({ id, image, name, price, shipping }: Props) => {
           headers: {
             Authorization: `Bearer ${jwtToken}`
           },
-          params: { productName: name }
+          params: { productName: productName }
         });
         setBookmarked(false);
         alert('북마크가 삭제되었습니다.');
@@ -90,7 +90,7 @@ const CategoryList = ({ id, image, name, price, shipping }: Props) => {
         await api.post(
           `/v1/users/bookmarks`,
           {
-            productName: name
+            productName: productName
           },
           {
             headers: {
@@ -114,16 +114,18 @@ const CategoryList = ({ id, image, name, price, shipping }: Props) => {
   };
 
   return (
-    <Container onClick={() => handleProductClick(name)}>
+    <Container onClick={() => handleProductClick(productName)}>
       <ImageContainer>
         <img
           src={image}
-          alt={name}
+          alt={productName}
           style={{ width: '100%', height: '100%', borderRadius: '10px' }}
         />
       </ImageContainer>
       <InfoContainer>
-        <div style={{ fontSize: '16px', fontWeight: 'bold' }}>{name}</div>
+        <div style={{ fontSize: '16px', fontWeight: 'bold' }}>
+          {productName}
+        </div>
         <PriceContainer>
           <PriceText>{getNumberWithComma(price)}원</PriceText>
         </PriceContainer>

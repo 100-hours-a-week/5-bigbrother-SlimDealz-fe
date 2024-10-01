@@ -13,7 +13,7 @@ interface Price {
 
 interface Product {
   id: number;
-  name: string;
+  productName: string;
   imageUrl: string;
   shippingFee: string;
   prices: Price[];
@@ -113,7 +113,7 @@ const SearchResultsPage: React.FC = () => {
               key={`${item.id}-${index}`}
               id={item.id}
               image={item.imageUrl}
-              name={item.name}
+              productName={item.productName}
               shipping={item.shippingFee}
               price={item.prices[0]?.setPrice}
             />
