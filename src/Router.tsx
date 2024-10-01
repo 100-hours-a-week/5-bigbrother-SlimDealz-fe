@@ -35,7 +35,10 @@ const Router = memo(() => {
                   path="/category/:categoryType"
                   element={<CategoryPage />}
                 />
-                <Route path="/product/:productName" element={<DetailPage />} />
+                <Route
+                  path="/product/:productName/:productId"
+                  element={<DetailPage />}
+                />
                 <Route path="/searchInitial" element={<SearchInitialPage />} />
                 <Route
                   path="/searchResults/:keyword"

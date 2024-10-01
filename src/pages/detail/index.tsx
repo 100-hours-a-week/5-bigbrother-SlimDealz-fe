@@ -15,38 +15,48 @@ const DetailPage = () => {
     productName: string;
     productId: string;
   }>();
-  const [productData, setProductData] = useState(null);
+
+  const [productData, setProductData] = useState<any>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchProductData = async () => {
       try {
+        // productId를 숫자로 변환
+        const numericProductId = Number(productId);
+
+        if (isNaN(numericProductId)) {
+          console.error('Invalid productId:', productId);
+          setError('Invalid product ID');
+          return;
+        }
+
         const response = await api.get(
-          `/v1/product-detail?productName=${productName as string}&productId=${productId}`
+          `/v1/product-detail?productName=${encodeURIComponent(productName as string)}&productId=${numericProductId}`
         );
+
         setProductData(response.data);
 
         const recentProducts = JSON.parse(
           localStorage.getItem('recentProducts') || '[]'
         );
+
         const updatedRecentProducts = [
           response.data,
           ...recentProducts.filter(
             (product: any) => product.name !== response.data.name
           )
         ];
+
         localStorage.setItem(
           'recentProducts',
           JSON.stringify(updatedRecentProducts.slice(0, 10))
         );
       } catch (err: any) {
-        if (err.response) {
-          if (err.response.status === 404) {
-            console.log('Product not found');
-          } else {
-            console.log('Server error');
-          }
+        if (err.response && err.response.status === 404) {
+          setError('Product not found');
         } else {
-          console.log('Network error');
+          setError('An error occurred while fetching product data');
         }
       }
     };
@@ -54,11 +64,15 @@ const DetailPage = () => {
     fetchProductData();
   }, [productName, productId]);
 
+  if (error) {
+    return <div>{error}</div>;
+  }
+
   if (!productData) {
     return <LoadingSpinner />;
   }
 
-  const { imageUrl, name, prices } = productData;
+  const { imageUrl, productName: name, prices } = productData;
   const { setPrice } = prices[0];
 
   return (
@@ -70,10 +84,7 @@ const DetailPage = () => {
         </div>
       </InfoContainer>
       <ProductInfo originalPrice={setPrice} productName={name} />
-      {/* <PriceAlertSetting /> */}
       <TabsComponent productName={name} />
-      {/* <Title>리뷰</Title>
-      <ReviewList /> */}
     </Container>
   );
 };

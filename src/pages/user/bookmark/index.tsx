@@ -135,7 +135,7 @@ const UserBookmarkPage: React.FC = () => {
           key={bookmark.bookmarkId}
           id={bookmark.productId}
           image={bookmark.image || 'default_image_url_here'} // 이미지가 없을 경우 기본 이미지 설정
-          name={bookmark.productName}
+          productName={bookmark.productName}
           shipping={bookmark.shippingFee}
           price={bookmark.prices[0]?.setPrice}
         />
