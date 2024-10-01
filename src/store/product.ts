@@ -74,10 +74,10 @@ export const useProductStore = create<ProductState>((set) => ({
     }
   },
 
-  fetchPopularProducts: async (page: number): Promise<Product[]> => {
+  fetchPopularProducts: async (size: number): Promise<Product[]> => {
     try {
       const response = await api.get('/v1/products', {
-        params: { category: '닭가슴살' }
+        params: { category: '닭가슴살', size }
       });
       const newProducts = response.data;
 
