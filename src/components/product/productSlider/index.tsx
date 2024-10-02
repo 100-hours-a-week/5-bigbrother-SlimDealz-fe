@@ -40,8 +40,8 @@ const ProductSlider = ({ products = [] }: Props) => {
     }
   };
 
-  const handleProductClick = (productName: string) => {
-    navigate(`/product/${productName}`);
+  const handleProductClick = (productName: string, id: number) => {
+    navigate(`/product/${productName}/${id}`);
   };
 
   return (
@@ -53,7 +53,9 @@ const ProductSlider = ({ products = [] }: Props) => {
             {products.map((product, index) => (
               <ProductItem
                 key={`${product.id}-${index}`}
-                onClick={() => handleProductClick(product.productName)}
+                onClick={() =>
+                  handleProductClick(product.productName, product.id)
+                }
               >
                 <ImageWithSkeleton
                   src={product.imageUrl}

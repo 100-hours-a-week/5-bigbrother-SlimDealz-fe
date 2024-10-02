@@ -76,8 +76,8 @@ const ProductCard = ({ products }: Props) => {
     authenticateAndCheckBookmarks();
   }, [products]);
 
-  const handleProductClick = (productName: string) => {
-    navigate(`/product/${productName}`);
+  const handleProductClick = (productName: string, id: number) => {
+    navigate(`/product/${productName}/${id}`);
   };
 
   const handleBookmarkClick = async (
@@ -134,8 +134,8 @@ const ProductCard = ({ products }: Props) => {
       <GridContainer>
         {products.map((product, index) => (
           <Card
-            key={product.id}
-            onClick={() => handleProductClick(product.productName)}
+            key={`${product.id}-${index}`}
+            onClick={() => handleProductClick(product.productName, product.id)}
           >
             <ImagePlaceholder>
               <ProductImage src={product.imageUrl} alt={product.productName} />

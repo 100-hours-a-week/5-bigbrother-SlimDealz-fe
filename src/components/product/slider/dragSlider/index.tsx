@@ -54,8 +54,8 @@ const DragSlider = ({ products }: Props) => {
     }
   };
 
-  const handleProductClick = (productName: string) => {
-    navigate(`/product/${productName}`);
+  const handleProductClick = (productName: string, id: number) => {
+    navigate(`/product/${productName}/${id}`);
   };
 
   useEffect(() => {
@@ -89,7 +89,9 @@ const DragSlider = ({ products }: Props) => {
           {products.map((product, index) => (
             <ProductCard
               key={`${product.id}-${index}`}
-              onClick={() => handleProductClick(product.productName)}
+              onClick={() =>
+                handleProductClick(product.productName, product.id)
+              }
             >
               <img src={product.imageUrl} alt={product.productName} />
               <h3>{truncateString(product.productName, 15)}</h3>
