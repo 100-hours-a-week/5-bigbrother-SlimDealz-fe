@@ -71,7 +71,7 @@ const DetailPage = () => {
     return <LoadingSpinner />;
   }
 
-  const { imageUrl, name, prices } = productData;
+  const { imageUrl, productName: name, prices } = productData;
   const { setPrice } = prices[0];
 
   return (
@@ -84,6 +84,8 @@ const DetailPage = () => {
       </InfoContainer>
       <ProductInfo originalPrice={setPrice} productName={name} />
       <TabsComponent productName={name} />
+      <Title>리뷰</Title>
+      <ReviewList productName={name} />
     </Container>
   );
 };
