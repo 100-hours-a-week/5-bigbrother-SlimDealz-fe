@@ -17,8 +17,6 @@ const UserRecentlyViewPage = () => {
       (product: any) => product.prices?.[0]?.setPrice !== undefined
     );
     setRecentProducts(filteredProducts);
-
-    localStorage.clear();
   }, []);
 
   return (
