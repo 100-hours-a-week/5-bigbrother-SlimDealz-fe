@@ -16,8 +16,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: call env
-      - uses: action/checkout@v3
-      - run: echo 'frontprodenv'
+        run: echo 'frontprodenv'
       
       - name: Cache node modules
         uses: actions/cache@v3
