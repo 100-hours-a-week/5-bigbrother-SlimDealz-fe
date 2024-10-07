@@ -27,7 +27,7 @@ jobs:
           echo BUILD_APP_TYPE=${{ secrets.BUILD_APP_TYPE }} >> .env
           echo BUILD_APP_TYPE=${{ secrets.BUILD_APP_TYPE }} >> .env
           echo BUILD_APP_TYPE=${{ secrets.BUILD_APP_TYPE }} >> .env
-   
+
       - name: Cache node modules
         uses: actions/cache@v3
         with:
@@ -37,7 +37,6 @@ jobs:
             ${{ runner.OS }}-build-
             ${{ runner.OS }}-
 			
-			# 3 - 의존성 패키지 설치
       - name: Install Dependencies
         if: steps.cache.outputs.cache-hit != 'true'
         run: yarn install
