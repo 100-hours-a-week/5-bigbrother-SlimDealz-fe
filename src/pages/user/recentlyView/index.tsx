@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import PageNameTag from '@/components/tag/pageNameTag';
 import CategoryList from '@/components/list/categoryList';
 import { useNavigate } from 'react-router-dom';
 import { CustomBox, CustomButton } from '../bookmark/styles';
@@ -18,6 +17,8 @@ const UserRecentlyViewPage = () => {
       (product: any) => product.prices?.[0]?.setPrice !== undefined
     );
     setRecentProducts(filteredProducts);
+
+    localStorage.clear();
   }, []);
 
   return (
