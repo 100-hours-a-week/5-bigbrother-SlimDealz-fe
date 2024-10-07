@@ -43,7 +43,7 @@ const DetailPage = () => {
         const updatedRecentProducts = [
           response.data,
           ...recentProducts.filter(
-            (product: any) => product.name !== response.data.name
+            (product: any) => product.productName !== response.data.productName
           )
         ];
 
