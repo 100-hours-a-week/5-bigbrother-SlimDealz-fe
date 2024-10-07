@@ -28,7 +28,6 @@ jobs:
             ${{ runner.OS }}-build-
             ${{ runner.OS }}-
 			
-			# 3 - 의존성 패키지 설치
       - name: Install Dependencies
         if: steps.cache.outputs.cache-hit != 'true'
         run: yarn install
